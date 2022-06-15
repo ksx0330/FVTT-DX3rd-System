@@ -1,5 +1,4 @@
 # FVTT-DX3rd-System
-=============
 This is a Foundry VTT System of DX3rd Tabletop RPG.
 
 Installation Instructions
