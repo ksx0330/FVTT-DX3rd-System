@@ -1,0 +1,28 @@
+{
+  "name": "dx3rd",
+  "title": "Double Cross 3rd",
+  "description": "Double Cross 3rd",
+  "version": "0.0.1",
+  "minimumCoreVersion": "0.8.6",
+  "compatibleCoreVersion": "0.8.7",
+  "templateVersion": 1,
+  "author": "ltaeng",
+  "esmodules": ["module/init.js"],
+  "scripts": [
+    "lib/math.js"
+  ],
+  "styles": ["styles/style.css"],
+  "packs": [],
+  "languages": [
+        {"lang": "ko", "name": "Korean", "path": "lang/ko.json"}
+  ],
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "socket": true,
+  "primaryTokenAttribute": "hp",
+  "secondaryTokenAttribute": "",
+  "url": "https://github.com/ksx0330/FVTT-DX3rd-System",
+  "manifest": "https://raw.githubusercontent.com/ksx0330/FVTT-DX3rd-System/master/system.json",
+  "download": "https://codeload.github.com/ksx0330/FVTT-DX3rd-System/zip/master",
+  "license": "LICENSE.txt"
+}

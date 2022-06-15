@@ -1,0 +1,110 @@
+<div class="dialog-content">
+  <div class="sheet-wrapper">
+    <h2>
+      <b>{{title}}</b>
+    </h2>
+
+    <section class="sheet-attributes">
+
+      <div class="cell grid-4">
+        <label class="cell--title">
+          {{localize "DX3rd.Skill"}}
+        </label>
+        <select id="skill" data-dtype="String">
+          {{#select skill}}
+          <option value="-">-</option>
+          {{#each actorSkills as |value key|}}
+          <option value="{{key}}">{{skill value.name}}</option>
+          {{/each}}
+          <option value="syndrome">{{localize "DX3rd.Syndrome"}}</option>
+          <option value="text">{{localize "DX3rd.Text"}}</option>
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="cell grid-4">
+        <label class="cell--title">
+          {{localize "DX3rd.Base"}}
+        </label>
+        <select id="base" data-dtype="String">
+          {{#select base}}
+          <option value="-">-</option>
+          <option value="body">{{localize "DX3rd.Body"}}</option>
+          <option value="sense">{{localize "DX3rd.Sense"}}</option>
+          <option value="mind">{{localize "DX3rd.Mind"}}</option>
+          <option value="social">{{localize "DX3rd.Social"}}</option>
+          {{/select}}
+        </select>
+      </div>
+
+      <div class="cell grid-4">
+        <label class="cell--title">
+          {{localize "DX3rd.RollType"}}
+        </label>
+        <select id="roll" data-dtype="String">
+          <option value="major">{{localize "DX3rd.Major"}}</option>
+          <option value="reaction">{{localize "DX3rd.Reaction"}}</option>
+          <option value="dodge">{{localize "DX3rd.DodgeRoll"}}</option>
+        </select>
+      </div>
+
+      <div class="cell grid-4">
+        <label class="cell--title">
+          {{localize "DX3rd.AttackRoll"}}
+        </label>
+        <select id="attackRoll" data-dtype="String">
+          <option value="-">-</option>
+          <option value="melee">{{localize "DX3rd.Melee"}}</option>
+          <option value="ranged">{{localize "DX3rd.Ranged"}}</option>
+        </select>
+      </div>
+
+      <div class="cell grid-full">
+        <div class="cell--title">
+          <label>{{localize "DX3rd.Effect"}}</label>
+
+        </div>
+
+        <ol class="items-list margin-top-10">
+          {{#each effectList as |item id|}}
+            <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+              <h4 class="item-name">
+                <span class="echo-item" style="float:left;">
+                    <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
+                </span> 
+                <span class="item-label">[{{item.data.level.value}}] {{item.name}}<br>
+                  <span style="color : gray; font-size : smaller;">
+                    {{localize "DX3rd.Timing"}} : {{timing item.data.timing}} / 
+                    {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} / 
+                    {{localize "DX3rd.Target"}} : {{item.data.target}} / 
+                    {{localize "DX3rd.Range"}} : {{item.data.range}} /
+                    {{localize "DX3rd.Encroach"}} : {{item.data.encroach.value}} /
+                    {{localize "DX3rd.Limit"}} : {{item.data.limit}}
+                    <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
+                  </span>
+                </span>
+              </h4>
+
+              <h4 class="item-addon">
+                <input type="checkbox" class="active-effect" data-id="{{item._id}}" >
+              </h4>
+              <div class="item-description">{{{item.data.description}}}
+              </div>
+            </li>
+          {{/each}}
+
+        </ol>
+      </div>
+
+
+    </section>
+  </div>
+</div>
+<div class="dialog-buttons">
+    {{#each buttons as |button id|}}
+    <button class="dialog-button" data-button="{{id}}">
+        {{{button.icon}}}
+        {{{button.label}}}
+    </button>
+    {{/each}}
+</div>

@@ -1,0 +1,92 @@
+<div class="dialog-content">
+  <div class="sheet-wrapper">
+    <h2>
+      <b>{{title}}</b>
+    </h2>
+
+
+    <section class="sheet-attributes">
+      <div class="cell grid-full">
+        <div class="cell--title">
+          <label>{{localize "DX3rd.Weapon"}}</label>
+
+        </div>
+
+        <ol class="items-list margin-top-10">
+          {{#each weaponList as |item id|}}
+            <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+              <h4 class="item-name">
+                <span class="echo-item" style="float:left;">
+                    <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
+                </span> 
+                <span class="item-label">{{item.name}}<br>
+                  <span style="color : gray; font-size : smaller;">
+                    {{localize "DX3rd.Type"}} : {{timing item.data.type}} /
+                    {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} / 
+                    {{localize "DX3rd.Range"}} : {{item.data.range}} /
+                    {{localize "DX3rd.Add"}} : {{item.data.add}} / 
+                    {{localize "DX3rd.Attack"}} : {{item.data.attack}} /
+                    {{localize "DX3rd.Guard"}} : {{item.data.guard}}
+                    <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
+                  </span>
+                </span>
+              </h4>
+
+              <h4 class="item-addon">
+                <input type="checkbox" class="check-equipment" data-attack="{{item.data.attack}}" data-guard="{{item.data.guard}}" data-name="{{item.name}}">
+              </h4>
+              <div class="item-description">{{{item.data.description}}}
+              </div>
+            </li>
+          {{/each}}
+
+        </ol>
+      </div>
+
+      <div class="cell grid-full">
+        <div class="cell--title">
+          <label>{{localize "DX3rd.Vehicle"}}</label>
+        </div>
+
+        <ol class="items-list margin-top-10">
+          {{#each vehicleList as |item id|}}
+            <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
+              <h4 class="item-name">
+                <span class="echo-item" style="float:left;">
+                    <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
+                </span> 
+                <span class="item-label">{{item.name}}<br>
+                  <span style="color : gray; font-size : smaller;">
+                    {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} /
+                    {{localize "DX3rd.Attack"}} : {{item.data.attack}} /
+                    {{localize "DX3rd.Init"}} : {{item.data.init}} / 
+                    {{localize "DX3rd.Armor"}} : {{item.data.armor}} /
+                    {{localize "DX3rd.Move"}} : {{item.data.move}}
+                    <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
+                  </span>
+                </span>
+              </h4>
+
+              <h4 class="item-addon">
+                <input type="checkbox" class="check-equipment" data-attack="{{item.data.attack}}" data-guard="0" data-name="{{item.name}}">
+              </h4>
+              <div class="item-description">{{{item.data.description}}}
+              </div>
+            </li>
+          {{/each}}
+
+        </ol>
+      </div>
+
+
+    </section>
+  </div>
+</div>
+<div class="dialog-buttons">
+    {{#each buttons as |button id|}}
+    <button class="dialog-button" data-button="{{id}}">
+        {{{button.icon}}}
+        {{{button.label}}}
+    </button>
+    {{/each}}
+</div>

@@ -1,0 +1,954 @@
+
+.dx3rd {
+  
+}
+
+.dx3rd .highlight {
+  font-weight: bold;
+  color: #19499b !important;
+}
+
+.dx3rd .white-btn {
+  border: none;
+  background: none;
+}
+
+.dx3rd .white-btn * {
+  color: white;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.dx3rd .grid-2 {
+  grid-column: span 2;
+}
+
+.dx3rd .grid-3 {
+  grid-column: span 3;
+}
+
+.dx3rd .grid-4 {
+  grid-column: span 4;
+}
+
+.dx3rd .grid-5 {
+  grid-column: span 5;
+}
+
+.dx3rd .grid-6 {
+  grid-column: span 6;
+}
+
+.dx3rd .grid-7 {
+  grid-column: span 7;
+}
+
+.dx3rd .grid-8 {
+  grid-column: span 8;
+}
+
+.dx3rd .grid-10 {
+  grid-column: span 10;
+}
+
+.dx3rd .grid-11 {
+  grid-column: span 11;
+}
+
+.dx3rd .grid-12 {
+  grid-column: span 12;
+}
+
+.dx3rd .grid-13 {
+  grid-column: span 13;
+}
+
+.dx3rd .grid-full {
+  grid-column: span 16;
+}
+
+.dx3rd .grid-img {
+  grid-row: span 2;
+  grid-column: span 2;
+  text-align: center;
+}
+
+
+.dx3rd .sheet-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.dx3rd .sheet-wrapper .sheet-header {
+  width: 100%;
+  margin-bottom: 10px;
+  height: 44px;
+  background: #2d2d2d;
+  color: #fff;
+
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 0px 10px;
+  padding: 0;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .select-box {
+  background: black;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .select-box option {
+  color: black;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .backtrack-btn {
+  background: black;
+  margin: 8px;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .backtrack-btn * {
+  font-weight: bold;
+  color: white;
+  line-height: 22px;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .progress-bar {
+  text-align: center;
+  position: relative;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .progress-bar input {
+  font-weight: bold;
+  color: white;
+  border: 2px solid white;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .progress-bar .dice-addon label {
+  margin-right: 6px;
+}
+
+.dx3rd .sheet-wrapper .sheet-header .progress-bar .dice-addon input {
+  margin: 0;
+  width: 20px;
+  border: 0;
+}
+
+
+.dx3rd .sheet-wrapper .sheet-stat {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 0px 12px;
+  padding: 0;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .title::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: -1;
+  background: black;
+  transform: sKewX(342deg);
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .title {
+  display: inline-block;
+  position: relative;
+  background: transparent;
+
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 6px 4px;
+  z-index: 2;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box {
+  position: relative;
+  margin-bottom: 3px;
+  flex: 1;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .grid-2 .stat-box .title {
+  left: -14px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box .title {
+  width: 80px;
+  height: 32px;
+  font-size: 16px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box .name {
+  background: white;
+  width: 259px;
+  position: absolute;
+  padding-left: 24px;
+  left: 74px;
+  height: 32px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .grid-2 .stat-box .stat-list {
+  left: 66px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box .stat-list {
+  position: absolute;
+  left: 74px;
+  top: 0;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box .stat-list::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 0;
+  background: white;
+  transform: sKewX(342deg);
+  border: 1px solid black;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box .stat-list .stat {
+  height: 32px;
+  width: 60px;
+  background: white;
+  text-align: center;
+  position: relative;
+  background: transparent;
+  z-index: 1;
+  border: none;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-grid {
+  display: flex;
+  gap: 10px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-grid .no-flex {
+  flex: none;
+  width: 140px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .stat-box .stat-list .divider {
+  flex: none;
+  z-index: 1;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .dice-info {
+  margin: 0 14px;
+  text-align: center;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .dice-info .title {
+  width: 100%;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .dice-info .title .addon {
+  position: absolute;
+  width: 28px;
+  height: 25px;
+  background: white;
+  right: 10px;
+  top: 4px;
+}
+
+.dx3rd .sheet-wrapper .flex {
+  display: flex;
+}
+
+.dx3rd .sheet-wrapper .slash {
+  padding-top: 4px;
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .dice-info .flex input {
+  background: white;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .dice-info .flex select {
+  margin-right: 8px;
+  border: none;
+  font-weight: bold;
+  background: black;
+  color: white;
+  text-align: center;
+  padding: 0 4px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .dice-info .flex option {
+  color: black;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid {
+  display: flex;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .title {
+  width: 86px;
+  height: 42px;
+  line-height: 32px;
+  font-size: 20px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .value::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 0;
+  background: white;
+  transform: sKewX(342deg);
+  border: 1px solid;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .value .stat {
+  text-align: center;
+  position: relative;
+  background: transparent;
+  z-index: 1;
+  height: 32px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .value {
+  position: absolute;
+  width: 40px;
+  left: 83px;
+  top: 10px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .diamond::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: -1;
+  background: white;
+  transform: rotate(45deg);
+  border: 1px solid;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .diamond {
+  position: absolute;
+  width: 27px;
+  height: 27px;
+  top: 2px;
+  left: 123px;
+  z-index: 1;
+  padding-left: 3px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .diamond .point {
+  text-align: center;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+  font-size: 15px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .skill-box .title::before {
+  background: white;
+  border: 2px solid darkslategray;
+  top: -4px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .skill-box .title {
+  width: 142px;
+  height: 25px;
+  line-height: 12px;
+  font-size: 14px;
+  color: black;
+  left: 7px;
+}
+
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .skill-box .skill-edit {
+  position: relative;
+  z-index: 2;
+  left: -16px;
+}
+
+.dx3rd .sheet-wrapper .ability-roll, .dx3rd .sheet-wrapper .skill-roll {
+  cursor: pointer;
+}
+
+.dx3rd .sheet-wrapper .ability-roll:hover, .dx3rd .sheet-wrapper .skill-roll:hover {
+  text-shadow: 0 0 8px var(--color-shadow-primary);
+}
+
+.dx3rd .sheet-wrapper .sheet-attributes {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 0px 10px;
+  padding: 0;
+}
+
+.dx3rd .sheet-wrapper .sheet-attributes .cell {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  position: relative;
+  align-content: flex-start;
+}
+
+.dx3rd .sheet-wrapper .cell .cell--title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-flex: 100%;
+  -ms-flex: 100%;
+  flex: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+
+
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  flex-basis: 100px;
+  background: black;
+  color: #fff;
+  justify-content: center;
+  height: 34px;
+}
+
+.dx3rd .sheet-attributes .syndrome-type, .dx3rd .dice-addon, .dx3rd .cell--title .left-addon {
+  position: absolute;
+  left: 8px;
+}
+
+.dx3rd .sheet-wrapper .sheet-attributes .items-list .description-item {
+  padding: 4px;
+  border: 3px solid black;
+  margin-right: 2px;
+}
+
+.dx3rd .sheet-attributes .plus-addon {
+  position: absolute;
+  top: 2px;
+  width: 35px;
+  height: 35px;
+  right: 5px;
+}
+
+.dx3rd .sheet-attributes .plus-addon button {
+  border: none;
+}
+
+.dx3rd .cell--title .left-addon {
+  background: white;
+}
+
+.dx3rd .item-addon {
+  text-align: right;
+  font-size: 17px;
+  font-weight: bold;
+  flex: initial;
+}
+
+.dx3rd .item-addon .btn-titus {
+  background: black;
+  color: white;
+  border: 0;
+  font-weight: bold;
+  width: 70px;
+}
+
+.dx3rd .item-addon .btn-sublimation {
+  background: white;
+  border: 0;
+  font-weight: bold;
+  width: 70px;
+}
+
+.dx3rd .sheet-attributes input, .dx3rd .sheet-attributes select {
+  background: white;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+
+.dx3rd .sheet-attributes .horizon-input {
+  height: calc(100% - 4px);
+}
+
+
+.dx3rd .sheet-attributes select {
+  width: 100%;
+}
+
+.dx3rd .sheet-attributes .attributes .attribute-key {
+  flex: none;
+  width: 20%;
+}
+
+.dx3rd .sheet-wrapper .space-between .cell--title {
+  justify-content: space-between;
+}
+
+.dx3rd .sheet-wrapper .cell--crit {
+  margin: 0;
+  width: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.dx3rd .item .sheet-header {
+  width: 100%;
+  margin-bottom: 10px;
+  height: 64px;
+}
+
+.dx3rd .item .sheet-header {
+  background: #2d2d2d;
+  color: #fff;
+}
+
+.dx3rd .item .sheet-header input {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  border: 0;
+  margin: 0 10px;
+  font-size: 18px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.dx3rd .item .sheet-header .flex-item {
+  flex: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  text-align: right;
+  margin-left: auto;
+  margin-right: 8px;
+  padding: 4px 0px;
+}
+
+.dx3rd  .item .sheet-header .flex-item label {
+  -webkit-box-flex: 2;
+  -ms-flex: 2;
+  flex: 2;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.dx3rd .item .sheet-header input {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  border: 0;
+  margin: 0 10px;
+  font-size: 18px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.dx3rd .item .sheet-header .flex-item input {
+  color: black;
+  background: white;
+  text-align: center;
+  width: 100px;
+}
+
+.dx3rd .item .sheet-header .header-fields input {
+  color: white;
+  border-bottom: 2px solid #5b7094;
+}
+
+.dx3rd .item .sheet-header .header-fields .level {
+  flex: 0 0 50px;
+  text-align: center;
+  font-weight: bold;
+  height: 54px;
+}
+
+.dx3rd .item .sheet-header .header-fields .level label {
+  line-height: 20px;
+}
+
+.dx3rd .item .sheet-header .header-fields .level input {
+  background: white;
+  border: none;
+  color: black;
+  width: 32px;
+}
+
+
+
+
+
+.dx3rd .item-controls {
+  text-align: right;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 54px;
+  flex: 0 0 54px;
+}
+
+.dx3rd .item-controls .item-checkbox {
+  margin: 0;
+  margin-right: 4px;
+}
+
+
+.dx3rd .sheet-wrapper .sheet-body .tab, .dx3rd .sheet-wrapper .sheet-body .sheet-tab {
+  height: 100%;
+}
+
+.dx3rd .sheet-wrapper .sheet-body .sheet-tab {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.dx3rd nav.tabs {
+  border-bottom: 1px solid;
+  border-top: 0;
+  line-height: 29px;
+  padding-bottom: 0;
+}
+
+.dx3rd .tabs .item {
+  border: 1px solid;
+  background: #bcc8de;
+  border-radius: 4px 4px 0 0;
+  margin: 0 5px -1px;
+  width: 100%;
+}
+
+.dx3rd .tabs .item.active {
+  background: #fff;
+  color: #000;
+  border-bottom: 0;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.dx3rd .cell--bio {
+  -webkit-box-flex: 100;
+  -ms-flex: 100;
+  flex: 100;
+  position: relative;
+}
+
+.dx3rd .editor, .dx3rd .editor-content {
+  min-height: 350px;
+  resize: none;
+  flex: 1 1 100%;
+}
+
+.dx3rd .cell--title .addon {
+  position: absolute;
+  right: 8px;
+  top: 3px;
+  background: white;
+  border: none;
+  font-weight: bold;
+}
+
+.dx3rd .sheet-wrapper .add-skills select {
+  width: calc(100% - 40px);
+  height: 30px;
+}
+
+.dx3rd .sheet-wrapper .add-skills button {
+  width: 32px;
+  line-height: 25px;
+}
+
+.dx3rd .attributes-header {
+  padding: 5px;
+  margin: 5px 0;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #AAA;
+  border-radius: 2px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.dx3rd .attributes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dx3rd .attributes-list li > * {
+  margin: 0 3px;
+  height: 28px;
+  line-height: 24px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #AAA;
+  text-align: center;
+}
+
+.dx3rd .skills .attribute-control, .dx3rd .attributes .attribute-control {
+  flex: 0 0 20px;
+  text-align: center;
+  line-height: 28px;
+  border: none;
+}
+
+.dx3rd .flexrow {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.dx3rd .tabs .item {
+  border: 1px solid;
+  background: #404040;
+  color: white;
+  border-radius: 4px 4px 0 0;
+  border-color: black;
+  margin: 0 5px -1px;
+  flex: 1;
+}
+
+.dx3rd .tabs .item.active {
+  background: #fff;
+  color: #000;
+  border-bottom: 0;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.dx3rd .sheet-wrapper .items-list {
+  flex-basis: 100%;
+  margin: 0;
+  padding-left: 2px;
+  margin-bottom: 6px;
+}
+
+.dx3rd .sheet-wrapper .items-list .item {
+  padding: 10px 0;
+  padding-left: 10px;
+  margin: 2px;
+}
+
+.dx3rd .cell--works .items-list .item, .dx3rd .cell--syndrome .items-list .item {
+  padding: 4px;
+  border: 3px solid black;
+  margin-right: 2px;
+}
+
+.dx3rd .item-description {
+  display: none;
+  -webkit-box-flex: 0;
+  -ms-flex: none;
+  flex: none;
+  width: 100%;
+}
+
+.dx3rd .item-name {
+  font-size: 18px;
+  font-weight: bold;
+  -webkit-box-flex: 2;
+  -ms-flex: 2;
+  flex: 2;
+  margin: 0;
+}
+
+.dx3rd .item-label:hover::after {
+  width: 100%;
+}
+
+.dx3rd .item-label::after {
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  margin-top: 2px;
+  border-bottom: 2px solid;
+  -webkit-transition: all ease-in-out 0.25s;
+  -o-transition: all ease-in-out 0.25s;
+  transition: all ease-in-out 0.25s;
+}
+
+.dx3rd .sheet-wrapper .items-list .titus {
+  color: crimson;
+  background: black;
+}
+
+
+.dx3rd .dialog-content {
+  margin-bottom: 6px;
+}
+
+.dx3rd .dialog-content .edit-list {
+  display: flex;
+  text-align: center;
+}
+
+.dx3rd .dialog-content .edit-list .title {
+  background: black;
+  color: white;
+  padding: 2px;
+  margin: 2px;
+}
+
+.dx3rd .dialog-content .edit-list .text {
+  background: white;
+}
+
+.dx3rd .dialog-content .skill-delete {
+  float: right;
+  margin-right: 8px;
+}
+
+.dx3rd .checkbox-addon {
+  position: absolute;
+  right: 0;
+}
+
+
+
+
+.chat-message {
+
+}
+
+.chat-message .header {
+  display: flex;
+}
+
+.chat-message .header .title {
+  color: black;
+  margin-bottom: 2px;
+  font-weight: bold;
+  padding: 3px 0;
+  font-size: 18px;
+}
+
+.chat-message .header img {
+  margin-right: 4px;
+}
+
+.chat-message table th {
+  text-align: center;
+}
+
+.chat-message table td {
+  
+}
+
+.chat-message .chat-btn {
+  margin-top: 4px;
+  background: black;
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.chat-message .combo-effect {
+  margin-bottom: 6px;
+}
+
+.chat-message .toggle-btn {
+  cursor: pointer;
+}
+
+.chat-message .effect-list .item-name, .chat-message .weapon-list .item-name {
+  border: 1px solid gray;
+  margin-top: 4px;
+}
+
+.chat-message .effect-list .item-label, .chat-message .weapon-list .item-label {
+  font-weight: bold;
+}
+
+.chat-message .item-description, .chat-message .effect-list, .chat-message .weapon-list {
+  display: none;
+  width: 100%;
+}
+
+.chat-message .item-description {
+  color : gray;
+  font-size : smaller;
+}
+
+.chat-message .context-box {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.dialog .calc-dialog {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+.dialog .calc-dialog input {
+  background: white;
+}
+
+
+.dice-tooltip .dice-rolls .clear {
+  width: 100%;
+  border-bottom: 2px solid var(--color-text-light-6);
+  margin: 4px 0;
+  background-image: none;
+  text-align: right;
+  padding: 0 10px;
+}

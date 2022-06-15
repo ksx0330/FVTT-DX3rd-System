@@ -1,0 +1,90 @@
+<form class="{{cssClass}} item" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields flexrow">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    <div class="sheet-wrapper margin-top-10">
+      <section class="sheet-attributes">
+
+        <div class="cell grid-4">
+          <label class="cell--title">
+            {{localize "DX3rd.Type"}}
+          </label>
+          <select name="data.type">
+            {{#select data.type}}
+            <option value="-">-</option>
+            <option value="D">{{localize "DX3rd.Descripted"}}</option>
+            <option value="S">{{localize "DX3rd.Superier"}}</option>
+            <option value="M">{{localize "DX3rd.Memory"}}</option>
+            <option value="E">{{localize "DX3rd.Exhaust"}}</option>
+            {{/select}}
+          </select>
+        </div>
+
+        <div class="cell grid-4 space-between">
+          <label class="cell--title">
+            {{localize "DX3rd.Positive"}}
+            <div class="checkbox-addon flexrow">
+              <input type="checkbox" name="data.positive.state" {{#if data.positive.state}} checked {{/if}} />
+            </div>
+            
+          </label>
+          <input type="text" name="data.positive.feeling" value="{{data.positive.feeling}}" data-dtype="String"/>
+        </div>
+
+        <div class="cell grid-4 space-between">
+          <label class="cell--title">
+            {{localize "DX3rd.Negative"}}
+            <div class="checkbox-addon flexrow">
+              <input type="checkbox" name="data.negative.state" {{#if data.negative.state}} checked {{/if}} />
+            </div>
+
+          </label>
+          <input type="text" name="data.negative.feeling" value="{{data.negative.feeling}}" data-dtype="String"/>
+        </div>
+
+        <div class="cell grid-4 space-between">
+          <label class="cell--title">
+            {{localize "DX3rd.Titus"}}
+            <div class="checkbox-addon flexrow">
+              <input type="checkbox" name="data.titus" {{#if data.titus}} checked {{/if}} />
+            </div>
+            
+          </label>
+          <label class="cell--title">
+            {{localize "DX3rd.Sublimation"}}
+            <div class="checkbox-addon flexrow">
+              <input type="checkbox" name="data.sublimation" {{#if data.sublimation}} checked {{/if}} />
+            </div>
+            
+          </label>
+        </div>
+
+      </section>
+
+      <div class="cell cell--bio">
+        <label class="cell--title">
+          {{localize "DX3rd.Description"}}
+
+          {{#if data.actor}}
+          <div class="checkbox-addon flexrow">
+            <button class="white-btn show-actor"><i class="fas fa-id-card"></i></button>
+          </div>
+          {{/if}}
+
+        </label>
+        {{!-- We're avoiding WYSIWYGs... for now... --}}
+        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+
+
+  </section>
+
+</form>

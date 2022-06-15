@@ -1,0 +1,337 @@
+{
+"Actor": {
+  "types": ["character"],
+  "character": {
+    "codeName": "",
+
+    "attributes": {
+      "hp": {
+        "value": 0,
+        "min": 0,
+        "max": 0
+      },
+      "encroachment": {
+        "value": 0,
+        "min": 0,
+        "init": {
+          "input": 0
+        },
+        "type": "-"
+      },
+
+      "attack": {},
+      "add": {},
+      "dice": {
+        "view": "major"
+      },
+      "critical": {},
+
+      "guard": {},
+      "armor": {},
+      "major": {},
+      "reaction": {},
+      "dodge": {},
+
+      "init": {},
+      "move": {},
+      "stock": {
+        "value": 0
+      },
+      "saving": {},
+      "exp": {
+        "init": 130,
+        "append": 0,
+        "total": 0
+      },
+
+      "body": {
+        "point": 0
+      },
+      "sense": {
+        "point": 0
+      },
+      "mind": {
+        "point": 0
+      },
+      "social": {
+        "point": 0
+      },
+
+      "skills": {
+        "melee": {
+          "name": "DX3rd.melee",
+          "point": 0,
+          "base": "body",
+          "delete": false
+        },
+        "dodge": {
+          "name": "DX3rd.dodge",
+          "point": 0,
+          "base": "body",
+          "delete": false
+        },
+
+        "ranged": {
+          "name": "DX3rd.ranged",
+          "point": 0,
+          "base": "sense",
+          "delete": false
+        },
+        "perception": {
+          "name": "DX3rd.perception",
+          "point": 0,
+          "base": "sense",
+          "delete": false
+        },
+
+        "rc": {
+          "name": "DX3rd.rc",
+          "point": 0,
+          "base": "mind",
+          "delete": false
+        },
+        "will": {
+          "name": "DX3rd.will",
+          "point": 0,
+          "base": "mind",
+          "delete": false
+        },
+
+        "negotiation": {
+          "name": "DX3rd.negotiation",
+          "point": 0,
+          "base": "social",
+          "delete": false
+        },
+        "procure": {
+          "name": "DX3rd.procure",
+          "point": 0,
+          "base": "social",
+          "delete": false
+        }
+      },
+      "applied": {},
+      "syndrome": {},
+      "record": {}
+
+    },
+    "details": {
+      "cover": "",
+      "ancestry": "",
+      "experience": "",
+      "meet": "",
+      "awaken": "",
+      "impulse": "",
+      "desire": ""
+    }
+    
+
+  }
+
+},
+"Item": {
+  "types": ["effect", "combo", "weapon", "protect", "vehicle", "connection", "item", "works", "syndrome", "rois"],
+  "templates": {
+    "base": {
+      "name": "",
+      "description": ""
+    },
+    "item": {
+      "saving": {
+        "value": 0,
+        "difficulty": "0"
+      },
+      "exp": 0,
+      "equipment": true,
+      "skills": {}
+    }
+  },
+  "effect": {
+    "templates": [
+      "base"
+    ],
+
+    "type": "normal",
+    "skill": "-",
+    "difficulty": "",
+    "limit": "-",
+    "timing": "-",
+    "target": "",
+    "range": "",
+    "roll": "-",
+    "attackRoll": "-",
+
+    "encroach": {
+      "init": 0,
+      "value": 0
+    },
+    "level": {
+      "init": 1,
+      "max": 1,
+      "upgrade": true
+    },
+    "exp": {
+      "own": true,
+      "upgrade": true
+    },
+
+    "effect": {
+      "disable": "-",
+      "attributes": {}
+    },
+    "active": {
+      "state": false,
+      "disable": "-"
+    },
+    "attributes": {},
+    "getTarget": false,
+    "macro": ""
+  },
+  "combo": {
+    "templates": [
+      "base"
+    ],
+
+    "type": "normal",
+    "base": "-",
+    "skill": "-",
+    "difficulty": "",
+    "timing": "-",
+    "range": "",
+    "target": "-",
+    "limit": "",
+    "roll": "-",
+    "attackRoll": "-",
+    "encroach": {},
+
+    "attack": {},
+    "add": {},
+    "dice": {},
+    "critical": {},
+
+    "guard": {},
+    "armor": {},
+
+    "major": {},
+    "reaction": {},
+    "dodge": {},
+
+    "weapon": [],
+    "effect": [],
+
+    "active": {
+      "state": false,
+      "disable": "-"
+    },
+    "attributes": {},
+
+    "weaponSelect": false,
+    "getTarget": false,
+    "macro": ""
+  },
+  "weapon": {
+    "templates": [
+      "base", "item"
+    ],
+    "type": "-",
+    "skill": "-",
+    "add": 0,
+    "attack": 0,
+    "guard": 0,
+    "range": ""
+
+  },
+  "protect": {
+    "templates": [
+      "base", "item"
+    ],
+    "dodge": 0,
+    "init": 0,
+    "armor": 0
+
+  },
+  "vehicle": {
+    "templates": [
+      "base", "item"
+    ],
+
+    "skill": "-",
+    "attack": 0,
+    "init": 0,
+    "armor": 0,
+    "move": 0
+  },
+  "connection": {
+    "templates": [
+      "base", "item"
+    ],
+
+    "skill": "-"
+  },
+  "item": {
+    "templates": [
+      "base", "item"
+    ],
+
+    "type": "-"
+
+  },
+  "works": {
+    "templates": [
+      "base"
+    ],
+    "attributes": {
+      "body": {
+        "value": 0
+      },
+      "sense": {
+        "value": 0
+      },
+      "mind": {
+        "value": 0
+      },
+      "social": {
+        "value": 0
+      }
+    },
+    "skills": {}
+  },
+  "syndrome": {
+    "templates": [
+      "base"
+    ],
+    "attributes": {
+      "body": {
+        "value": 0
+      },
+      "sense": {
+        "value": 0
+      },
+      "mind": {
+        "value": 0
+      },
+      "social": {
+        "value": 0
+      }
+    }
+  },
+  "rois": {
+    "templates": [
+      "base"
+    ],
+    "type": "-",
+    "positive": {
+      "state": false,
+      "feeling": ""
+    },
+    "negative": {
+      "state": false,
+      "feeling": ""
+    },
+
+    "actor": null,
+    "titus": false,
+    "sublimation": false   
+  }
+}
+}

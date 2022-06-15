@@ -1,0 +1,53 @@
+<div class="dialog-content">
+    <h2>
+        <b>{{title}} {{#if skill.name}} ({{skill skill.name}}) {{/if}}</b>
+        {{#if delete}}
+        <a class="skill-delete"><i class="fas fa-trash"></i></a>
+        {{/if}}
+    </h2>
+    <div class="edit-list">
+        <div>
+            <div class="title">{{localize "DX3rd.Key"}}</div>
+            <input type="text" id="skill-key" class="text" value="{{skill.key}}" 
+                {{#ifEquals option "edit"}} readonly {{/ifEquals}}>
+        </div>
+        <div>
+            <div class="title">{{localize "DX3rd.Name"}}</div>
+            <input type="text" id="skill-name" class="text skill-change" data-type="name" value="{{skill skill.name}}" data-dtype="String">
+        </div>
+        <div>
+            <div class="title">{{localize "DX3rd.Dice"}}</div>
+            <input type="text" id="skill-value" class="text" value="+{{skill.dice}}" data-dtype="Number" disabled>
+        </div>
+        <div>
+            <div class="title">{{localize "DX3rd.Value"}}</div>
+            <input type="text" id="skill-value" class="text" value="+{{skill.value}}" data-dtype="Number" disabled>
+        </div>
+        <div>
+            <div class="title">{{localize "DX3rd.Add"}}</div>
+            <input type="text" id="skill-point" class="text skill-change" data-type="point" value="{{skill.point}}" data-dtype="Number">
+        </div>
+        <div>
+            <div class="title">{{localize "DX3rd.Base"}}</div>
+            <select id="skill-base" class="text skill-change" data-type="base" data-dtype="String">
+                {{#select skill.base}}
+                <option value="-">-</option>
+                <option value="body">{{localize "DX3rd.Body"}}</option>
+                <option value="sense">{{localize "DX3rd.Sense"}}</option>
+                <option value="mind">{{localize "DX3rd.Mind"}}</option>
+                <option value="social">{{localize "DX3rd.Social"}}</option>
+                {{/select}}
+            </select>
+        </div>
+
+    </div>
+
+</div>
+<div class="dialog-buttons">
+    {{#each buttons as |button id|}}
+    <button class="dialog-button" data-button="{{id}}">
+        {{{button.icon}}}
+        {{{button.label}}}
+    </button>
+    {{/each}}
+</div>
