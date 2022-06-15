@@ -146,11 +146,6 @@
       <div class="sheet-wrapper margin-top-10">
         <table>
           <tr>
-            <th><label for="data.macro">{{localize "DX3rd.Macro"}}</label></th>
-            <td colspan="7"><input type="text" name="data.macro" data-dtype="String" value="{{data.macro}}"></td>
-          </tr>
-          
-          <tr>
             <th><span>{{localize "DX3rd.RollType"}}</span></th>
             <td>
               <select name="data.roll" data-dtype="String">
@@ -162,9 +157,14 @@
                 {{/select}}
               </select>
             </td>
+            <th><label for="data.macro">{{localize "DX3rd.Macro"}}</label></th>
+            <td colspan="5"><input type="text" name="data.macro" data-dtype="String" value="{{data.macro}}"></td>
+          </tr>
+          
+          <tr>
             <th><span>{{localize "DX3rd.AttackRoll"}}</span></th>
             <td>
-              <select name="data.attackRoll" data-dtype="String">
+              <select name="data.attackRoll" data-dtype="String" style="width: calc(100% - 17px);">
                 {{#select data.attackRoll}}
                 <option value="-">-</option>
                 <option value="melee">{{localize "DX3rd.Melee"}}</option>

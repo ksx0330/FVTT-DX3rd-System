@@ -1,6 +1,7 @@
 {
   "DX3rd.HP": "HP",
   "DX3rd.Encroachment": "侵食率",
+  "DX3rd.EncroachmentInit": "初期浸食率",
   "DX3rd.Works": "ワークス",
   "DX3rd.Syndrome": "シンドローム",
   "DX3rd.CharName": "キャラクター名",
@@ -168,6 +169,7 @@
   "DX3rd.EncroachmentEA": "侵食率(EA)",
   "DX3rd.EncroachmentOrigin": "侵食率(起源種)",
   "DX3rd.BackTrack": "バックトラック",
+  "DX3rd.BackTrackBtn": "ﾊﾞｯｸﾄﾗｯｸ",
   "DX3rd.EXPx2": "2倍振り",
   "DX3rd.EXPExtra": "追加振り",
   "DX3rd.Record": "レコード",

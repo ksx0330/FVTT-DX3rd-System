@@ -1,6 +1,7 @@
 {
   "DX3rd.HP": "HP",
   "DX3rd.Encroachment": "침식률",
+  "DX3rd.EncroachmentInit": "침식률 초기",
   "DX3rd.Works": "워크스",
   "DX3rd.Syndrome": "신드롬",
   "DX3rd.CharName": "캐릭터 이름",
@@ -168,6 +169,7 @@
   "DX3rd.EncroachmentEA": "침식률(EA)",
   "DX3rd.EncroachmentOrigin": "침식률(기원종)",
   "DX3rd.BackTrack": "백트랙",
+  "DX3rd.BackTrackBtn": "백트랙",
   "DX3rd.EXPx2": "경험점을 사용해 2배",
   "DX3rd.EXPExtra": "경험점을 사용해 추가 굴림",
   "DX3rd.Record": "레코드",
