@@ -71,13 +71,8 @@ Hooks.once("init", async function() {
   DisableHooks.init();
   SocketController.init();
 
+  CONFIG.Combat.initiative.formula = "@attributes.init.value"
 
-
-
-
-
-
-  console.log(math.evaluate("1 + 2"));
 
 
   Roll.TOOLTIP_TEMPLATE = "systems/dx3rd/templates/dice/tooltip.html";

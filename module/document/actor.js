@@ -696,7 +696,23 @@ export class DX3rdActor extends Actor {
   }
 
 
+  /** @override */
+  async modifyTokenAttribute(attribute, value, isDelta=false, isBar=true) {
+    const current = foundry.utils.getProperty(this.data.data, attribute);
 
+    // Determine the updates to make to the actor data
+    let updates;
+    if ( isBar ) {
+      if (isDelta) value = Number(current.value) + value;
+      updates = {[`data.${attribute}.value`]: value};
+    } else {
+      if ( isDelta ) value = Number(current) + value;
+      updates = {[`data.${attribute}`]: value};
+    }
+
+    const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
+    return allowed !== false ? this.update(updates) : this;
+  }
 
   
 
