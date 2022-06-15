@@ -68,6 +68,8 @@ export class DefenseDialog extends Dialog {
     }
     
     let {life, realDamage} = this.calcDefenseDamage(defense);
+
+    console.log(defense);
     
     return {
       name: this.actor.name,
@@ -112,7 +114,8 @@ export class DefenseDialog extends Dialog {
     this.render(true);
   }
 
-  calcDefenseDamage(defense) {
+  calcDefenseDamage(def) {
+    let defense = duplicate(def);
     let actorData = this.actor.data.data;
 
     if (this.damageData.data.ignoreArmor)

@@ -6,11 +6,11 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   async getData(options) {
     let data = await super.getData(options);
 
-    data.actor = this.actor.data;
   	data.data.actorEffect = {};
     data.data.actorWeapon = {};
 
     if (this.actor != null) {
+      data.actor = this.actor.data;
     	let items = this.actor.items;
 
 	    for (let i of items) {
