@@ -530,16 +530,16 @@ export class DX3rdActor extends Actor {
             <th>${game.i18n.localize("DX3rd.Add")}</th>
           </tr>
           <tr>
-            <td><input type='text' id='dice'></td>
-            <td><input type='text' id='critical'></td>
-            <td><input type='text' id='add'></td>
+            <td><input type='text' id='roll-append-dice'></td>
+            <td><input type='text' id='roll-append-critical'></td>
+            <td><input type='text' id='roll-append-add'></td>
           </tr>
         </table><script>$("#dice").focus()</script>
         `;
       updateOptions = () => {
-        diceOptions.appendDice = $("#dice").val();
-        diceOptions.appendCritical = $("#critical").val();
-        diceOptions.appendAdd = $("#add").val();
+        diceOptions.appendDice = $("#roll-append-dice").val();
+        diceOptions.appendCritical = $("#roll-append-critical").val();
+        diceOptions.appendAdd = $("#roll-append-add").val();
       }
     }
 
@@ -633,6 +633,8 @@ export class DX3rdActor extends Actor {
     let attributes = this.data.data.attributes;
     let rollType = diceOptions.rollType;
     let {dice, add, critical} = this._getDiceData(diceOptions);
+
+    console.log(diceOptions);
 
     if ("attack" in diceOptions) {
       add += Number(attributes.add[diceOptions.attack.type]);
