@@ -63,12 +63,13 @@ export class DX3rdRegisterHelpers {
       return game.i18n.localize(list[arg]);
     });
 
-
     Handlebars.registerHelper('encroach', function(arg) {
       if (arg <= 100)
-        return `background: linear-gradient(90deg, black ${arg}%, white);`;
+        return `background: linear-gradient(90deg, black ${arg}%, lightslategray 0%);`;
+      else if (arg <= 200)
+        return `background: linear-gradient(90deg, #7e0018 ${arg - 100}%, black 0%);`;
       else
-        return `background: linear-gradient(90deg, #7e0018 ${arg - 100}%, black);`;
+        return `background: linear-gradient(90deg, darkcyan ${arg - 200}%, #7e0018 0%);`;
     });
 
   }
