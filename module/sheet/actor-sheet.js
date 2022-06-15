@@ -123,6 +123,26 @@ export class DX3rdActorSheet extends ActorSheet {
       return item.data;
 
     });
+
+    actorData.applied = Object.values(actorData.data.attributes.applied).reduce( (acc, i) => {
+      if (game.actors.get(i.actorId) == undefined)
+        return acc;
+
+      let actor = game.actors.get(i.actorId);
+      if (actor.items.get(i.itemId) == undefined)
+      if (!(i.itemId in actor.items))
+        return acc;
+
+      let item = actor.items.get(i.itemId);
+
+      let data = item.data;
+      data.actor = actor.data.name;
+      data.disable = i.disable;
+
+      acc.push(data);
+      return acc;
+    }, []);
+    
   }
 
   /* -------------------------------------------- */

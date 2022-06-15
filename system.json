@@ -12,7 +12,16 @@
     "lib/math.js"
   ],
   "styles": ["styles/style.css"],
-  "packs": [],
+  "packs": [{
+    "name": "sample-kr",
+    "label": "Sample Actor [KR]",
+    "system": "dx3rd",
+    "path": "./packs/sample-kr.db",
+    "entity": "Actor",
+    "type": "Actor",
+    "private": false
+    
+  }],
   "languages": [
         {"lang": "ko", "name": "Korean", "path": "lang/ko.json"},
         {"lang": "ja", "name": "日本語", "path": "lang/ja.json"}
