@@ -364,8 +364,9 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
 
   _onSkillCreate(event) {
     event.preventDefault();
+    const key = event.currentTarget.dataset.abilityId;
     
-    new DX3rdSkillDialog(this.actor, null, {"title": game.i18n.localize("DX3rd.CreateSkill")}).render(true);
+    new DX3rdSkillDialog(this.actor, null, {"title": game.i18n.localize("DX3rd.CreateSkill"), base: key}).render(true);
   }
 
   /* -------------------------------------------- */

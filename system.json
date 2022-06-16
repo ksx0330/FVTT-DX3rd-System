@@ -4,7 +4,7 @@
   "description": "Double Cross 3rd",
   "version": "0.0.1",
   "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "0.8.7",
+  "compatibleCoreVersion": "9",
   "templateVersion": 1,
   "author": "ltaeng",
   "esmodules": ["module/init.js"],

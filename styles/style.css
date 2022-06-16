@@ -344,6 +344,13 @@
   top: 10px;
 }
 
+.dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .skill-create {
+  z-index: 3;
+  position: relative;
+  top: -13px;
+  left: -15px;
+}
+
 .dx3rd .sheet-wrapper .sheet-stat .main-grid .stat-box .diamond::before {
   content: "";
   position: absolute;

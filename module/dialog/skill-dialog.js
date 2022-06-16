@@ -17,7 +17,7 @@ export class DX3rdSkillDialog extends Dialog {
         key: "",
         name: "",
         point: "",
-        base: "",
+        base: options.base,
         delete: true
       }
 
@@ -80,6 +80,7 @@ export class DX3rdSkillDialog extends Dialog {
     if (type == "base" && !this.skill.delete)
       return;
 
+    console.log(val);
     await this.actor.update({[`data.attributes.skills.${this.key}.${type}`]: Number(val)});
     if (type == "point") {
       let add = this.actor.data.data.attributes.skills[this.key].value;
