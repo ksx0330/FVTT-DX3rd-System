@@ -657,6 +657,7 @@ export class DX3rdActor extends Actor {
 
     let formula = `${dice}dx${critical} + ${add}`;
 
+    console.log(formula);
     let roll = new Roll(formula);
     await roll.roll({async: true})
 

@@ -290,8 +290,10 @@ async function chatListeners(html) {
         let confirm = async (weaponData) => {
           diceOptions["attack"] = {
             "value": weaponData.attack,
-            "type": item.data.data.attackType
+            "type": item.data.data.attackRoll
           };
+
+          console.log(diceOptions);
 
           await actor.rollDice(title, diceOptions, append);
         }
