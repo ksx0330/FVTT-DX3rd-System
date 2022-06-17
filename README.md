@@ -1,5 +1,5 @@
 # FVTT-DX3rd-System
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=59LH5AHNQ8XZW)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/ltaeng?country.x=KR&locale.x=ko_KR)
 
 This is a Foundry VTT System of DX3rd Tabletop RPG.
 
