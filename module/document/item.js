@@ -376,7 +376,7 @@ export class DX3rdItem extends Item {
   }
 
 
-  async applyTargetDialog() {
+  async applyTargetDialog(macro = true) {
     new Dialog({
       title: game.i18n.localize("DX3rd.SelectTarget"),
       content: `
@@ -387,6 +387,17 @@ export class DX3rdItem extends Item {
           icon: '<i class="fas fa-check"></i>',
           label: "Confirm",
           callback: async () => {
+            const macro = game.macros.contents.find(m => (m.data.name === this.data.data.macro));
+            if (macro != undefined)
+                macro.execute();
+            else if (this.data.data.macro != "")
+                new Dialog({
+                    title: "macro",
+                    content: `Do not find this macro: ${this.data.data.macro}`,
+                    buttons: {}
+                }).render(true);
+
+
             if (this.data.data.effect.disable != "-") {
               let targets = game.user.targets;
               for (let t of targets) {

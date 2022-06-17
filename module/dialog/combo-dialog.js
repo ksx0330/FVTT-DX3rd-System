@@ -77,6 +77,7 @@ export class ComboDialog extends Dialog {
 
   async _onSubmit() {
     let effectList = [];
+    let macroList = [];
     let applied = {};
     let key = this.id;
     let encroach = 0;
@@ -93,6 +94,21 @@ export class ComboDialog extends Dialog {
         await effect.update(updates);
       }
     });
+
+    for (let effect of effectList) {
+      if (!effect.data.data.getTarget) {
+        const macro = game.macros.contents.find(m => (m.data.name === effect.data.data.macro));
+        if (macro != undefined)
+            macro.execute();
+        else if (effect.data.data.macro != "")
+            new Dialog({
+                title: "macro",
+                content: `Do not find this macro: ${effect.data.data.macro}`,
+                buttons: {}
+            }).render(true);
+      } else
+        macroList.push(effect);
+    }
 
     Hooks.call("setActorEncroach", this.actor, key, encroach);
 
@@ -184,6 +200,18 @@ export class ComboDialog extends Dialog {
 
                 for (let e of appliedList)
                   await e.applyTarget(a);
+
+                for (let e of macroList) {
+                  const macro = game.macros.contents.find(m => (m.data.name === e.data.data.macro));
+                  if (macro != undefined)
+                      macro.execute();
+                  else if (e.data.data.macro != "")
+                      new Dialog({
+                          title: "macro",
+                          content: `Do not find this macro: ${e.data.data.macro}`,
+                          buttons: {}
+                      }).render(true);
+                }
               }
               Hooks.call("updateActorEncroach", this.actor, key, "target");
             }

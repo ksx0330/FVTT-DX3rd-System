@@ -237,6 +237,7 @@ async function chatListeners(html) {
     const attackRoll = item.data.data.attackRoll;
     const encroach = Number(item.data.data.encroach.value);
 
+
     let mainStat = ["body", "sense", "mind", "social"];
     if (mainStat.includes(skill)) {
       base = skill;
@@ -254,9 +255,20 @@ async function chatListeners(html) {
     Hooks.call("setActorEncroach", actor, item.id, encroach);
 
     if (item.data.data.getTarget)
-      await item.applyTargetDialog();
-    else
+      await item.applyTargetDialog(true);
+    else {
+      const macro = game.macros.contents.find(m => (m.data.name === item.data.data.macro));
+      if (macro != undefined)
+          macro.execute();
+      else if (item.data.data.macro != "")
+          new Dialog({
+              title: "macro",
+              content: `Do not find this macro: ${item.data.data.macro}`,
+              buttons: {}
+          }).render(true);
+
       Hooks.call("updateActorEncroach", actor, item.id, "target");
+    }
 
 
     let append = false;
@@ -315,6 +327,7 @@ async function chatListeners(html) {
 
     const effectItems = item.data.data.effect;
     const appliedList = [];
+    const macroList = [];
 
     for (let e of effectItems) {
       if (e == "-")
@@ -323,6 +336,19 @@ async function chatListeners(html) {
       let effect = actor.items.get(e);
       if (effect.data.data.effect.disable != "-")
         appliedList.push(effect);
+      
+      if (!effect.data.data.getTarget) {
+        const macro = game.macros.contents.find(m => (m.data.name === effect.data.data.macro));
+        if (macro != undefined)
+            macro.execute();
+        else if (effect.data.data.macro != "")
+            new Dialog({
+                title: "macro",
+                content: `Do not find this macro: ${effect.data.data.macro}`,
+                buttons: {}
+            }).render(true);
+      } else
+        macroList.push(effect);
 
       let updates = {};
       if (effect.data.data.active.disable != 'notCheck')
@@ -350,6 +376,18 @@ async function chatListeners(html) {
 
                 for (let e of appliedList)
                   await e.applyTarget(a);
+
+                for (let e of macroList) {
+                  const macro = game.macros.contents.find(m => (m.data.name === e.data.data.macro));
+                  if (macro != undefined)
+                      macro.execute();
+                  else if (e.data.data.macro != "")
+                      new Dialog({
+                          title: "macro",
+                          content: `Do not find this macro: ${e.data.data.macro}`,
+                          buttons: {}
+                      }).render(true);
+                }
               }
               Hooks.call("updateActorEncroach", actor, item.id, "target");
             }
