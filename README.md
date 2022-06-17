@@ -14,10 +14,15 @@ Supported Langages
 -------------
 한국어(Korean), 日本語(Japanese)
 
-Roll
+Features
 -------------
-By pressing Ctrl and clicking on the Skill, you can add additional values when rolling the dice.
+* Automatically calculates the character's ability value.
+* By pressing Ctrl and clicking on the Skill, you can add additional values when rolling the dice.
+* You can refer to the level of Effect by entering @level in the Attributes of Effect. ex) Concentrait -> -@level
+* You can create a Rois by dragging another actor.
 
+Image
+-------------
 ![image](https://user-images.githubusercontent.com/15700174/174197688-ac4c54e5-eda1-4b60-baeb-c82122467fa1.png)
 
 Legal
