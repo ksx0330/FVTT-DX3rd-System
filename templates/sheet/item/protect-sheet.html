@@ -79,10 +79,12 @@
     <div class="tab" data-group="primary" data-tab="skills">
       <div class="sheet-wrapper margin-top-10">
         <div class="add-skills">
-          <select id="actor-skill">
+          <select name="data.skillTmp" id="actor-skill">
+            {{#select data.skillTmp}}
             {{#each data.actorSkills as |value key|}}
             <option value="{{key}}">{{skill value.name}}</option>
             {{/each}}
+            {{/select}}
           </select>
           <button class="skill-create"><i class="fas fa-arrow-down"></i></button>
         </div>

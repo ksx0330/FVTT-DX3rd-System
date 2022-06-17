@@ -31,7 +31,7 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
   /* -------------------------------------------- */
 
   async _onSkillCreate(event) {
-    let key = $("#actor-skill").val();
+    let key = this.item.data.data.skillTmp;
 
     let newKey = document.createElement("div");
     const skill = `<input type="hidden" name="data.skills.${key}.key" value="${key}"/>`;

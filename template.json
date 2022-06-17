@@ -144,6 +144,7 @@
       },
       "exp": 0,
       "equipment": true,
+      "skillTmp": "melee",
       "skills": {}
     }
   },
@@ -295,6 +296,7 @@
         "value": 0
       }
     },
+    "skillTmp": "melee",
     "skills": {}
   },
   "syndrome": {
