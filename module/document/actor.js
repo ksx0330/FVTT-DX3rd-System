@@ -328,8 +328,6 @@ export class DX3rdActor extends Actor {
           continue;
         
         i.data.data.level.value += this.data.data.attributes.encroachment.level;
-        if (i.data.data.level.value > i.data.data.level.max)
-          i.data.data.level.value = i.data.data.level.max;
       }
     }
 
