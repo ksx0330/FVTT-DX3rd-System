@@ -72,7 +72,7 @@ export class DX3rdSkillDialog extends Dialog {
     event.preventDefault();
     const input = event.currentTarget;
     const type = input.dataset.type;
-    const val = $(input).val();
+    let val = $(input).val();
 
     if (this.option == "create")
       return;
@@ -80,8 +80,10 @@ export class DX3rdSkillDialog extends Dialog {
     if (type == "base" && !this.skill.delete)
       return;
 
-    console.log(val);
-    await this.actor.update({[`data.attributes.skills.${this.key}.${type}`]: Number(val)});
+    if (type == "point")
+      val = Number(val);
+
+    await this.actor.update({[`data.attributes.skills.${this.key}.${type}`]: val});
     if (type == "point") {
       let add = this.actor.data.data.attributes.skills[this.key].value;
       $("#skill-value").val("+" + add);
@@ -113,7 +115,13 @@ export class DX3rdSkillDialog extends Dialog {
     this.skill.point = $("#skill-point").val();
     this.skill.base = $("#skill-base").val();
 
-    await this.actor.update({[`data.attributes.skills.${this.key}`]: this.skill});
+    if (this.skill.point.trim() == "")
+      this.skill.point = 0;
+    else
+      this.skill.point = Number(this.skill.point);
+
+    if (this.key.trim() != "")
+      await this.actor.update({[`data.attributes.skills.${this.key}`]: this.skill});
     this.close();
   }
 

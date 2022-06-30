@@ -176,5 +176,11 @@
   "DX3rd.Memo": "メモ",
   "DX3rd.EnterSceneQuestion": "シーンに登場しますか？",
   "DX3rd.EnterScene": "登場",
-  "DX3rd.Stock": "財産点"
+  "DX3rd.Stock": "財産点",
+
+  "DX3rd.SubAction1": "判定時のダイスを+10個する",
+  "DX3rd.SubAction2": "判定の達成値を+1D10する",
+  "DX3rd.SubAction3": "判定のクリティカル値を-1する",
+  "DX3rd.SubAction4": "戦闘不能から回復",
+  "DX3rd.SubAction5": "不利な効果を消す"
 }

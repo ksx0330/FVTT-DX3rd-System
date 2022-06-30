@@ -9,7 +9,7 @@ export class DX3rdRegisterHelpers {
     });
 
     Handlebars.registerHelper('skill', function(arg) {
-      return (arg.indexOf('DX3rd.') != -1) ? game.i18n.localize(arg) : arg;
+      return (arg != null && arg.indexOf('DX3rd.') != -1) ? game.i18n.localize(arg) : arg;
     });
 
     Handlebars.registerHelper('skillByKey', function(actor, key) {

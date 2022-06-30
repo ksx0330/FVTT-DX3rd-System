@@ -73,8 +73,6 @@ Hooks.once("init", async function() {
 
   CONFIG.Combat.initiative.formula = "@attributes.init.value"
 
-
-
   Roll.TOOLTIP_TEMPLATE = "systems/dx3rd/templates/dice/tooltip.html";
   DiceTerm.fromMatch = (match) => {
     let [number, denomination, modifiers, flavor] = match.slice(1);
@@ -103,6 +101,12 @@ Hooks.once("init", async function() {
 
 });
 
+
+Hooks.once("ready", async function() {
+    game.settings.set("core", "defaultToken", {"disposition": 0});
+});
+
+
 Hooks.on("setActorEncroach", (actor, key, encroach) => {
   game.DX3rd.itemUsage[key] = {
     actor: actor,
@@ -118,13 +122,39 @@ Hooks.on("updateActorEncroach", async (actor, key, type) => {
   let itemUsage = game.DX3rd.itemUsage[key];
   itemUsage[type] = true;
   if (itemUsage.target && itemUsage.roll) {
+    console.log(itemUsage.encroach);
+
     const last = Number(actor.data.data.attributes.encroachment.value);
-    const encroach = Number(actor.data.data.attributes.encroachment.value) + Number(itemUsage.encroach);
+    let encroach = Number(actor.data.data.attributes.encroachment.value) + itemUsage.encroach;
+
+    let chatData = {
+      speaker: ChatMessage.getSpeaker({actor: actor})
+    };
+
+    if (Number.isNumeric(itemUsage.encroach))
+      chatData.content = `<div class="context-box">${actor.name}: ${last} -> ${encroach} (+${ itemUsage.encroach })</div>`;
+    else {
+      let roll = new Roll(itemUsage.encroach);
+      await roll.roll({async: true});
+
+      let rollData = await roll.render();
+
+      encroach = Number(actor.data.data.attributes.encroachment.value) + roll.total;
+      chatData.content = `
+        <div class="dx3rd-roll" data-actor-id=${actor.id}>
+          <h2 class="header"><div class="title">${actor.name}: ${last} -> ${encroach} (+${ roll.total })</div></h2>
+          ${rollData}
+        </div>
+      `;
+      chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;
+      chatData.sound = CONFIG.sounds.dice;
+      chatData.roll = roll;
+    }
+    
     await actor.update({"data.attributes.encroachment.value": encroach});
-    ChatMessage.create({
-      "content": `<div class="context-box">${actor.name}: ${last} -> ${encroach} (${ (Number(itemUsage.encroach) >= 0) ? "+" + itemUsage.encroach : itemUsage.encroach })</div>`, 
-      "speaker": ChatMessage.getSpeaker({actor: actor})
-    });
+    let rollMode = game.settings.get("core", "rollMode");
+    ChatMessage.create(chatData, {rollMode});
+
   }
 
 });
@@ -235,8 +265,7 @@ async function chatListeners(html) {
     let base = "";
     const rollType = item.data.data.roll;
     const attackRoll = item.data.data.attackRoll;
-    const encroach = Number(item.data.data.encroach.value);
-
+    const encroach = Number.isNaN(Number(item.data.data.encroach.value)) ? item.data.data.encroach.value : Number(item.data.data.encroach.value);
 
     let mainStat = ["body", "sense", "mind", "social"];
     if (mainStat.includes(skill)) {
@@ -318,7 +347,7 @@ async function chatListeners(html) {
     await item.update(updates);
 
     const skillId = item.data.data.skill;
-    const encroach = Number(item.data.data.encroach.value);
+    const encroach = item.data.data.encroach.value;
 
     const skill = item.data.data.skill;
     const base = item.data.data.base;

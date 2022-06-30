@@ -132,10 +132,12 @@
       <div class="sheet-wrapper">
 
         <div class="add-skills">
-          <select id="actor-effect">
+          <select name="data.effectTmp" id="actor-effect">
+            {{#select data.effectTmp}}
             {{#each data.actorEffect as |item id|}}
             <option value="{{id}}">{{item}}</option>
             {{/each}}
+            {{/select}}
           </select>
           <button class="add-effect"><i class="fas fa-arrow-down"></i></button>
         </div>

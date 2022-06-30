@@ -45,8 +45,8 @@ export class DX3rdActorSheet extends ActorSheet {
     this._prepareCharacterItems(data, data.items);
 
     let rollType = actorData.data.attributes.dice.view;
-    data.dice = actorData.data.attributes.dice.value + Number(actorData.data.attributes[rollType].dice) + Number(actorData.data.attributes.encroachment.dice)
-    data.critical =actorData.data.attributes.critical.value + actorData.data.attributes[rollType].critical
+    data.dice = actorData.data.attributes.dice.value + Number(actorData.data.attributes[rollType].dice) + Number(actorData.data.attributes.encroachment.dice) + Number(actorData.data.attributes.sublimation.dice)
+    data.critical =actorData.data.attributes.critical.value + actorData.data.attributes[rollType].critical + Number(actorData.data.attributes.sublimation.critical)
     data.add = actorData.data.attributes.add.value + Number(actorData.data.attributes[rollType].value)
 
     console.log(data);
@@ -70,6 +70,7 @@ export class DX3rdActorSheet extends ActorSheet {
     actorData.vehicleList = [];
     actorData.connectionList = [];
     actorData.itemList = [];
+    actorData.recordList = [];
 
 
     for (let i of items) {
@@ -103,6 +104,9 @@ export class DX3rdActorSheet extends ActorSheet {
         actorData.connectionList.push(i);
       else if (i.type == 'item')
         actorData.itemList.push(i);
+
+      else if (i.type == 'record')
+        actorData.recordList.push(i);
     }
 
     actorData.syndromeType = "-"
@@ -218,8 +222,6 @@ export class DX3rdActorSheet extends ActorSheet {
     html.find('.item-label').click(this._onShowItemDetails.bind(this));
     html.find(".echo-item").click(this._echoItemDescription.bind(this));
 
-    html.find(".attributes").on("click", "a.attribute-control", this._onClickAttributeControl.bind(this));
-
     html.find(".show-applied").on('click', async ev => {
       const list = {attack: "DX3rd.Attack", dice: "DX3rd.Dice", add: "DX3rd.Add", critical: "DX3rd.Critical", critical_min: "DX3rd.CriticalMin", 
 hp: "DX3rd.HP", init: "DX3rd.Init", armor: "DX3rd.Armor", guard: "DX3rd.Guard", saving: "DX3rd.Saving", 
@@ -291,8 +293,8 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     } else {
       let rollType = this.actor.data.data.attributes.dice.view;
 
-      dice.val(this.actor.data.data.attributes.dice.value + Number(this.actor.data.data.attributes[rollType].dice) + Number(this.actor.data.data.attributes.encroachment.dice));
-      critical.val(this.actor.data.data.attributes.critical.value + this.actor.data.data.attributes[rollType].critical);
+      dice.val(this.actor.data.data.attributes.dice.value + Number(this.actor.data.data.attributes[rollType].dice) + Number(this.actor.data.data.attributes.encroachment.dice) + Number(this.actor.data.data.attributes.sublimation.dice));
+      critical.val(this.actor.data.data.attributes.critical.value + this.actor.data.data.attributes[rollType].critical) + Number(this.actor.data.data.attributes.sublimation.critical);
       add.val(this.actor.data.data.attributes.add.value + Number(this.actor.data.data.attributes[rollType].value));
       return;
     }
@@ -485,79 +487,6 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
 
     // Create the owned item
     return this._onDropItemCreate(itemData);
-  }
-
-  /* -------------------------------------------- */
-
-  async _onClickAttributeControl(event) {
-    event.preventDefault();
-    const a = event.currentTarget;
-    const action = a.dataset.action;
-    const pos = a.dataset.pos;
-    const form = this.form;
-
-    let s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let id = Array(16).join().split(",").map(() => s.charAt(Math.floor(Math.random() * s.length)) ).join('');
-
-    // Add new attribute
-    if ( action === "create" ) {
-      let attr = `data.attributes.record.${id}.key`;
-
-      let newKey = document.createElement("div");
-      const record = `<input type="hidden" name="${attr}" value="${id}"/>`;
-      newKey.innerHTML = record;
-
-      newKey = newKey.children[0];
-      form.appendChild(newKey);
-      await this._onSubmit(event);
-    }
-
-    // Remove existing attribute
-    else if ( action === "delete" ) {
-      const li = a.closest(".attribute");
-      li.parentElement.removeChild(li);
-      await this._onSubmit(event);
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  _updateObject(event, formData) {
-    formData = this.updateRecord(formData);
-
-    // Update the Item
-    return this.object.update(formData);
-  }
-
-  /* -------------------------------------------- */
-
-  updateRecord(formData) {
-    // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.attributes.record || {};
-
-    console.log(formAttrs);
-
-    const record = Object.values(formAttrs).reduce((obj, v) => {
-      let k = v["key"].trim();
-      if ( /[\s\.]/.test(k) )  return ui.notifications.error("Attribute keys may not contain spaces or periods");
-      delete v["key"];
-      obj[k] = v;
-      return obj;
-    }, {});
-
-    // Remove attributes which are no longer used
-    for ( let k of Object.keys(this.object.data.data.attributes.record) ) {
-      if ( !record.hasOwnProperty(k) ) record[`-=${k}`] = null;
-    }
-
-    // Re-combine formData
-    formData = Object.entries(formData).filter(e => !e[0].startsWith("data.attributes.record")).reduce((obj, e) => {
-      obj[e[0]] = e[1];
-      return obj;
-    }, {id: this.object.id, "data.attributes.record": record});
-
-    return formData;
   }
 
   /* -------------------------------------------- */

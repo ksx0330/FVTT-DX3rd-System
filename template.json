@@ -113,7 +113,10 @@
       },
       "applied": {},
       "syndrome": {},
-      "record": {}
+      "sublimation": {
+        "dice": 0,
+        "critical": 0
+      }
 
     },
     "details": {
@@ -131,7 +134,7 @@
 
 },
 "Item": {
-  "types": ["effect", "combo", "weapon", "protect", "vehicle", "connection", "item", "works", "syndrome", "rois"],
+  "types": ["effect", "combo", "weapon", "protect", "vehicle", "connection", "item", "works", "syndrome", "rois", "record"],
   "templates": {
     "base": {
       "name": "",
@@ -165,7 +168,7 @@
 
     "encroach": {
       "init": 0,
-      "value": 0
+      "value": ""
     },
     "level": {
       "init": 1,
@@ -335,6 +338,12 @@
     "actor": null,
     "titus": false,
     "sublimation": false   
+  },
+  "record": {
+    "templates": [
+      "base"
+    ],
+    "exp": 0
   }
 }
 }

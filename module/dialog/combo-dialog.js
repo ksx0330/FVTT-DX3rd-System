@@ -80,13 +80,19 @@ export class ComboDialog extends Dialog {
     let macroList = [];
     let applied = {};
     let key = this.id;
+    
+    let encroachStr = [];
     let encroach = 0;
 
     await $(".active-effect").each(async (i, val) => {
       if ($(val).is(":checked")) {
         let effect = this.actor.items.get(val.dataset.id);
-        encroach += effect.data.data.encroach.value;
         effectList.push(effect);
+        
+        if ( Number.isNaN(Number(effect.data.data.encroach.value)) )
+          encroachStr.push(effect.data.data.encroach.value);
+        else
+          encroach += Number(effect.data.data.encroach.value);
 
         let updates = {};
         if (effect.data.data.active.disable != 'notCheck')
@@ -94,6 +100,9 @@ export class ComboDialog extends Dialog {
         await effect.update(updates);
       }
     });
+
+    if (encroachStr.length > 0)
+        encroach += "+" + encroachStr.join("+");
 
     for (let effect of effectList) {
       if (!effect.data.data.getTarget) {

@@ -176,5 +176,11 @@
   "DX3rd.Memo": "메모",
   "DX3rd.EnterSceneQuestion": "씬에 등장합니까?",
   "DX3rd.EnterScene": "등장",
-  "DX3rd.Stock": "재산점"
+  "DX3rd.Stock": "재산점",
+
+  "DX3rd.SubAction1": "판정에 10개의 다이스를 추가",
+  "DX3rd.SubAction2": "판정의 달성치에 +1D10 추가",
+  "DX3rd.SubAction3": "판정의 크리티컬 수치에 -1의 수정",
+  "DX3rd.SubAction4": "전투불능에서 회복",
+  "DX3rd.SubAction5": "불리한 효과를 소거"
 }
