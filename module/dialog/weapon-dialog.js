@@ -88,6 +88,9 @@ export class WeaponDialog extends Dialog {
   /* -------------------------------------------- */
 
   _onShowItemDetails(event) {
+    if ($(event.target).prop("tagName") == "INPUT" || $(event.target).prop("tagName") == "IMG")
+      return;
+
     event.preventDefault();
     const toggler = $(event.currentTarget);
     const item = toggler.parents('.item');

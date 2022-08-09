@@ -240,8 +240,11 @@ export class ComboDialog extends Dialog {
   /* -------------------------------------------- */
 
   _onShowItemDetails(event) {
-    event.preventDefault();
     const toggler = $(event.currentTarget);
+    if ($(event.target).hasClass("active-effect") || $(event.target).hasClass("echo-item"))
+      return;
+
+    event.preventDefault();
     const item = toggler.parents('.item');
     const description = item.find('.item-description');
 

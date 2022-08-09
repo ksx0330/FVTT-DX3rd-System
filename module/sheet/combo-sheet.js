@@ -60,7 +60,7 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   /* -------------------------------------------- */
 
   async _onEffectCreate(event) {
-    let key = $("#actor-effect").val();
+    let key = this.item.data.data.effectTmp;
 
     let newKey = document.createElement("div");
     const effect = `<input type="hidden" name="data.effect" value="${key}"/>`;
@@ -74,7 +74,7 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   /* -------------------------------------------- */
 
   async _onWeaponCreate(event) {
-    let key = $("#actor-weapon").val();
+    let key = this.item.data.data.weaponTmp;
 
     let newKey = document.createElement("div");
     const weapon = `<input type="hidden" name="data.weapon" value="${key}"/>`;

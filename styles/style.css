@@ -789,7 +789,6 @@
 
 .dx3rd .sheet-wrapper .items-list .item {
   padding: 10px 0;
-  padding-left: 10px;
   margin: 2px;
 }
 
@@ -831,6 +830,47 @@
   -o-transition: all ease-in-out 0.25s;
   transition: all ease-in-out 0.25s;
 }
+
+.dx3rd .sheet-wrapper .items-list .combo-item {
+  padding: 4px 0;
+}
+
+.dx3rd .sheet-wrapper .combo-item .item-name {
+  background: black;
+  color: white;
+  padding-left: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex-basis: 100%;
+}
+
+.dx3rd .sheet-wrapper .combo-item .item-name .level {
+  padding: 0 6px;
+  background-color: white;
+  color: black;
+  margin-right: 4px;
+}
+
+.dx3rd .sheet-wrapper .combo-item .item-controls {
+  float: right;
+  font-size: 15px;
+  padding-top: 4px;
+  padding-right: 6px;
+}
+
+.dx3rd .sheet-wrapper .combo-item .info-table {
+  margin: 0;
+  text-align: center;
+}
+
+.dx3rd .sheet-wrapper .combo-item .info-table .width-18 {
+  width: 18%;
+}
+
+.dx3rd .sheet-wrapper .combo-item .info-table .width-14 {
+  width: 14%;
+}
+
 
 .dx3rd .sheet-wrapper .items-list .titus {
   color: crimson;

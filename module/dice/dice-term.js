@@ -10,6 +10,8 @@ export class DX3rdDiceTerm extends DiceTerm {
             return;
 
         this.critical = termData.modifiers[0] == undefined ? 10 : termData.modifiers[0];
+        if (this.critical < 2)
+            this.critical = 2
 
     }
 
