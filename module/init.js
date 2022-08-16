@@ -80,7 +80,7 @@ Hooks.once("init", async function() {
     // Get the denomination of DiceTerm
     denomination = denomination.toLowerCase();
     const cls = denomination in CONFIG.Dice.terms ? CONFIG.Dice.terms[denomination] : CONFIG.Dice.terms.d;
-    if ( !foundry.utils.isSubclass(cls, DiceTerm) ) {
+    if ( !getParentClasses(cls).includes(DiceTerm) ) {
       throw new Error(`DiceTerm denomination ${denomination} not registered to CONFIG.Dice.terms as a valid DiceTerm class`);
     }
 
