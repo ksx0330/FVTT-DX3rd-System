@@ -233,11 +233,9 @@ Hooks.on("hotbarDrop", async (bar, data, slot) => {
   if (data.data == undefined)
     return false;
 
-  const command = `
-    const a = game.actors.get("${data.actorId}");
-    const item = a.items.get("${data.data._id}");
-    item.toMessage()`;
-  let macro = game.macros.entities.find(m => (m.data.name === data.data.name) && (m.data.command === command));
+  const command = `const a = game.actors.get("${data.actorId}");\nconst item = a.items.get("${data.data._id}");\nitem.toMessage()`;
+  let macro = game.macros.contents.find(m => (m.data.name === data.data.name) && (m.data.command === command));
+
   if (!macro) {
     macro = await Macro.create({
       name: data.data.name,
