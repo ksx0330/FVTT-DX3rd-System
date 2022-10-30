@@ -14,7 +14,7 @@ export class DX3rdActor extends Actor {
   }
 
   _prepareActorItem() {
-    let attributes = this.data.data.attributes;
+    let attributes = this.system.attributes;
 
     let values = {
       "enc_init": { "value" : attributes.encroachment.init.input },
@@ -78,25 +78,25 @@ export class DX3rdActor extends Actor {
         works = i;
       else if (i.type == 'syndrome' && attributes.syndrome[i.id])
         syndrome.push(i);
-      else if (i.type == 'effect' && i.data.data.active.state)
+      else if (i.type == 'effect' && i.system.active.state)
         effect.push(i);
-      else if (i.type == 'combo' && i.data.data.active.state)
+      else if (i.type == 'combo' && i.system.active.state)
         combo.push(i);
-      else if (itemType.includes(i.type) && i.data.data.equipment)
+      else if (itemType.includes(i.type) && i.system.equipment)
         item.push(i);
       else if (i.type == 'record')
         record.push(i);
     }
 
     if (works != null) {
-      values = this._updateData(values, works.data.data.attributes);
-      this._updateSkillData(works.data.data.skills);
+      values = this._updateData(values, works.system.attributes);
+      this._updateSkillData(works.system.skills);
     }
 
     for (let s of syndrome) {
-      values = this._updateData(values, s.data.data.attributes);
+      values = this._updateData(values, s.system.attributes);
       if (syndrome.length == 1)
-        values = this._updateData(values, s.data.data.attributes);
+        values = this._updateData(values, s.system.attributes);
     }
 
     let weaponAdd = { "melee": 0, "ranged": 0 };
@@ -107,7 +107,7 @@ export class DX3rdActor extends Actor {
     };
 
     for (let i of item) {
-      let iData = i.data.data;
+      let iData = i.system;
 
       for (let [key, value] of Object.entries(tmp))
         if (key in iData)
@@ -124,24 +124,24 @@ export class DX3rdActor extends Actor {
     attributes.add.melee = weaponAdd.melee;
     attributes.add.ranged = weaponAdd.ranged;
 
-    attributes.exp.append = record.reduce((acc, i) => acc + i.data.data.exp, 0);
+    attributes.exp.append = record.reduce((acc, i) => acc + i.system.exp, 0);
     attributes.exp.total = Number(attributes.exp.init) + Number(attributes.exp.append);
     this._calExp(values);
     delete values["exp"];
 
     attributes.critical.min = 10;
     for (let e of effect) {
-      values = this._updateEffectData(values, e.data.data.attributes, e.data.data.level.value);
-      if ("critical_min" in e.data.data.attributes && e.data.data.attributes.critical_min.value < attributes.critical.min)
-        attributes.critical.min = e.data.data.attributes.critical_min.value;
+      values = this._updateEffectData(values, e.system.attributes, e.system.level.value);
+      if ("critical_min" in e.system.attributes && e.system.attributes.critical_min.value < attributes.critical.min)
+        attributes.critical.min = e.system.attributes.critical_min.value;
     }
     for (let e of combo) {
-      values = this._updateEffectData(values, e.data.data.attributes, 0);
-      if ("critical_min" in e.data.data.attributes && e.data.data.attributes.critical_min.value < attributes.critical.min)
-        attributes.critical.min = e.data.data.attributes.critical_min.value;
+      values = this._updateEffectData(values, e.system.attributes, 0);
+      if ("critical_min" in e.system.attributes && e.system.attributes.critical_min.value < attributes.critical.min)
+        attributes.critical.min = e.system.attributes.critical_min.value;
     }
 
-    for (let e of Object.values(this.data.data.attributes.applied)) {
+    for (let e of Object.values(this.system.attributes.applied)) {
       values = this._updateEffectData(values, e.attributes, 0);
       if ("critical_min" in e.attributes && e.attributes.critical_min.value < attributes.critical.min)
         attributes.critical.min = e.attributes.critical_min.value;
@@ -188,7 +188,7 @@ export class DX3rdActor extends Actor {
   }
 
   _updateSkillData(attributes) {
-    let data = this.data.data.attributes.skills;
+    let data = this.system.attributes.skills;
 
     for (const [key, value] of Object.entries(attributes)) {
       if (value.apply && key in data) {
@@ -202,7 +202,7 @@ export class DX3rdActor extends Actor {
 
   _updateEffectData(values, attributes, level) {
     for (const [key, value] of Object.entries(attributes)) {
-      if (key == '-' || key == 'critical_min')
+      if (!(key in values))
         continue;
 
       let num = value.value.replace("@level", level);
@@ -226,7 +226,7 @@ export class DX3rdActor extends Actor {
 
     for (let l of list) {
       let total = values[l].value;
-      let point = this.data.data.attributes[l].point;
+      let point = this.system.attributes[l].point;
 
       if (total < 12)
         exp += point * 10;
@@ -236,7 +236,7 @@ export class DX3rdActor extends Actor {
         exp += 310 - (total - point) * 10 + (total - 21) * 30;
     }
 
-    let skills = this.data.data.attributes.skills
+    let skills = this.system.attributes.skills
     for (const [key, value] of Object.entries(skills)) {
       let total = value.value;
       let point = value.point;
@@ -254,18 +254,18 @@ export class DX3rdActor extends Actor {
 
     for (let i of this.items) {
       if (i.type == 'effect') {
-        let level = i.data.data.level.init;
-        let own = i.data.data.exp.own;
-        let upgrade = i.data.data.exp.upgrade;
+        let level = i.system.level.init;
+        let own = i.system.exp.own;
+        let upgrade = i.system.exp.upgrade;
 
         if (own)
-          exp += (i.data.data.type != "easy") ? 15 : 2;
+          exp += (i.system.type != "easy") ? 15 : 2;
         if (upgrade)
-          exp += (i.data.data.type != "easy") ? (level - 1) * 5 : (level - 1) * 2;
+          exp += (i.system.type != "easy") ? (level - 1) * 5 : (level - 1) * 2;
       }
     }
 
-    this.data.data.attributes.exp.now = this.data.data.attributes.exp.total - exp;
+    this.system.attributes.exp.now = this.system.attributes.exp.total - exp;
   }
 
   _prepareActorSkills() {
@@ -276,7 +276,7 @@ export class DX3rdActor extends Actor {
       "social": {}
     }
 
-    let data = this.data.data.attributes.skills;
+    let data = this.system.attributes.skills;
     for (let [key, value] of Object.entries(data)) {
       if (value.base === "body")
         skills.body[key] = value;
@@ -289,11 +289,11 @@ export class DX3rdActor extends Actor {
 
     }
 
-    this.data.data.skills = skills;
+    this.system.skills = skills;
   }
 
   _prepareActorEnc() {
-    let enc = this.data.data.attributes.encroachment;
+    let enc = this.system.attributes.encroachment;
     let encType = enc.type;
     enc.dice = 0;
     enc.level = 0;
@@ -326,11 +326,11 @@ export class DX3rdActor extends Actor {
   _prepareItemEnc() {
     for (let i of this.items) {
       if (i.type == 'effect') {
-        i.data.data.level.value = i.data.data.level.init;
-        if (!i.data.data.level.upgrade)
+        i.system.level.value = i.system.level.init;
+        if (!i.system.level.upgrade)
           continue;
         
-        i.data.data.level.value += this.data.data.attributes.encroachment.level;
+        i.system.level.value += this.system.attributes.encroachment.level;
       }
     }
 
@@ -345,7 +345,7 @@ export class DX3rdActor extends Actor {
         combos.push(i);
     }
 
-    let attributes = this.data.data.attributes;
+    let attributes = this.system.attributes;
     let valuesOriginal = {
       "attack": { "value": 0 },
       "add": { "value": 0 },
@@ -379,7 +379,7 @@ export class DX3rdActor extends Actor {
       let values = duplicate(valuesOriginal);
       let critical_min = attributes.critical.min;
 
-      let comboData = c.data.data;
+      let comboData = c.system;
       let encroachStr = [];
       comboData.encroach.value = 0;
 
@@ -393,19 +393,19 @@ export class DX3rdActor extends Actor {
           continue;
 
         let effect = this.items.get(effectId);
-        effectItems[effectId] = effect.data;
+        effectItems[effectId] = effect;
 
-        if ( Number.isNaN(Number(effect.data.data.encroach.value)) )
-          encroachStr.push(effect.data.data.encroach.value);
+        if ( Number.isNaN(Number(effect.system.encroach.value)) )
+          encroachStr.push(effect.system.encroach.value);
         else
-          comboData.encroach.value += Number(effect.data.data.encroach.value);
+          comboData.encroach.value += Number(effect.system.encroach.value);
 
-        if (effect.data.data.active.state)
+        if (effect.system.active.state)
           continue;
 
-        values = this._updateEffectData(values, effect.data.data.attributes, effect.data.data.level.value);
-        if ("critical_min" in effect.data.data.attributes && effect.data.data.attributes.critical_min.value < critical_min)
-          critical_min = effect.data.data.attributes.critical_min.value;
+        values = this._updateEffectData(values, effect.system.attributes, effect.system.level.value);
+        if ("critical_min" in effect.system.attributes && effect.system.attributes.critical_min.value < critical_min)
+          critical_min = effect.system.attributes.critical_min.value;
       }
 
       if (encroachStr.length > 0)
@@ -421,8 +421,8 @@ export class DX3rdActor extends Actor {
           continue;
 
         let weapon = this.items.get(weaponId);
-        weaponItems[weaponId] = weapon.data;
-        values.attack.value += weapon.data.data.attack;
+        weaponItems[weaponId] = weapon;
+        values.attack.value += weapon.system.attack;
       }
 
       comboData.major.value = Number(attributes.major.value) + values.major.value;
@@ -454,9 +454,9 @@ export class DX3rdActor extends Actor {
 
 
       if (comboData.roll != "-") {
-        comboData.dice.value += comboData[comboData.roll].dice + Number(this.data.data.attributes.encroachment.dice) + Number(this.data.data.attributes.sublimation.dice);
+        comboData.dice.value += comboData[comboData.roll].dice + Number(this.system.attributes.encroachment.dice) + Number(this.system.attributes.sublimation.dice);
         comboData.add.value += comboData[comboData.roll].value;
-        comboData.critical.value = comboData[comboData.roll].critical + Number(this.data.data.attributes.sublimation.critical);
+        comboData.critical.value = comboData[comboData.roll].critical + Number(this.system.attributes.sublimation.critical);
       }
 
       if (comboData.skill != "-" && comboData.skill in attributes.skills) {
@@ -490,7 +490,7 @@ export class DX3rdActor extends Actor {
       if (doc.type == "effect" || doc.type == "combo" || doc.type == "rois" || doc.type == "syndrome" || doc.type == "record")
         continue;
 
-      this._addSkill(doc.data.data.skills);
+      this._addSkill(doc.system.skills);
     }
   }
 
@@ -504,14 +504,14 @@ export class DX3rdActor extends Actor {
       if (doc.type == "effect" || doc.type == "combo" || doc.type == "rois" || doc.type == "syndrome" || doc.type == "record")
         continue;
 
-      this._addSkill(doc.data.data.skills);
+      this._addSkill(doc.system.skills);
     }
   }
 
   /* -------------------------------------------- */
   
   async _addSkill(skill) {
-    let data = this.data.data.attributes.skills;
+    let data = this.system.attributes.skills;
     for (const [key, value] of Object.entries(skill)) {
       if (key in data || !value.apply || key == "" || value.base == "-")
         continue;
@@ -610,9 +610,9 @@ export class DX3rdActor extends Actor {
   }
 
   _getDiceData(diceOptions) {
-    let attributes = this.data.data.attributes;
-    let base = this.data.data.attributes[diceOptions.base];
-    let skill = this.data.data.attributes.skills[diceOptions.skill];
+    let attributes = this.system.attributes;
+    let base = this.system.attributes[diceOptions.base];
+    let skill = this.system.attributes.skills[diceOptions.skill];
 
     let dice = base.value;
     let add = base.add;
@@ -639,7 +639,7 @@ export class DX3rdActor extends Actor {
   }
 
   async _onRollDice(title, diceOptions) {
-    let attributes = this.data.data.attributes;
+    let attributes = this.system.attributes;
     let rollType = diceOptions.rollType;
     let {dice, add, critical} = this._getDiceData(diceOptions);
 
@@ -665,8 +665,6 @@ export class DX3rdActor extends Actor {
     }
 
     let formula = `${dice}dx${critical} + ${add}`;
-
-    console.log(formula);
     let roll = new Roll(formula);
     await roll.roll({async: true})
 
@@ -709,7 +707,7 @@ export class DX3rdActor extends Actor {
 
   /** @override */
   async modifyTokenAttribute(attribute, value, isDelta=false, isBar=true) {
-    const current = foundry.utils.getProperty(this.data.data, attribute);
+    const current = foundry.utils.getProperty(this.system, attribute);
 
     // Determine the updates to make to the actor data
     let updates;

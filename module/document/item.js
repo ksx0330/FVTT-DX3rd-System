@@ -8,9 +8,9 @@ export class DX3rdItem extends Item {
 
 
   async toMessage() {
-    let title = `<div class="title">${this.data.name}</div>`;
-    if (this.data.img != 'icons/svg/item-bag.svg')
-      title = `<img src="${this.data.img}" width="30" height="30">&nbsp&nbsp${title}`; 
+    let title = `<div class="title">${this.name}</div>`;
+    if (this.img != 'icons/svg/item-bag.svg')
+      title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`; 
     
     let content = `<div class="dx3rd-item-info" data-actor-id=${this.actor.id} data-item-id=${this.id}><h2 class="header">${title}</h2>`
 
@@ -51,31 +51,31 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Level")}:&nbsp&nbsp</b>
-          ${this.data.data.level.value} / ${this.data.data.level.max}</td>
+          ${this.system.level.value} / ${this.system.level.max}</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Timing")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing arg}}')({arg: this.data.data.timing}) }</td>
+          ${ Handlebars.compile('{{timing arg}}')({arg: this.system.timing}) }</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: this.data.data.skill}) }</td>
+          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Difficulty")}:&nbsp&nbsp</b>
-          ${this.data.data.difficulty}</td>
+          ${this.system.difficulty}</td>
         </tr>
 
         <tr>
-          <td><b>${game.i18n.localize("DX3rd.Target")}:&nbsp&nbsp</b>${this.data.data.target}</td>
-          <td><b>${game.i18n.localize("DX3rd.Range")}:&nbsp&nbsp</b>${this.data.data.range}</td>
+          <td><b>${game.i18n.localize("DX3rd.Target")}:&nbsp&nbsp</b>${this.system.target}</td>
+          <td><b>${game.i18n.localize("DX3rd.Range")}:&nbsp&nbsp</b>${this.system.range}</td>
         </tr>
         <tr>
-          <td><b>${game.i18n.localize("DX3rd.Encroach")}:&nbsp&nbsp</b>${this.data.data.encroach.value}</td>
-          <td><b>${game.i18n.localize("DX3rd.Limit")}:&nbsp&nbsp</b>${this.data.data.limit}</td>
+          <td><b>${game.i18n.localize("DX3rd.Encroach")}:&nbsp&nbsp</b>${this.system.encroach.value}</td>
+          <td><b>${game.i18n.localize("DX3rd.Limit")}:&nbsp&nbsp</b>${this.system.limit}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
       <button class="chat-btn use-effect">${game.i18n.localize("DX3rd.Use")}</button>
 
     `
@@ -88,62 +88,62 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Timing")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing arg}}')({arg: this.data.data.timing}) }</td>
-          <td><b>${game.i18n.localize("DX3rd.Limit")}:&nbsp&nbsp</b>${this.data.data.limit}</td>
+          ${ Handlebars.compile('{{timing arg}}')({arg: this.system.timing}) }</td>
+          <td><b>${game.i18n.localize("DX3rd.Limit")}:&nbsp&nbsp</b>${this.system.limit}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: this.data.data.skill}) }</td>
+          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
           <td><b>${game.i18n.localize("DX3rd.Difficulty")}:&nbsp&nbsp</b>
-          ${this.data.data.difficulty}</td>
+          ${this.system.difficulty}</td>
         </tr>
         <tr>
-          <td><b>${game.i18n.localize("DX3rd.Target")}:&nbsp&nbsp</b>${this.data.data.target}</td>
-          <td><b>${game.i18n.localize("DX3rd.Range")}:&nbsp&nbsp</b>${this.data.data.range}</td>
+          <td><b>${game.i18n.localize("DX3rd.Target")}:&nbsp&nbsp</b>${this.system.target}</td>
+          <td><b>${game.i18n.localize("DX3rd.Range")}:&nbsp&nbsp</b>${this.system.range}</td>
         </tr>
         <tr>
-          <td><b>${game.i18n.localize("DX3rd.Attack")}:&nbsp&nbsp</b>${this.data.data.attack.value}</td>
-          <td><b>${game.i18n.localize("DX3rd.Critical")}:&nbsp&nbsp</b>${this.data.data.critical.value}</td>
+          <td><b>${game.i18n.localize("DX3rd.Attack")}:&nbsp&nbsp</b>${this.system.attack.value}</td>
+          <td><b>${game.i18n.localize("DX3rd.Critical")}:&nbsp&nbsp</b>${this.system.critical.value}</td>
         </tr>
         <tr>
-          <td><b>${game.i18n.localize("DX3rd.Dice")}:&nbsp&nbsp</b>${this.data.data.dice.value}</td>        
-          <td><b>${game.i18n.localize("DX3rd.Encroach")}:&nbsp&nbsp</b>${this.data.data.encroach.value}</td>
+          <td><b>${game.i18n.localize("DX3rd.Dice")}:&nbsp&nbsp</b>${this.system.dice.value}</td>        
+          <td><b>${game.i18n.localize("DX3rd.Encroach")}:&nbsp&nbsp</b>${this.system.encroach.value}</td>
 
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
       <button class="chat-btn toggle-btn" data-style="effect-list">${game.i18n.localize("DX3rd.Effect")}</button>
       <div class="effect-list">`;
 
-    for (let [key, e] of Object.entries(this.data.data.effectItems)) {
+    for (let [key, e] of Object.entries(this.system.effectItems)) {
       content += `
         <div>
           <h4 class="item-name toggle-btn" data-style="item-description">`;
       if (e.img != "icons/svg/item-bag.svg")  
         content += `<img src="${e.img}" width="20" height="20" style="vertical-align : middle;margin-right:8px;">`;
 
-      content += `<span class="item-label">[${e.data.level.value}] ${e.name}<br>
+      content += `<span class="item-label">[${e.system.level.value}] ${e.name}<br>
               <span style="color : gray; font-size : smaller;">
-                ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.data.timing}) } / 
-                ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: e.data.skill}) } / 
-                ${game.i18n.localize("DX3rd.Target")} : ${e.data.target} / 
-                ${game.i18n.localize("DX3rd.Range")} : ${e.data.range} /
-                ${game.i18n.localize("DX3rd.Encroach")} : ${e.data.encroach.value} /
-                ${game.i18n.localize("DX3rd.Limit")} : ${e.data.limit}
+                ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.system.timing}) } / 
+                ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.system.skill}) } / 
+                ${game.i18n.localize("DX3rd.Target")} : ${e.system.target} / 
+                ${game.i18n.localize("DX3rd.Range")} : ${e.system.range} /
+                ${game.i18n.localize("DX3rd.Encroach")} : ${e.system.encroach.value} /
+                ${game.i18n.localize("DX3rd.Limit")} : ${e.system.limit}
                 <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
               </span>
             </span>
           </h4>
-          <div class="item-description">${e.data.description}</div>
+          <div class="item-description">${e.description}</div>
         </div>
         `;
     }
     content += `</div>`;
 
-    if (this.data.data.attackRoll != "-" && !this.data.data.weaponSelect) {
+    if (this.system.attackRoll != "-" && !this.system.weaponSelect) {
       content += `<button class="chat-btn toggle-btn" data-style="weapon-list">${game.i18n.localize("DX3rd.Weapon")}</button>
                     <div class="weapon-list">`;
-      for (let [key, e] of Object.entries(this.data.data.weaponItems)) {
+      for (let [key, e] of Object.entries(this.system.weaponItems)) {
         content += `
           <div>
             <h4 class="item-name toggle-btn" data-style="item-description">`;
@@ -152,14 +152,14 @@ export class DX3rdItem extends Item {
 
         content += `<span class="item-label">${e.name}<br>
                 <span style="color : gray; font-size : smaller;">
-                  ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.data.type}) } / 
-                  ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: e.data.skill}) } / 
-                  ${game.i18n.localize("DX3rd.Attack")} : ${e.data.range}
+                  ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.type}) } / 
+                  ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.skill}) } / 
+                  ${game.i18n.localize("DX3rd.Attack")} : ${e.range}
                   <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                 </span>
               </span>
             </h4>
-            <div class="item-description">${e.data.description}</div>
+            <div class="item-description">${e.description}</div>
           </div>
           `;
       }
@@ -174,22 +174,22 @@ export class DX3rdItem extends Item {
 
   async _getRoisContent() {
     let typeName = "";
-    if (this.data.data.type == "D")
+    if (this.system.type == "D")
       typeName = game.i18n.localize("DX3rd.Descripted")
-    else if (this.data.data.type == "S")
+    else if (this.system.type == "S")
       typeName = game.i18n.localize("DX3rd.Superier")
-    else if (this.data.data.type == "M")
+    else if (this.system.type == "M")
       typeName = game.i18n.localize("DX3rd.Memory")
-    else if (this.data.data.type == "E")
+    else if (this.system.type == "E")
       typeName = game.i18n.localize("DX3rd.Exhaust")
 
     let statList = ["titus", "sublimation"]
     let state = {};
     for (let s of statList)
-      state[s] = (this.data.data[s]) ? "O" : "X";
+      state[s] = (this.system[s]) ? "O" : "X";
 
-    state.positive = (this.data.data.positive.state) ? "O" : "X";
-    state.negative = (this.data.data.negative.state) ? "O" : "X";
+    state.positive = (this.system.positive.state) ? "O" : "X";
+    state.negative = (this.system.negative.state) ? "O" : "X";
 
     let content = `
       <table>
@@ -199,9 +199,9 @@ export class DX3rdItem extends Item {
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Positive")} [${state.positive}]:&nbsp&nbsp</b>
-          ${this.data.data.positive.feeling}</td>
+          ${this.system.positive.feeling}</td>
           <td><b>${game.i18n.localize("DX3rd.Negative")} [${state.negative}]:&nbsp&nbsp</b>
-          ${this.data.data.negative.feeling}</td>
+          ${this.system.negative.feeling}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Titus")}:&nbsp&nbsp</b>
@@ -210,13 +210,13 @@ export class DX3rdItem extends Item {
           ${state.sublimation}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
 
     `
 
-    if (!this.data.data.titus && !this.data.data.sublimation)
+    if (!this.system.titus && !this.system.sublimation)
       content += `<button class="chat-btn titus">${game.i18n.localize("DX3rd.Titus")}</button>`;
-    else if (this.data.data.titus && !this.data.data.sublimation)
+    else if (this.system.titus && !this.system.sublimation)
       content += `<button class="chat-btn sublimation">${game.i18n.localize("DX3rd.Sublimation")}</button>`;
 
     return content;
@@ -228,31 +228,31 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing key}}')({key: this.data.data.type}) }</td>
+          ${ Handlebars.compile('{{timing key}}')({key: this.system.type}) }</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: this.data.data.skill}) }</td>
+          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
           <td><b>${game.i18n.localize("DX3rd.Add")}:&nbsp&nbsp</b>
-          ${this.data.data.add}</td>
+          ${this.system.add}</td>
         </tr>
         <tr>
-          <td colspan="2"><b>${game.i18n.localize("DX3rd.Attack")}:&nbsp&nbsp</b>${this.data.data.attack}</td>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Attack")}:&nbsp&nbsp</b>${this.system.attack}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Guard")}:&nbsp&nbsp</b>
-          ${this.data.data.guard}</td>
+          ${this.system.guard}</td>
           <td><b>${game.i18n.localize("DX3rd.Range")}:&nbsp&nbsp</b>
-          ${this.data.data.range}</td>
+          ${this.system.range}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
-          ${this.data.data.saving.difficulty} / ${this.data.data.saving.value}</td>
+          ${this.system.saving.difficulty} / ${this.system.saving.value}</td>
           <td><b>${game.i18n.localize("DX3rd.EXP")}:&nbsp&nbsp</b>
-          ${this.data.data.exp}</td>
+          ${this.system.exp}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
       <button class="chat-btn roll-attack">${game.i18n.localize("DX3rd.AttackRoll")}</button>
     `
 
@@ -268,21 +268,21 @@ export class DX3rdItem extends Item {
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Dodge")}:&nbsp&nbsp</b>
-          ${this.data.data.dodge}</td>
+          ${this.system.dodge}</td>
           <td><b>${game.i18n.localize("DX3rd.Init")}:&nbsp&nbsp</b>
-          ${this.data.data.init}</td>
+          ${this.system.init}</td>
         </tr>
         <tr>
-          <td colspan="2"><b>${game.i18n.localize("DX3rd.Armor")}:&nbsp&nbsp</b>${this.data.data.armor}</td>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Armor")}:&nbsp&nbsp</b>${this.system.armor}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
-          ${this.data.data.saving.difficulty} / ${this.data.data.saving.value}</td>
+          ${this.system.saving.difficulty} / ${this.system.saving.value}</td>
           <td><b>${game.i18n.localize("DX3rd.EXP")}:&nbsp&nbsp</b>
-          ${this.data.data.exp}</td>
+          ${this.system.exp}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
 
     `
 
@@ -298,28 +298,28 @@ export class DX3rdItem extends Item {
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: this.data.data.skill}) }</td>
+          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
-          ${this.data.data.saving.difficulty} / ${this.data.data.saving.value}</td>
+          ${this.system.saving.difficulty} / ${this.system.saving.value}</td>
           <td><b>${game.i18n.localize("DX3rd.EXP")}:&nbsp&nbsp</b>
-          ${this.data.data.exp}</td>
+          ${this.system.exp}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
       <table>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Attack")}:&nbsp&nbsp</b>
-          ${this.data.data.attack}</td>
+          ${this.system.attack}</td>
           <td><b>${game.i18n.localize("DX3rd.Init")}:&nbsp&nbsp</b>
-          ${this.data.data.init}</td>
+          ${this.system.init}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Armor")}:&nbsp&nbsp</b>
-          ${this.data.data.armor}</td>
+          ${this.system.armor}</td>
           <td><b>${game.i18n.localize("DX3rd.Move")}:&nbsp&nbsp</b>
-          ${this.data.data.move}</td>
+          ${this.system.move}</td>
         </tr>
       </table>
       <button class="chat-btn roll-attack">${game.i18n.localize("DX3rd.AttackRoll")}</button>
@@ -338,16 +338,16 @@ export class DX3rdItem extends Item {
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: this.data.data.skill}) }</td>
+          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
-          ${this.data.data.saving.difficulty} / ${this.data.data.saving.value}</td>
+          ${this.system.saving.difficulty} / ${this.system.saving.value}</td>
           <td><b>${game.i18n.localize("DX3rd.EXP")}:&nbsp&nbsp</b>
-          ${this.data.data.exp}</td>
+          ${this.system.exp}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
 
     `
 
@@ -359,16 +359,16 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing key}}')({ key: this.data.data.type}) }</td>
+          ${ Handlebars.compile('{{timing key}}')({ key: this.system.type}) }</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
-          ${this.data.data.saving.difficulty} / ${this.data.data.saving.value}</td>
+          ${this.system.saving.difficulty} / ${this.system.saving.value}</td>
           <td><b>${game.i18n.localize("DX3rd.EXP")}:&nbsp&nbsp</b>
-          ${this.data.data.exp}</td>
+          ${this.system.exp}</td>
         </tr>
       </table>
-      <p>${this.data.data.description}</p>
+      <p>${this.system.description}</p>
 
     `
 
@@ -387,18 +387,18 @@ export class DX3rdItem extends Item {
           icon: '<i class="fas fa-check"></i>',
           label: "Confirm",
           callback: async () => {
-            const macro = game.macros.contents.find(m => (m.data.name === this.data.data.macro));
+            const macro = game.macros.contents.find(m => (m.name === this.system.macro));
             if (macro != undefined)
                 macro.execute();
-            else if (this.data.data.macro != "")
+            else if (this.system.macro != "")
                 new Dialog({
                     title: "macro",
-                    content: `Do not find this macro: ${this.data.data.macro}`,
+                    content: `Do not find this macro: ${this.system.macro}`,
                     buttons: {}
                 }).render(true);
 
 
-            if (this.data.data.effect.disable != "-") {
+            if (this.system.effect.disable != "-") {
               let targets = game.user.targets;
               for (let t of targets) {
                 let a = t.actor;
@@ -418,8 +418,8 @@ export class DX3rdItem extends Item {
 
 
   async applyTarget(actor) {
-    let attributes = this.data.data.effect.attributes;
-    let level = this.data.data.level.value;
+    let attributes = this.system.effect.attributes;
+    let level = this.system.level.value;
 
     let copy = duplicate(attributes);
     for (const [key, value] of Object.entries(attributes)) {
@@ -435,27 +435,27 @@ export class DX3rdItem extends Item {
     applied[this.id] = {
       actorId: this.actor.id,
       itemId: this.id,
-      disable: this.data.data.effect.disable,
+      disable: this.system.effect.disable,
       attributes: copy
     }
     
-    await actor.update({"data.attributes.applied": applied});
+    await actor.update({"system.attributes.applied": applied});
   }
 
   async setTitus() {
-    await this.update({"data.titus": true});
+    await this.update({"system.titus": true});
 
     let chatData = {
       user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      content: `${this.data.name}: ${game.i18n.localize("DX3rd.Titus")}`
+      content: `${this.name}: ${game.i18n.localize("DX3rd.Titus")}`
     };
 
     await ChatMessage.create(chatData);
   }
 
   async setSublimation() {
-    await this.update({"data.sublimation": true});
+    await this.update({"system.sublimation": true});
 
     let dialog = new Dialog({
       title: game.i18n.localize("DX3rd.Sublimation"),
@@ -472,13 +472,13 @@ export class DX3rdItem extends Item {
           icon: '<i class="fas fa-check"></i>',
           label: `${game.i18n.localize("DX3rd.SubAction1")}`,
           callback: async () => {
-            let dice = this.actor.data.data.attributes.sublimation.dice + 10;
-            await this.actor.update({"data.attributes.sublimation.dice": dice});
+            let dice = this.actor.system.attributes.sublimation.dice + 10;
+            await this.actor.update({"system.attributes.sublimation.dice": dice});
 
             let chatData = {
               user: game.user.id,
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: `${this.data.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction1")} )`
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction1")} )`
             };
             ChatMessage.create(chatData);
           }
@@ -490,7 +490,7 @@ export class DX3rdItem extends Item {
             let chatData = {
               user: game.user.id,
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: `${this.data.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction2")} )`
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction2")} )`
             };
             ChatMessage.create(chatData);
 
@@ -505,13 +505,13 @@ export class DX3rdItem extends Item {
           label: `${game.i18n.localize("DX3rd.SubAction3")}`,
           callback: async () => {
 
-            let critical = this.actor.data.data.attributes.sublimation.critical -1;
-            await this.actor.update({"data.attributes.sublimation.critical": critical});
+            let critical = this.actor.system.attributes.sublimation.critical -1;
+            await this.actor.update({"system.attributes.sublimation.critical": critical});
 
             let chatData = {
               user: game.user.id,
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: `${this.data.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction3")} )`
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction3")} )`
             };
             ChatMessage.create(chatData);
           }
@@ -521,13 +521,13 @@ export class DX3rdItem extends Item {
           label: `${game.i18n.localize("DX3rd.SubAction4")}`,
           callback: async () => {
 
-            let body = this.actor.data.data.attributes.body.value + 10;
-            await this.actor.update({"data.attributes.hp.value": body});
+            let body = this.actor.system.attributes.body.value + 10;
+            await this.actor.update({"system.attributes.hp.value": body});
 
             let chatData = {
               user: game.user.id,
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: `${this.data.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction4")} )`
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction4")} )`
             };
             ChatMessage.create(chatData);
           }
@@ -540,7 +540,7 @@ export class DX3rdItem extends Item {
             let chatData = {
               user: game.user.id,
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: `${this.data.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction5")} )`
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction5")} )`
             };
             ChatMessage.create(chatData);
           }

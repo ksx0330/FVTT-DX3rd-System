@@ -4,8 +4,8 @@
     <button style="display: none;">Input Button Click bypass</button>
     {{!-- Sheet Header --}}
     <header class="sheet-header">
-      <select class="grid-3 select-box" name="data.attributes.encroachment.type">
-        {{#select data.attributes.encroachment.type}}
+      <select class="grid-3 select-box" name="system.attributes.encroachment.type">
+        {{#select system.attributes.encroachment.type}}
         <option value="-">{{localize "DX3rd.EncroachmentCore"}}</option>
         <option value="ea">{{localize "DX3rd.EncroachmentEA"}}</option>
         <option value="origin">{{localize "DX3rd.EncroachmentOrigin"}}</option>
@@ -15,12 +15,12 @@
       <div class="progress-bar grid-11">
         <div class="dice-addon">
           <label><i class="fas fa-dice"></i> </label>
-          <input type="text" name="data.attributes.encroachment.dice" value="{{data.attributes.encroachment.dice}}" disabled>
+          <input type="text" name="system.attributes.encroachment.dice" value="{{system.attributes.encroachment.dice}}" disabled>
           <span class="slash"> | </span>
           <label><i class="fas fa-arrow-up"></i> </label>
-          <input type="text" name="data.attributes.encroachment.level" value="{{data.attributes.encroachment.level}}" disabled>
+          <input type="text" name="system.attributes.encroachment.level" value="{{system.attributes.encroachment.level}}" disabled>
         </div>
-        <input type="text" style="{{encroach data.attributes.encroachment.value}}; font-size: 22px;" name="data.attributes.encroachment.value" value="{{data.attributes.encroachment.value}}">
+        <input type="text" style="{{encroach system.attributes.encroachment.value}}; font-size: 22px;" name="system.attributes.encroachment.value" value="{{system.attributes.encroachment.value}}">
       </div>
       <div class="grid-2 backtrack-btn">
         <button class="backtrack-roll">{{localize "DX3rd.BackTrackBtn"}}</button>
@@ -35,7 +35,7 @@
         </div>
         <div class="stat-box">
           <label class="title">{{localize "DX3rd.CodeName"}}</label>
-          <input class="name" type="text" name="data.codeName" value="{{data.codeName}}"placeholder="{{localize "DX3rd.CodeName"}}">
+          <input class="name" type="text" name="system.codeName" value="{{system.codeName}}"placeholder="{{localize "DX3rd.CodeName"}}">
         </div>
 
       </div>
@@ -43,11 +43,11 @@
       <div class="grid-4 dice-info">
         <label class="title">
           {{localize "DX3rd.Dice"}}
-          <input type="text" class="addon" value="{{data.attributes.critical.min}}" disabled>
+          <input type="text" class="addon" value="{{system.attributes.critical.min}}" disabled>
         </label>
         <div class="flex">
-          <select name="data.attributes.dice.view">
-            {{#select data.attributes.dice.view}}
+          <select name="system.attributes.dice.view">
+            {{#select system.attributes.dice.view}}
             <option value="major">{{localize "DX3rd.Major"}}</option>
             <option value="reaction">{{localize "DX3rd.Reaction"}}</option>
             <option value="dodge">{{localize "DX3rd.Dodge"}}</option>
@@ -65,17 +65,17 @@
         <div class="stat-box">
           <label class="title">{{localize "DX3rd.EXP"}}</label>
           <div class="stat-list flexrow">
-            <input class="stat" type="text" name="data.attributes.exp.total" value="{{data.attributes.exp.total}}" data-dtype="Number" disabled/>
+            <input class="stat" type="text" name="system.attributes.exp.total" value="{{system.attributes.exp.total}}" data-dtype="Number" disabled/>
             <span class="divider"><i class="fas fa-arrow-right"></i></span>
-            <input class="stat" type="text" name="data.attributes.exp.now" value="{{data.attributes.exp.now}}" data-dtype="Number" disabled/>
+            <input class="stat" type="text" name="system.attributes.exp.now" value="{{system.attributes.exp.now}}" data-dtype="Number" disabled/>
           </div>
         </div>
         <div class="stat-box">
           <label class="title">{{localize "DX3rd.Saving"}}</label>
           <div class="stat-list flexrow">
-            <input class="stat" type="text" name="data.attributes.saving.max" value="{{data.attributes.saving.max}}" data-dtype="Number" disabled/>
+            <input class="stat" type="text" name="system.attributes.saving.max" value="{{system.attributes.saving.max}}" data-dtype="Number" disabled/>
             <span class="divider"><i class="fas fa-arrow-right"></i></span>
-            <input class="stat" type="text" name="data.attributes.saving.remain" value="{{data.attributes.saving.remain}}" data-dtype="Number" disabled/>
+            <input class="stat" type="text" name="system.attributes.saving.remain" value="{{system.attributes.saving.remain}}" data-dtype="Number" disabled/>
           </div>
         </div>
       </div>
@@ -88,32 +88,32 @@
         <div class="stat-box">
           <label class="title">{{localize "DX3rd.HP"}}</label>
           <div class="stat-list flexrow">
-            <input class="stat highlight" type="text" name="data.attributes.hp.value" value="{{data.attributes.hp.value}}" data-dtype="Number"/>
+            <input class="stat highlight" type="text" name="system.attributes.hp.value" value="{{system.attributes.hp.value}}" data-dtype="Number"/>
             <span class="divider">/</span>
-            <input class="stat" type="text" value="{{data.attributes.hp.max}}" data-dtype="Number" disabled/>
+            <input class="stat" type="text" value="{{system.attributes.hp.max}}" data-dtype="Number" disabled/>
           </div>
         </div>
 
         <div class="stat-box no-flex">
           <label class="title">{{localize "DX3rd.Armor"}}</label>
           <div class="stat-list flexrow">
-            <input class="stat" type="text" name="data.attributes.armor.value" value="{{data.attributes.armor.value}}" disabled>
+            <input class="stat" type="text" name="system.attributes.armor.value" value="{{system.attributes.armor.value}}" disabled>
           </div>
         </div>
 
         <div class="stat-box no-flex">
           <label class="title">{{localize "DX3rd.Init"}}</label>
           <div class="stat-list flexrow">
-            <input class="stat" type="text" name="data.attributes.init.value" value="{{data.attributes.init.value}}" disabled>
+            <input class="stat" type="text" name="system.attributes.init.value" value="{{system.attributes.init.value}}" disabled>
           </div>
         </div>
 
         <div class="stat-box">
           <label class="title">{{localize "DX3rd.Move"}}</label>
           <div class="stat-list flexrow">
-            <input class="stat" type="text" name="data.attributes.move.battle" value="{{data.attributes.move.battle}}" disabled>
+            <input class="stat" type="text" name="system.attributes.move.battle" value="{{system.attributes.move.battle}}" disabled>
             <span class="divider">/</span>
-            <input class="stat" type="text" name="data.attributes.move.full" value="{{data.attributes.move.full}}" disabled>
+            <input class="stat" type="text" name="system.attributes.move.full" value="{{system.attributes.move.full}}" disabled>
           </div>
         </div>
 
@@ -124,14 +124,14 @@
           <label class="title ability-roll">{{localize "DX3rd.Body"}}</label>
           <a class="skill-create" data-ability-id="body"><i class="fas fa-plus" style="color: white;"></i></a>
           <div class="value">
-            <input class="stat" type="text" name="data.attributes.body.value" value="{{data.attributes.body.value}}" disabled>
+            <input class="stat" type="text" name="system.attributes.body.value" value="{{system.attributes.body.value}}" disabled>
           </div>
           <div class="diamond">
-            <input class="point highlight" type="text" name="data.attributes.body.point" value="{{data.attributes.body.point}}" data-dtype="Number"/>
+            <input class="point highlight" type="text" name="system.attributes.body.point" value="{{system.attributes.body.point}}" data-dtype="Number"/>
           </div>
           
           <div class="skill-box">
-          {{#each data.skills.body as |value key|}}
+          {{#each system.skills.body as |value key|}}
             <label class="skill" data-skill-id="{{key}}">
               <span class="title skill-roll">{{skill value.name}}</span>
               <a class="skill-edit"><i class="fas fa-edit" style="color: black;"></i></a>
@@ -144,14 +144,14 @@
           <label class="title ability-roll">{{localize "DX3rd.Sense"}}</label>
           <a class="skill-create" data-ability-id="sense"><i class="fas fa-plus" style="color: white;"></i></a>
           <div class="value">
-            <input class="stat" type="text" name="data.attributes.sense.value" value="{{data.attributes.sense.value}}" disabled>
+            <input class="stat" type="text" name="system.attributes.sense.value" value="{{system.attributes.sense.value}}" disabled>
           </div>
           <div class="diamond">
-            <input class="point highlight" type="text" name="data.attributes.sense.point" value="{{data.attributes.sense.point}}" data-dtype="Number"/>
+            <input class="point highlight" type="text" name="system.attributes.sense.point" value="{{system.attributes.sense.point}}" data-dtype="Number"/>
           </div>
           
           <div class="skill-box">
-          {{#each data.skills.sense as |value key|}}
+          {{#each system.skills.sense as |value key|}}
             <label class="skill" data-skill-id="{{key}}">
               <span class="title skill-roll">{{skill value.name}}</span>
               <a class="skill-edit"><i class="fas fa-edit" style="color: black;"></i></a>
@@ -165,14 +165,14 @@
           <label class="title ability-roll">{{localize "DX3rd.Mind"}}</label>
           <a class="skill-create" data-ability-id="mind"><i class="fas fa-plus" style="color: white;"></i></a>
           <div class="value">
-            <input class="stat" type="text" name="data.attributes.mind.value" value="{{data.attributes.mind.value}}" disabled>
+            <input class="stat" type="text" name="system.attributes.mind.value" value="{{system.attributes.mind.value}}" disabled>
           </div>
           <div class="diamond">
-            <input class="point highlight" type="text" name="data.attributes.mind.point" value="{{data.attributes.mind.point}}" data-dtype="Number"/>
+            <input class="point highlight" type="text" name="system.attributes.mind.point" value="{{system.attributes.mind.point}}" data-dtype="Number"/>
           </div>
 
           <div class="skill-box">
-          {{#each data.skills.mind as |value key|}}
+          {{#each system.skills.mind as |value key|}}
             <label class="skill" data-skill-id="{{key}}">
               <span class="title skill-roll">{{skill value.name}}</span>
               <a class="skill-edit"><i class="fas fa-edit" style="color: black;"></i></a>
@@ -186,14 +186,14 @@
           <label class="title ability-roll">{{localize "DX3rd.Social"}}</label>
           <a class="skill-create" data-ability-id="social"><i class="fas fa-plus" style="color: white;"></i></a>
           <div class="value">
-            <input class="stat" type="text" name="data.attributes.social.value" value="{{data.attributes.social.value}}" disabled>
+            <input class="stat" type="text" name="system.attributes.social.value" value="{{system.attributes.social.value}}" disabled>
           </div>
           <div class="diamond">
-            <input class="point highlight" type="text" name="data.attributes.social.point" value="{{data.attributes.social.point}}" data-dtype="Number"/>
+            <input class="point highlight" type="text" name="system.attributes.social.point" value="{{system.attributes.social.point}}" data-dtype="Number"/>
           </div>
 
           <div class="skill-box">
-          {{#each data.skills.social as |value key|}}
+          {{#each system.skills.social as |value key|}}
             <label class="skill" data-skill-id="{{key}}">
               <span class="title skill-roll">{{skill value.name}}</span>
               <a class="skill-edit"><i class="fas fa-edit" style="color: black;"></i></a>
@@ -239,7 +239,7 @@
               </div>
 
               <ol class="items-list">
-              {{#each workList as |item id|}}
+              {{#each actor.workList as |item id|}}
                 <li class="item flexrow description-item" data-item-id="{{item.id}}" draggable="true">
                   <h4 class="item-name">
                       <span class="item-label">{{item.name}}
@@ -257,7 +257,7 @@
             <div class="cell grid-12">
               <div class="cell--title">
                 <div class="syndrome-type">
-                  <label>[{{syndromeType}}]</label>
+                  <label>[{{actor.syndromeType}}]</label>
                 </div>
 
                 <label>{{localize "DX3rd.Syndrome"}}</label>
@@ -269,14 +269,14 @@
               </div>
 
               <ol class="items-list flexrow">
-              {{#each syndromeList as |item id|}}
+              {{#each actor.syndromeList as |item id|}}
                 <li class="item flexrow description-item" data-item-id="{{item._id}}" draggable="true">
                   <h4 class="item-name">
                       <span class="item-label">{{item.name}} 
                   </h4>
 
                   <div class="item-controls flexrow">
-                    <input class="item-control item-checkbox" type="checkbox" name="data.attributes.syndrome.{{item.id}}" {{#ifIn ../data.attributes.syndrome item._id}} checked {{/ifIn}} data-dtype="Boolean">
+                    <input class="item-control item-checkbox" type="checkbox" name="system.attributes.syndrome.{{item.id}}" {{#ifIn ../system.attributes.syndrome item._id}} checked {{/ifIn}} data-dtype="Boolean">
                     <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                     <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                   </div>
@@ -287,45 +287,45 @@
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Cover"}}</label>
-              <input type="text" name="data.details.cover" value="{{data.details.cover}}">
+              <input type="text" name="system.details.cover" value="{{system.details.cover}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Ancestry"}}</label>
-              <input type="text" name="data.details.ancestry" value="{{data.details.ancestry}}">
+              <input type="text" name="system.details.ancestry" value="{{system.details.ancestry}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Experience"}}</label>
-              <input type="text" name="data.details.experience" value="{{data.details.experience}}">
+              <input type="text" name="system.details.experience" value="{{system.details.experience}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Meet"}}</label>
-              <input type="text" name="data.details.meet" value="{{data.details.meet}}">
+              <input type="text" name="system.details.meet" value="{{system.details.meet}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Awaken"}}</label>
-              <input type="text" name="data.details.awaken" value="{{data.details.awaken}}">
+              <input type="text" name="system.details.awaken" value="{{system.details.awaken}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Impulse"}}</label>
-              <input type="text" name="data.details.impulse" value="{{data.details.impulse}}">
+              <input type="text" name="system.details.impulse" value="{{system.details.impulse}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.Desire"}}</label>
-              <input type="text" name="data.details.desire" value="{{data.details.desire}}">
+              <input type="text" name="system.details.desire" value="{{system.details.desire}}">
             </div>
 
             <div class="cell grid-2">
               <label class="cell--title">{{localize "DX3rd.EncroachmentInit"}}</label>
               <div class="flex">
-                <input type="text" name="data.attributes.encroachment.init.input" value="{{data.attributes.encroachment.init.input}}">
+                <input type="text" name="system.attributes.encroachment.init.input" value="{{system.attributes.encroachment.init.input}}">
                 <span class="slash"><i class="fas fa-arrow-right"></i></span>
-                <input type="text" name="data.attributes.encroachment.init.value" value="{{data.attributes.encroachment.init.value}}" disabled>
+                <input type="text" name="system.attributes.encroachment.init.value" value="{{system.attributes.encroachment.init.value}}" disabled>
               </div>
             </div>
 
@@ -333,8 +333,7 @@
               <label class="cell--title">
                 {{localize "DX3rd.Description"}}
               </label>
-              {{!-- We're avoiding WYSIWYGs... for now... --}}
-              {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+              {{editor enrichedBiography target="system.description" button=true editable=editable }}
             </div>
 
           </section>
@@ -356,7 +355,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each comboList as |item id|}}
+                {{#each actor.comboList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -364,12 +363,12 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Timing"}} : {{timing item.data.timing}} / 
-                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} / 
-                          {{localize "DX3rd.Target"}} : {{item.data.target}} / 
-                          {{localize "DX3rd.Range"}} : {{item.data.range}} /
-                          {{localize "DX3rd.Encroach"}} : {{item.data.encroach.value}} /
-                          {{localize "DX3rd.Limit"}} : {{item.data.limit}}
+                          {{localize "DX3rd.Timing"}} : {{timing item.system.timing}} / 
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}} / 
+                          {{localize "DX3rd.Target"}} : {{item.system.target}} / 
+                          {{localize "DX3rd.Range"}} : {{item.system.range}} /
+                          {{localize "DX3rd.Encroach"}} : {{item.system.encroach.value}} /
+                          {{localize "DX3rd.Limit"}} : {{item.system.limit}}
 
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
@@ -377,13 +376,13 @@
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-check" {{#if item.data.active.state}} checked {{/if}}>
+                      <input type="checkbox" class="active-check" {{#if item.system.active.state}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -411,33 +410,33 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each effectList as |item id|}}
+                {{#each actor.effectList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
                           <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
                       </span> 
-                      <span class="item-label">[{{item.data.level.value}}] {{item.name}}<br>
+                      <span class="item-label">[{{item.system.level.value}}] {{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Timing"}} : {{timing item.data.timing}} / 
-                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} / 
-                          {{localize "DX3rd.Target"}} : {{item.data.target}} / 
-                          {{localize "DX3rd.Range"}} : {{item.data.range}} /
-                          {{localize "DX3rd.Encroach"}} : {{item.data.encroach.value}} /
-                          {{localize "DX3rd.Limit"}} : {{item.data.limit}}
+                          {{localize "DX3rd.Timing"}} : {{timing item.system.timing}} / 
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}} / 
+                          {{localize "DX3rd.Target"}} : {{item.system.target}} / 
+                          {{localize "DX3rd.Range"}} : {{item.system.range}} /
+                          {{localize "DX3rd.Encroach"}} : {{item.system.encroach.value}} /
+                          {{localize "DX3rd.Limit"}} : {{item.system.limit}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-check" {{#if item.data.active.state}} checked {{/if}}>
+                      <input type="checkbox" class="active-check" {{#if item.system.active.state}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -457,33 +456,33 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each easyEffectList as |item id|}}
+                {{#each actor.easyEffectList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
                           <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
                       </span> 
-                      <span class="item-label">[{{item.data.level.value}}] {{item.name}}<br>
+                      <span class="item-label">[{{item.system.level.value}}] {{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Timing"}} : {{timing item.data.timing}} / 
-                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} / 
-                          {{localize "DX3rd.Target"}} : {{item.data.target}} / 
-                          {{localize "DX3rd.Range"}} : {{item.data.range}} /
-                          {{localize "DX3rd.Encroach"}} : {{item.data.encroach.value}} /
-                          {{localize "DX3rd.Limit"}} : {{item.data.limit}}
+                          {{localize "DX3rd.Timing"}} : {{timing item.system.timing}} / 
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}} / 
+                          {{localize "DX3rd.Target"}} : {{item.system.target}} / 
+                          {{localize "DX3rd.Range"}} : {{item.system.range}} /
+                          {{localize "DX3rd.Encroach"}} : {{item.system.encroach.value}} /
+                          {{localize "DX3rd.Limit"}} : {{item.system.limit}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-check" {{#if item.data.active.state}} checked {{/if}}>
+                      <input type="checkbox" class="active-check" {{#if item.system.active.state}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -513,19 +512,19 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each roisList as |item id|}}
-                  <li class="item flexrow {{#if item.data.titus}} titus {{/if}}" data-item-id="{{item.id}}" draggable="true">
+                {{#each actor.roisList as |item id|}}
+                  <li class="item flexrow {{#if item.system.titus}} titus {{/if}}" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
                           <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
                       </span> 
-                      <span class="item-label">[{{item.data.type}}] {{item.name}}<br>
+                      <span class="item-label">[{{item.system.type}}] {{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{#if item.data.positive.state}}
-                          {{localize "DX3rd.Positive"}} : {{item.data.positive.feeling}}
+                          {{#if item.system.positive.state}}
+                          {{localize "DX3rd.Positive"}} : {{item.system.positive.feeling}}
                           {{/if}}
-                          {{#if item.data.negative.state}}
-                          {{localize "DX3rd.Negative"}} : {{item.data.negative.feeling}}
+                          {{#if item.system.negative.state}}
+                          {{localize "DX3rd.Negative"}} : {{item.system.negative.feeling}}
                           {{/if}}
 
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
@@ -534,11 +533,11 @@
                     </h4>
 
                     <h4 class="item-addon">
-                      {{#if item.data.sublimation}}
-                        <input type="checkbox" class="active-titus" {{#if item.data.titus}} checked {{/if}}>
-                        <input type="checkbox" class="active-sublimation" {{#if item.data.sublimation}} checked {{/if}}>
+                      {{#if item.system.sublimation}}
+                        <input type="checkbox" class="active-titus" {{#if item.system.titus}} checked {{/if}}>
+                        <input type="checkbox" class="active-sublimation" {{#if item.system.sublimation}} checked {{/if}}>
                       {{else}}
-                        {{#if item.data.titus}}
+                        {{#if item.system.titus}}
                         <button class="btn-sublimation">{{localize "DX3rd.Sublimation"}}</button>
                         {{else}}
                         <button class="btn-titus">{{localize "DX3rd.Titus"}}</button>
@@ -550,7 +549,7 @@
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -570,19 +569,19 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each memoryList as |item id|}}
+                {{#each actor.memoryList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
                           <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
                       </span> 
-                      <span class="item-label">[{{item.data.type}}] {{item.name}}<br>
+                      <span class="item-label">[{{item.system.type}}] {{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{#if item.data.positive.state}}
-                          {{localize "DX3rd.Positive"}} : {{item.data.positive.feeling}}
+                          {{#if item.system.positive.state}}
+                          {{localize "DX3rd.Positive"}} : {{item.system.positive.feeling}}
                           {{/if}}
-                          {{#if item.data.negative.state}}
-                          {{localize "DX3rd.Negative"}} : {{item.data.negative.feeling}}
+                          {{#if item.system.negative.state}}
+                          {{localize "DX3rd.Negative"}} : {{item.system.negative.feeling}}
                           {{/if}}
 
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
@@ -594,7 +593,7 @@
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -625,7 +624,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each weaponList as |item id|}}
+                {{#each actor.weaponList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -633,25 +632,25 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Type"}} : {{timing item.data.type}} /
-                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} / 
-                          {{localize "DX3rd.Range"}} : {{item.data.range}} /
-                          {{localize "DX3rd.Add"}} : {{item.data.add}} / 
-                          {{localize "DX3rd.Attack"}} : {{item.data.attack}} /
-                          {{localize "DX3rd.Guard"}} : {{item.data.guard}}
+                          {{localize "DX3rd.Type"}} : {{timing item.system.type}} /
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}} / 
+                          {{localize "DX3rd.Range"}} : {{item.system.range}} /
+                          {{localize "DX3rd.Add"}} : {{item.system.add}} / 
+                          {{localize "DX3rd.Attack"}} : {{item.system.attack}} /
+                          {{localize "DX3rd.Guard"}} : {{item.system.guard}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-equipment" {{#if item.data.equipment}} checked {{/if}}>
+                      <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -671,7 +670,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each protectList as |item id|}}
+                {{#each actor.protectList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -679,22 +678,22 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Dodge"}} : {{item.data.dodge}} /
-                          {{localize "DX3rd.Init"}} : {{item.data.init}} / 
-                          {{localize "DX3rd.Armor"}} : {{item.data.armor}}
+                          {{localize "DX3rd.Dodge"}} : {{item.system.dodge}} /
+                          {{localize "DX3rd.Init"}} : {{item.system.init}} / 
+                          {{localize "DX3rd.Armor"}} : {{item.system.armor}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-equipment" {{#if item.data.equipment}} checked {{/if}}>
+                      <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -714,7 +713,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each connectionList as |item id|}}
+                {{#each actor.connectionList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -722,20 +721,20 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}}
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-equipment" {{#if item.data.equipment}} checked {{/if}}>
+                      <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -755,7 +754,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each itemList as |item id|}}
+                {{#each actor.itemList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -763,19 +762,19 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Type"}} : {{timing item.data.type}}
+                          {{localize "DX3rd.Type"}} : {{timing item.system.type}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-equipment" {{#if item.data.equipment}} checked {{/if}}>
+                      <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -795,7 +794,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each vehicleList as |item id|}}
+                {{#each actor.vehicleList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -803,24 +802,24 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.data.skill}} /
-                          {{localize "DX3rd.Attack"}} : {{item.data.attack}} /
-                          {{localize "DX3rd.Init"}} : {{item.data.init}} / 
-                          {{localize "DX3rd.Armor"}} : {{item.data.armor}} /
-                          {{localize "DX3rd.Move"}} : {{item.data.move}}
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}} /
+                          {{localize "DX3rd.Attack"}} : {{item.system.attack}} /
+                          {{localize "DX3rd.Init"}} : {{item.system.init}} / 
+                          {{localize "DX3rd.Armor"}} : {{item.system.armor}} /
+                          {{localize "DX3rd.Move"}} : {{item.system.move}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
 
                     <h4 class="item-addon">
-                      <input type="checkbox" class="active-equipment" {{#if item.data.equipment}} checked {{/if}}>
+                      <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -843,7 +842,7 @@
             </div>
 
             <div class="cell grid-3">
-              <input type="text" class="horizon-input" name="data.attributes.exp.init" value="{{data.attributes.exp.init}}">
+              <input type="text" class="horizon-input" name="system.attributes.exp.init" value="{{system.attributes.exp.init}}">
             </div>
 
 
@@ -854,7 +853,7 @@
             </div>
 
             <div class="cell grid-3">
-              <input type="text" class="horizon-input" name="data.attributes.exp.append" value="{{data.attributes.exp.append}}" readonly>
+              <input type="text" class="horizon-input" name="system.attributes.exp.append" value="{{system.attributes.exp.append}}" readonly>
             </div>
 
             <div class="cell grid-2">
@@ -864,7 +863,7 @@
             </div>
 
             <div class="cell grid-2">
-              <input class="horizon-input" type="text" name="data.attributes.stock.value" value="{{data.attributes.stock.value}}">
+              <input class="horizon-input" type="text" name="system.attributes.stock.value" value="{{system.attributes.stock.value}}">
             </div>
 
 
@@ -880,7 +879,7 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each recordList as |item id|}}
+                {{#each actor.recordList as |item id|}}
                   <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
@@ -888,7 +887,7 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.EXP"}} : {{item.data.exp}}
+                          {{localize "DX3rd.EXP"}} : {{item.system.exp}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
@@ -898,7 +897,7 @@
                       <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}
@@ -920,19 +919,19 @@
               </div>
 
               <ol class="items-list margin-top-10">
-                {{#each applied as |item id|}}
+                {{#each actor.applied as |item id|}}
                   <li class="item flexrow" data-item-id="{{item._id}}" draggable="true">
                     <h4 class="item-name">
                       <span class="echo-item" style="float:left;">
                           <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
                       </span> 
-                      <span class="item-label">[{{item.data.level.value}}] {{item.name}}<br>
+                      <span class="item-label">[{{item.system.level.value}}] {{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Timing"}} : {{timing item.data.timing}} / 
-                          {{localize "DX3rd.Target"}} : {{item.data.target}} / 
-                          {{localize "DX3rd.Range"}} : {{item.data.range}} /
-                          {{localize "DX3rd.Encroach"}} : {{item.data.encroach.value}} /
-                          {{localize "DX3rd.Limit"}} : {{item.data.limit}} / {{localize "DX3rd.DisableTiming"}} : {{disable item.disable}}
+                          {{localize "DX3rd.Timing"}} : {{timing item.system.timing}} / 
+                          {{localize "DX3rd.Target"}} : {{item.system.target}} / 
+                          {{localize "DX3rd.Range"}} : {{item.system.range}} /
+                          {{localize "DX3rd.Encroach"}} : {{item.system.encroach.value}} /
+                          {{localize "DX3rd.Limit"}} : {{item.system.limit}} / {{localize "DX3rd.DisableTiming"}} : {{disable item.disable}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
@@ -943,7 +942,7 @@
                       <button type="button" class="show-applied" style="width: auto"><i class="fas fa-eye"></i></button>
                       <button type="button" class="remove-applied" style="width: auto"><i class="fas fa-trash"></i></button>
                     </h4>
-                    <div class="item-description">{{{item.data.description}}}
+                    <div class="item-description">{{{item.system.description}}}
                     </div>
                   </li>
                 {{/each}}

@@ -42,13 +42,11 @@ export class WeaponDialog extends Dialog {
     let vehicleList = [];
     let weaponList = [];
 
-    for (let i of this.actor.data.items) {
-      let item = i.data;
-
+    for (let i of this.actor.items) {
       if (i.type == 'weapon')
-        weaponList.push(item);
+        weaponList.push(i);
       else if (i.type == 'vehicle')
-        vehicleList.push(item);
+        vehicleList.push(i);
     }
 
     return {
@@ -56,7 +54,7 @@ export class WeaponDialog extends Dialog {
       content: this.data.content,
       buttons: this.data.buttons,
       
-      actor: this.actor.data,
+      actor: this.actor,
       vehicleList: vehicleList,
       weaponList: weaponList
     }

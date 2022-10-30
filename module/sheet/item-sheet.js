@@ -16,7 +16,7 @@ export class DX3rdItemSheet extends ItemSheet {
   /** @override */
   get template() {
     const path = "systems/dx3rd/templates/sheet/item";
-    return `${path}/${this.item.data.type}-sheet.html`;
+    return `${path}/${this.item.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -31,14 +31,11 @@ export class DX3rdItemSheet extends ItemSheet {
     let effects = {};
     let actor = null;
 
-    this.options.title = this.document.data.name;
+    data.system = this.document.system;
     isOwner = this.document.isOwner;
     isEditable = this.isEditable;
-    
-    const itemData = this.item.data.toObject(false);
-    data.data = itemData.data;
-    
-    data.dtypes = ["String", "Number", "Boolean"];
+
+    data.enrichedBiography = await TextEditor.enrichHTML(this.object.system.description, {async: true});
 
     return data;
   }

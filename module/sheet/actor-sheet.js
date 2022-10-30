@@ -19,7 +19,7 @@ export class DX3rdActorSheet extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @inheritdoc */
-  getData(options) {
+  async getData(options) {
     let isOwner = false;
     let isEditable = this.isEditable;
     let data = super.getData(options);
@@ -30,26 +30,25 @@ export class DX3rdActorSheet extends ActorSheet {
     isEditable = this.isEditable;
 
     // The Actor's data
-    actorData = this.actor.data.toObject(false);
+    actorData = this.actor.toObject(false);
     data.actor = actorData;
-    data.data = actorData.data;
+    data.system = this.actor.system;
 
     // Owned Items
-    data.items = Array.from(this.actor.items.values());
-    data.items = data.items.map( i => {
-      i.data.id = i.id;
-      return i.data;
-    });
-
+    data.items = actorData.items;
+    for ( let i of data.items ) {
+      const item = this.actor.items.get(i._id);
+      i.id = item._id;
+    }
     data.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    this._prepareCharacterItems(data, data.items);
+    this._prepareCharacterItems(actorData, data.items);
 
-    let rollType = actorData.data.attributes.dice.view;
-    data.dice = actorData.data.attributes.dice.value + Number(actorData.data.attributes[rollType].dice) + Number(actorData.data.attributes.encroachment.dice) + Number(actorData.data.attributes.sublimation.dice)
-    data.critical =actorData.data.attributes.critical.value + actorData.data.attributes[rollType].critical + Number(actorData.data.attributes.sublimation.critical)
-    data.add = actorData.data.attributes.add.value + Number(actorData.data.attributes[rollType].value)
+    let rollType = this.actor.system.attributes.dice.view;
+    data.dice = this.actor.system.attributes.dice.value + Number(this.actor.system.attributes[rollType].dice) + Number(this.actor.system.attributes.encroachment.dice) + Number(this.actor.system.attributes.sublimation.dice)
+    data.critical =this.actor.system.attributes.critical.value + this.actor.system.attributes[rollType].critical + Number(this.actor.system.attributes.sublimation.critical)
+    data.add = this.actor.system.attributes.add.value + Number(this.actor.system.attributes[rollType].value)
 
-    console.log(data);
+    data.enrichedBiography = await TextEditor.enrichHTML(this.object.system.description, {async: true});
 
     return data;
   }
@@ -74,8 +73,6 @@ export class DX3rdActorSheet extends ActorSheet {
 
 
     for (let i of items) {
-      let item = i.data;
-
       if (i.type == 'works')
         actorData.workList.push(i);
       else if (i.type == 'syndrome')
@@ -83,12 +80,12 @@ export class DX3rdActorSheet extends ActorSheet {
       else if (i.type == 'combo')
         actorData.comboList.push(i);
       else if (i.type == 'effect') {
-        if (i.data.type == 'normal')
+        if (i.system.type == 'normal')
           actorData.effectList.push(i);
         else
           actorData.easyEffectList.push(i);
       } else if (i.type == 'rois') {
-        if (i.data.type == "M")
+        if (i.system.type == "M")
           actorData.memoryList.push(i);
         else
           actorData.roisList.push(i);
@@ -116,19 +113,8 @@ export class DX3rdActorSheet extends ActorSheet {
       actorData.syndromeType = game.i18n.localize("DX3rd.CrossBreed");
     else if (actorData.syndromeList.length == 3)
       actorData.syndromeType = game.i18n.localize("DX3rd.TriBreed");
-
-    actorData.applied = Object.values(actorData.data.attributes.applied).map( i => {
-      let actor = game.actors.get(i.actorId);
-      let item = actor.items.get(i.itemId);
-
-      let data = item.data;
-      data.actor = actor.data.name;
-      data.disable = i.disable;
-      return item.data;
-
-    });
-
-    actorData.applied = Object.values(actorData.data.attributes.applied).reduce( (acc, i) => {
+      
+    actorData.applied = Object.values(this.actor.system.attributes.applied).reduce( (acc, i) => {
       if (game.actors.get(i.actorId) == undefined)
         return acc;
 
@@ -139,8 +125,8 @@ export class DX3rdActorSheet extends ActorSheet {
 
       let item = actor.items.get(i.itemId);
 
-      let data = item.data;
-      data.actor = actor.data.name;
+      let data = item.toObject(false);
+      data.actor = actor.name;
       data.disable = i.disable;
 
       acc.push(data);
@@ -167,42 +153,42 @@ export class DX3rdActorSheet extends ActorSheet {
     html.find('.backtrack-roll').click(this.rollBackTrack.bind(this));
 
 
-    html.find('.active-check').on('click', async ev => {
+    html.find('.active-check').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");
       const item = this.actor.items.get(li.dataset.itemId);
-      await item.update({'data.active.state': !item.data.data.active.state});
+      await item.update({'system.active.state': !item.system.active.state});
     });
 
-    html.find('.active-equipment').on('click', async ev => {
+    html.find('.active-equipment').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");
       const item = this.actor.items.get(li.dataset.itemId);
-      await item.update({'data.equipment': !item.data.data.equipment});
+      await item.update({'system.equipment': !item.system.equipment});
     });
 
-    html.find('.active-titus').on('click', async ev => {
+    html.find('.active-titus').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");
       const item = this.actor.items.get(li.dataset.itemId);
-      await item.update({'data.titus': !item.data.data.titus});
+      await item.update({'system.titus': !item.system.titus});
     });
 
-    html.find('.active-sublimation').on('click', async ev => {
+    html.find('.active-sublimation').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");
       const item = this.actor.items.get(li.dataset.itemId);
-      await item.update({'data.sublimation': !item.data.data.sublimation});
+      await item.update({'system.sublimation': !item.system.sublimation});
     });
 
-    html.find('.btn-titus').on('click', async ev => {
+    html.find('.btn-titus').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");
       const item = this.actor.items.get(li.dataset.itemId);
       await item.setTitus();
     });
 
-    html.find('.btn-sublimation').on('click', async ev => {
+    html.find('.btn-sublimation').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");
       const item = this.actor.items.get(li.dataset.itemId);
@@ -222,14 +208,14 @@ export class DX3rdActorSheet extends ActorSheet {
     html.find('.item-label').click(this._onShowItemDetails.bind(this));
     html.find(".echo-item").click(this._echoItemDescription.bind(this));
 
-    html.find(".show-applied").on('click', async ev => {
+    html.find(".show-applied").on('click', async event => {
       const list = {attack: "DX3rd.Attack", dice: "DX3rd.Dice", add: "DX3rd.Add", critical: "DX3rd.Critical", critical_min: "DX3rd.CriticalMin", 
 hp: "DX3rd.HP", init: "DX3rd.Init", armor: "DX3rd.Armor", guard: "DX3rd.Guard", saving: "DX3rd.Saving", 
 major_dice: "DX3rd.MajorDice", major: "DX3rd.MajorAdd", major_critical: "DX3rd.MajorCritical", reaction_dice: "DX3rd.ReactionDice", reaction: "DX3rd.ReactionAdd", reaction_critical: "DX3rd.ReactionCritical", dodge_dice: "DX3rd.DodgeDice", dodge: "DX3rd.DodgeAdd", dodge_critical: "DX3rd.DodgeCritical", 
 body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseAdd", sense_dice: "DX3rd.SenseDice", mind_add: "DX3rd.MindAdd", mind_dice: "DX3rd.MindDice", social_add: "DX3rd.SocialAdd", social_dice: "DX3rd.SocialDice"};
 
       const li = event.currentTarget.closest(".item");
-      let attr = this.actor.data.data.attributes.applied[li.dataset.itemId].attributes;
+      let attr = this.actor.system.attributes.applied[li.dataset.itemId].attributes;
       let content = `<table><tr><th>${game.i18n.localize("DX3rd.Attributes")}</th><th>${game.i18n.localize("DX3rd.Value")}</th></tr>`
       for (let [key, value] of Object.entries(attr)) {
         let str = "";
@@ -245,9 +231,9 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
       }).render(true);
     });
 
-    html.find(".remove-applied").on('click', async ev => {
+    html.find(".remove-applied").on('click', async event => {
       const li = event.currentTarget.closest(".item");
-      await this.actor.update({[`data.attributes.applied.-=${li.dataset.itemId}`]: null});
+      await this.actor.update({[`system.attributes.applied.-=${li.dataset.itemId}`]: null});
     });
   }
 
@@ -275,27 +261,27 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     if (type == 'ability') {
       const li = event.currentTarget.closest(".ability");
       const key = li.dataset.abilityId;
-      const ability = this.actor.data.data.attributes[key];
+      const ability = this.actor.system.attributes[key];
 
       diceOptions.base = key;
       diceOptions.skill = null;
-      diceOptions.rollType = this.actor.data.data.attributes.dice.view;
+      diceOptions.rollType = this.actor.system.attributes.dice.view;
 
     } else if (type == 'skill') {
       const li = event.currentTarget.closest(".skill");
       const key = li.dataset.skillId;
-      const skill = this.actor.data.data.attributes.skills[key];
+      const skill = this.actor.system.attributes.skills[key];
 
       diceOptions.base = skill.base;
       diceOptions.skill = key;
-      diceOptions.rollType = this.actor.data.data.attributes.dice.view;
+      diceOptions.rollType = this.actor.system.attributes.dice.view;
 
     } else {
-      let rollType = this.actor.data.data.attributes.dice.view;
+      let rollType = this.actor.system.attributes.dice.view;
 
-      dice.val(this.actor.data.data.attributes.dice.value + Number(this.actor.data.data.attributes[rollType].dice) + Number(this.actor.data.data.attributes.encroachment.dice) + Number(this.actor.data.data.attributes.sublimation.dice));
-      critical.val(this.actor.data.data.attributes.critical.value + this.actor.data.data.attributes[rollType].critical) + Number(this.actor.data.data.attributes.sublimation.critical);
-      add.val(this.actor.data.data.attributes.add.value + Number(this.actor.data.data.attributes[rollType].value));
+      dice.val(this.actor.system.attributes.dice.value + Number(this.actor.system.attributes[rollType].dice) + Number(this.actor.system.attributes.encroachment.dice) + Number(this.actor.system.attributes.sublimation.dice));
+      critical.val(this.actor.system.attributes.critical.value + this.actor.system.attributes[rollType].critical) + Number(this.actor.system.attributes.sublimation.critical);
+      add.val(this.actor.system.attributes.add.value + Number(this.actor.system.attributes[rollType].value));
       return;
     }
 
@@ -312,7 +298,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     event.preventDefault();
     const li = event.currentTarget.closest(".ability");
     const key = li.dataset.abilityId;
-    const ability = this.actor.data.data.attributes[key];
+    const ability = this.actor.system.attributes[key];
     const title = game.i18n.localize("DX3rd." + key[0].toUpperCase() + key.slice(1));
 
     const diceOptions = {
@@ -340,7 +326,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     event.preventDefault();
     const li = event.currentTarget.closest(".skill");
     const key = li.dataset.skillId;
-    const skill = this.actor.data.data.attributes.skills[key];
+    const skill = this.actor.system.attributes.skills[key];
     const title = (skill.name.indexOf('DX3rd.') != -1) ? game.i18n.localize(skill.name) : skill.name;
 
     const diceOptions = {
@@ -393,6 +379,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     const header = event.currentTarget;
     const type = header.dataset.type;
     const data = duplicate(header.dataset);
+    delete data["type"];
 
     if (type == 'effect')
       data.type = data.effectType;
@@ -403,7 +390,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     const itemData = {
       name: name,
       type: type,
-      data: data
+      system: data
     };
     //delete itemData.data["type"];
     await this.actor.createEmbeddedDocuments('Item', [itemData], {});
@@ -495,7 +482,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
 
     let rois = 0;
     for (let item of this.actor.items) {
-      if (item.type == "rois" && item.data.data.type != "D" && item.data.data.type != "M" && !item.data.data.titus && !item.data.data.sublimation)
+      if (item.type == "rois" && item.system.type != "D" && item.system.type != "M" && !item.system.titus && !item.system.sublimation)
         rois += 1;
     }
 
@@ -514,10 +501,10 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
             let roll = new Roll(formula);
             await roll.roll({async: true})
 
-            let before = this.actor.data.data.attributes.encroachment.value;
+            let before = this.actor.system.attributes.encroachment.value;
             let after = (before - roll.total < 0) ? 0 : before - roll.total;
 
-            await this.actor.update({"data.attributes.encroachment.value": after});
+            await this.actor.update({"system.attributes.encroachment.value": after});
 
             let rollMode = game.settings.get("core", "rollMode");
             let rollData = await roll.render();
@@ -561,10 +548,10 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
             let roll = new Roll(formula);
             await roll.roll({async: true})
 
-            let before = this.actor.data.data.attributes.encroachment.value;
+            let before = this.actor.system.attributes.encroachment.value;
             let after = (before - roll.total < 0) ? 0 : before - roll.total;
 
-            await this.actor.update({"data.attributes.encroachment.value": after});
+            await this.actor.update({"system.attributes.encroachment.value": after});
 
             let rollMode = game.settings.get("core", "rollMode");
             let rollData = await roll.render();
@@ -585,7 +572,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
               roll: roll,
             }, {rollMode});
 
-            if (this.actor.data.data.attributes.encroachment.value >= 100)
+            if (this.actor.system.attributes.encroachment.value >= 100)
               extraBackTrackDialog.render(true);
           }
         },
@@ -598,10 +585,10 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
             let roll = new Roll(formula);
             await roll.roll({async: true})
 
-            let before = this.actor.data.data.attributes.encroachment.value;
+            let before = this.actor.system.attributes.encroachment.value;
             let after = (before - roll.total < 0) ? 0 : before - roll.total;
 
-            await this.actor.update({"data.attributes.encroachment.value": after});
+            await this.actor.update({"system.attributes.encroachment.value": after});
 
             let rollMode = game.settings.get("core", "rollMode");
             let rollData = await roll.render();
@@ -625,7 +612,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
               roll: roll,
             }, {rollMode});
 
-            if (this.actor.data.data.attributes.encroachment.value >= 100)
+            if (this.actor.system.attributes.encroachment.value >= 100)
               extraBackTrackDialog.render(true);
           }
         }
@@ -652,10 +639,10 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
               let roll = new Roll(formula);
               await roll.roll({async: true})
 
-              let before = this.actor.data.data.attributes.encroachment.value;
+              let before = this.actor.system.attributes.encroachment.value;
               let after = (before - roll.total < 0) ? 0 : before - roll.total;
 
-              await this.actor.update({"data.attributes.encroachment.value": after});
+              await this.actor.update({"system.attributes.encroachment.value": after});
 
               let rollMode = game.settings.get("core", "rollMode");
               let rollData = await roll.render();

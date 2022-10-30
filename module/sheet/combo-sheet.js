@@ -6,25 +6,23 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   async getData(options) {
     let data = await super.getData(options);
 
-  	data.data.actorEffect = {};
-    data.data.actorWeapon = {};
+  	data.actorEffect = {};
+    data.actorWeapon = {};
 
     if (this.actor != null) {
-      data.actor = this.actor.data;
+      data.actor = this.actor;
     	let items = this.actor.items;
 
 	    for (let i of items) {
-      	let item = i.data;
+      	let item = i;
 
       	if (item.type == 'weapon' || item.type == 'vehicle')
-      		data.data.actorWeapon[i.id] = i.name;
+      		data.actorWeapon[i.id] = i.name;
       	else if (item.type == 'effect')
-      		data.data.actorEffect[i.id] = i.name;
+      		data.actorEffect[i.id] = i.name;
     	}
     }
 
-
-    console.log(data);
     return data;
   }
 
@@ -47,8 +45,8 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   async _onSkillChange(event) {
     const skillId = $(event.currentTarget).val();
     let base = "-";
-    if (this.actor != null && "base" in this.actor.data.data.attributes.skills[skillId]) 
-      base = this.actor.data.data.attributes.skills[skillId].base;
+    if (this.actor != null && "base" in this.actor.system.attributes.skills[skillId]) 
+      base = this.actor.system.attributes.skills[skillId].base;
     else if ("base" in game.DX3rd.baseSkills[skillId])
       base = game.DX3rd.baseSkills[skillId].base;
     $("#base").val(base);
@@ -60,10 +58,12 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   /* -------------------------------------------- */
 
   async _onEffectCreate(event) {
-    let key = this.item.data.data.effectTmp;
+    let key = this.item.system.effectTmp;
+    if (this.item.system.effect.includes(key))
+      return;
 
     let newKey = document.createElement("div");
-    const effect = `<input type="hidden" name="data.effect" value="${key}"/>`;
+    const effect = `<input type="hidden" name="system.effect" value="${key}"/>`;
     newKey.innerHTML = effect;
 
     newKey = newKey.children[0];
@@ -74,10 +74,12 @@ export class DX3rdComboSheet extends DX3rdAttributesSheet {
   /* -------------------------------------------- */
 
   async _onWeaponCreate(event) {
-    let key = this.item.data.data.weaponTmp;
+    let key = this.item.system.weaponTmp;
+    if (this.item.system.weapon.includes(key))
+      return;
 
     let newKey = document.createElement("div");
-    const weapon = `<input type="hidden" name="data.weapon" value="${key}"/>`;
+    const weapon = `<input type="hidden" name="system.weapon" value="${key}"/>`;
     newKey.innerHTML = weapon;
 
     newKey = newKey.children[0];

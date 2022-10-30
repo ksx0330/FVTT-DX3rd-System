@@ -16,7 +16,7 @@ export class DX3rdRoisSheet extends DX3rdItemSheet {
   async _onShowActor(event) {
     event.preventDefault();
 
-    let actorId = this.object.data.data.actor;
+    let actorId = this.object.system.actor;
     let actor = game.actors.get(actorId);
   	actor.sheet.render(true);
   }

@@ -23,21 +23,21 @@
             <label class="cell--title">
               {{localize "DX3rd.Dodge"}}
             </label>
-            <input type="text" name="data.dodge" value="{{data.dodge}}" data-dtype="Number"/>
+            <input type="text" name="system.dodge" value="{{system.dodge}}" data-dtype="Number"/>
           </div>
 
           <div class="cell grid-3">
             <label class="cell--title">
               {{localize "DX3rd.Init"}}
             </label>
-            <input type="text" name="data.init" value="{{data.init}}" data-dtype="Number"/>
+            <input type="text" name="system.init" value="{{system.init}}" data-dtype="Number"/>
           </div>
 
           <div class="cell grid-3">
             <label class="cell--title">
               {{localize "DX3rd.Armor"}}
             </label>
-            <input type="text" name="data.armor" value="{{data.armor}}" data-dtype="Number"/>
+            <input type="text" name="system.armor" value="{{system.armor}}" data-dtype="Number"/>
           </div>
 
           <div class="cell grid-4">
@@ -45,9 +45,9 @@
               {{localize "DX3rd.SellSaving"}}
             </label>
             <div class="flex">
-              <input type="text" name="data.saving.difficulty" value="{{data.saving.difficulty}}" data-dtype="String"/>
+              <input type="text" name="system.saving.difficulty" value="{{system.saving.difficulty}}" data-dtype="String"/>
               <span class="slash"> / </span>
-              <input type="text" name="data.saving.value" value="{{data.saving.value}}" data-dtype="Number"/>
+              <input type="text" name="system.saving.value" value="{{system.saving.value}}" data-dtype="Number"/>
             </div>
           </div>
 
@@ -55,7 +55,7 @@
             <label class="cell--title">
               {{localize "DX3rd.EXP"}}
             </label>
-            <input type="text" name="data.exp" value="{{data.exp}}" data-dtype="Number"/>
+            <input type="text" name="system.exp" value="{{system.exp}}" data-dtype="Number"/>
           </div>
 
         </section>
@@ -66,11 +66,11 @@
 
             <div class="checkbox-addon flexrow">
               <span>{{localize "DX3rd.Equipment"}} </span>
-              <input type="checkbox" name="data.equipment" {{#if data.equipment}} checked {{/if}} data-dtype="Boolean"/>
+              <input type="checkbox" name="system.equipment" {{#if system.equipment}} checked {{/if}} data-dtype="Boolean"/>
             </div>
           </label>
           {{!-- We're avoiding WYSIWYGs... for now... --}}
-          {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+          {{editor enrichedBiography target="system.description" button=true editable=editable }}
         </div>
       </div>
     </div>
@@ -79,9 +79,9 @@
     <div class="tab" data-group="primary" data-tab="skills">
       <div class="sheet-wrapper margin-top-10">
         <div class="add-skills">
-          <select name="data.skillTmp" id="actor-skill">
-            {{#select data.skillTmp}}
-            {{#each data.actorSkills as |value key|}}
+          <select name="system.skillTmp" id="actor-skill">
+            {{#select system.skillTmp}}
+            {{#each system.actorSkills as |value key|}}
             <option value="{{key}}">{{skill value.name}}</option>
             {{/each}}
             {{/select}}
@@ -101,12 +101,12 @@
           </header>
 
           <ol class="attributes-list">
-          {{#each data.skills as |attr key|}}
+          {{#each system.skills as |attr key|}}
             <li class="attribute flexrow" data-attribute="{{key}}">
-              <input class="attribute-key" type="text" name="data.skills.{{key}}.key" value="{{key}}" data-dtype="String">
-              <input class="attribute-key" type="text" name="data.skills.{{key}}.name" value="{{attrSkill ../data.actorSkills ../data.skills key 'name'}}" data-dtype="String">
-              <select class="attribute-key" name="data.skills.{{key}}.base" data-dtype="String">
-                {{#select (attrSkill ../data.actorSkills ../data.skills key 'base')}}
+              <input class="attribute-key" type="text" name="system.skills.{{key}}.key" value="{{key}}" data-dtype="String">
+              <input class="attribute-key" type="text" name="system.skills.{{key}}.name" value="{{attrSkill ../system.actorSkills ../system.skills key 'name'}}" data-dtype="String">
+              <select class="attribute-key" name="system.skills.{{key}}.base" data-dtype="String">
+                {{#select (attrSkill ../system.actorSkills ../system.skills key 'base')}}
                 <option value="-">-</option>
                 <option value="body">{{localize "DX3rd.Body"}}</option>
                 <option value="sense">{{localize "DX3rd.Sense"}}</option>
@@ -115,9 +115,9 @@
                 {{/select}}
               </select>
 
-              <input class="attribute-value" type="text" name="data.skills.{{key}}.dice" value="{{attr.dice}}" data-dtype="Number"/>
-              <input class="attribute-value" type="text" name="data.skills.{{key}}.add" value="{{attr.add}}" data-dtype="Number"/>
-              <input class="attribute-control" type="checkbox" name="data.skills.{{key}}.apply" {{#if attr.apply}} checked {{/if}}  data-dtype="Boolean"/>
+              <input class="attribute-value" type="text" name="system.skills.{{key}}.dice" value="{{attr.dice}}" data-dtype="Number"/>
+              <input class="attribute-value" type="text" name="system.skills.{{key}}.add" value="{{attr.add}}" data-dtype="Number"/>
+              <input class="attribute-control" type="checkbox" name="system.skills.{{key}}.apply" {{#if attr.apply}} checked {{/if}}  data-dtype="Boolean"/>
               <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
             </li>
           {{/each}}

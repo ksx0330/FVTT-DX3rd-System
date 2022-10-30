@@ -21,7 +21,7 @@
                 {{item.name}}
 
                 <div class="item-controls">
-                  <input type="checkbox" class="check-equipment" data-attack="{{item.data.attack}}" data-guard="{{item.data.guard}}" data-name="{{item.name}}">
+                  <input type="checkbox" class="check-equipment" data-attack="{{item.system.attack}}" data-guard="{{item.system.guard}}" data-name="{{item.name}}">
                 </div>
               </span>
 
@@ -36,16 +36,16 @@
                 <th class="width-14">{{localize "DX3rd.Guard"}}</th>
               </tr>
               <tr>
-                <td class="width-18">{{timing item.data.type}}</td>
-                <td class="width-18">{{skillByKey ../actor item.data.skill}}</td>
-                <td class="width-18">{{item.data.range}}</td>
-                <td class="width-18">{{item.data.add}}</td>
-                <td class="width-14">{{item.data.attack}}</td>
-                <td class="width-14">{{item.data.guard}}</td>
+                <td class="width-18">{{timing item.system.type}}</td>
+                <td class="width-18">{{skillByKey ../actor item.system.skill}}</td>
+                <td class="width-18">{{item.system.range}}</td>
+                <td class="width-18">{{item.system.add}}</td>
+                <td class="width-14">{{item.system.attack}}</td>
+                <td class="width-14">{{item.system.guard}}</td>
               </tr>
             </table>
 
-            <div class="item-description">{{{item.data.description}}}</div>
+            <div class="item-description">{{{item.system.description}}}</div>
           </li>
           {{/each}}
 
@@ -66,7 +66,7 @@
                 {{item.name}}
 
                 <div class="item-controls">
-                  <input type="checkbox" class="check-equipment" data-attack="{{item.data.attack}}" data-guard="0" data-name="{{item.name}}">
+                  <input type="checkbox" class="check-equipment" data-attack="{{item.system.attack}}" data-guard="0" data-name="{{item.name}}">
                 </div>
               </span>
 
@@ -81,16 +81,16 @@
                 <th class="width-14">{{localize "DX3rd.Guard"}}</th>
               </tr>
               <tr>
-                <td class="width-18">{{timing item.data.type}}</td>
-                <td class="width-18">{{skillByKey ../actor item.data.skill}}</td>
-                <td class="width-18">{{item.data.range}}</td>
-                <td class="width-18">{{item.data.add}}</td>
-                <td class="width-14">{{item.data.attack}}</td>
-                <td class="width-14">{{item.data.guard}}</td>
+                <td class="width-18">{{timing item.system.type}}</td>
+                <td class="width-18">{{skillByKey ../actor item.system.skill}}</td>
+                <td class="width-18">{{item.system.range}}</td>
+                <td class="width-18">{{item.system.add}}</td>
+                <td class="width-14">{{item.system.attack}}</td>
+                <td class="width-14">{{item.system.guard}}</td>
               </tr>
             </table>
 
-            <div class="item-description">{{{item.data.description}}}</div>
+            <div class="item-description">{{{item.system.description}}}</div>
           </li>
           {{/each}}
 

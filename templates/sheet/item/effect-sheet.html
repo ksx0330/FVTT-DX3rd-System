@@ -5,7 +5,7 @@
       <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
       <div class="level">
         <label>{{localize "DX3rd.Level"}}</label>
-        <input name="data.level.value" type="text" value="{{data.level.value}}" disabled />
+        <input name="system.level.value" type="text" value="{{system.level.value}}" disabled />
       </div>
     </div>
   </header>
@@ -27,10 +27,10 @@
             <label class="cell--title">
               {{localize "DX3rd.Skill"}}
             </label>
-            <select name="data.skill">
-              {{#select data.skill}}
+            <select name="system.skill">
+              {{#select system.skill}}
               <option value="-">-</option>
-              {{#each data.actorSkills as |value key|}}
+              {{#each system.actorSkills as |value key|}}
               <option value="{{key}}">{{skill value.name}}</option>
               {{/each}}
               <option value="syndrome">{{localize "DX3rd.Syndrome"}}</option>
@@ -48,25 +48,25 @@
             <label class="cell--title">
               {{localize "DX3rd.Difficulty"}}
             </label>
-            <input type="text" name="data.difficulty" value="{{data.difficulty}}" data-dtype="String"/>
+            <input type="text" name="system.difficulty" value="{{system.difficulty}}" data-dtype="String"/>
           </div>
 
           <div class="cell grid-4">
             <label class="cell--title">
               {{localize "DX3rd.Limit"}}
             </label>
-            <input type="text" name="data.limit" value="{{data.limit}}" data-dtype="String"/>
+            <input type="text" name="system.limit" value="{{system.limit}}" data-dtype="String"/>
           </div>
 
           <div class="cell grid-4 space-between">
             <label class="cell--title">
               {{localize "DX3rd.Level"}}
-              <input type="checkbox" class="cell--crit" name="data.level.upgrade" {{#if data.level.upgrade}} checked {{/if}}>
+              <input type="checkbox" class="cell--crit" name="system.level.upgrade" {{#if system.level.upgrade}} checked {{/if}}>
             </label>
             <div class="flex">
-              <input type="text" name="data.level.init" value="{{data.level.init}}" data-dtype="Number"/>
+              <input type="text" name="system.level.init" value="{{system.level.init}}" data-dtype="Number"/>
               <span class="slash"> / </span>
-              <input type="text" name="data.level.max" value="{{data.level.max}}" data-dtype="Number"/>
+              <input type="text" name="system.level.max" value="{{system.level.max}}" data-dtype="Number"/>
             </div>
           </div>
 
@@ -74,8 +74,8 @@
             <label class="cell--title">
               {{localize "DX3rd.Timing"}}
             </label>
-            <select name="data.timing">
-              {{#select data.timing}}
+            <select name="system.timing">
+              {{#select system.timing}}
               <option value="-">-</option>
               <option value="minor">{{localize "DX3rd.Minor"}}</option>
               <option value="major">{{localize "DX3rd.Major"}}</option>
@@ -94,14 +94,14 @@
             <label class="cell--title">
               {{localize "DX3rd.Range"}}
             </label>
-            <input type="text" name="data.range" value="{{data.range}}" data-dtype="String"/>
+            <input type="text" name="system.range" value="{{system.range}}" data-dtype="String"/>
           </div>
 
           <div class="cell grid-4">
             <label class="cell--title">
               {{localize "DX3rd.Target"}}
             </label>
-            <input type="text" name="data.target" value="{{data.target}}" data-dtype="String"/>
+            <input type="text" name="system.target" value="{{system.target}}" data-dtype="String"/>
           </div>
 
           <div class="cell grid-4">
@@ -109,9 +109,9 @@
               {{localize "DX3rd.Encroach"}}
             </label>
             <div class="flex">
-              <input type="text" name="data.encroach.value" value="{{data.encroach.value}}" data-dtype="String"/>
+              <input type="text" name="system.encroach.value" value="{{system.encroach.value}}" data-dtype="String"/>
               <span class="slash"> / </span>
-              <input type="text" name="data.encroach.init" value="{{data.encroach.init}}" data-dtype="Number"/>
+              <input type="text" name="system.encroach.init" value="{{system.encroach.init}}" data-dtype="Number"/>
             </div>
           </div>
 
@@ -119,8 +119,8 @@
 
         <div class="cell cell--bio">
           <label class="cell--title">
-            <select class="left-addon" name="data.type" data-dtype="String">
-              {{#select data.type}}
+            <select class="left-addon" name="system.type" data-dtype="String">
+              {{#select system.type}}
               <option value="normal">{{localize "DX3rd.Effect"}}</option>
               <option value="easy">{{localize "DX3rd.Easy"}}</option>
               {{/select}}
@@ -130,12 +130,12 @@
             {{localize "DX3rd.Description"}}
             <div class="checkbox-addon flexrow">
               <span>{{localize "DX3rd.EXP"}} </span>
-              <input type="checkbox" name="data.exp.own" {{#if data.exp.own}} checked {{/if}} data-dtype="Boolean"/>
-              <input type="checkbox" name="data.exp.upgrade" {{#if data.exp.upgrade}} checked {{/if}} data-dtype="Boolean"/>
+              <input type="checkbox" name="system.exp.own" {{#if system.exp.own}} checked {{/if}} data-dtype="Boolean"/>
+              <input type="checkbox" name="system.exp.upgrade" {{#if system.exp.upgrade}} checked {{/if}} data-dtype="Boolean"/>
             </div>
           </label>
           {{!-- We're avoiding WYSIWYGs... for now... --}}
-          {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+          {{editor enrichedBiography target="system.description" button=true editable=editable }}
         </div>
       </div>
 
@@ -148,8 +148,8 @@
           <tr>
             <th><span>{{localize "DX3rd.RollType"}}</span></th>
             <td>
-              <select name="data.roll" data-dtype="String">
-                {{#select data.roll}}
+              <select name="system.roll" data-dtype="String">
+                {{#select system.roll}}
                 <option value="-">-</option>
                 <option value="major">{{localize "DX3rd.Major"}}</option>
                 <option value="reaction">{{localize "DX3rd.Reaction"}}</option>
@@ -157,15 +157,15 @@
                 {{/select}}
               </select>
             </td>
-            <th><label for="data.macro">{{localize "DX3rd.Macro"}}</label></th>
-            <td colspan="5"><input type="text" name="data.macro" data-dtype="String" value="{{data.macro}}"></td>
+            <th><label for="system.macro">{{localize "DX3rd.Macro"}}</label></th>
+            <td colspan="5"><input type="text" name="system.macro" data-dtype="String" value="{{system.macro}}"></td>
           </tr>
           
           <tr>
             <th><span>{{localize "DX3rd.AttackRoll"}}</span></th>
             <td>
-              <select name="data.attackRoll" data-dtype="String" style="width: calc(100% - 17px);">
-                {{#select data.attackRoll}}
+              <select name="system.attackRoll" data-dtype="String" style="width: calc(100% - 17px);">
+                {{#select system.attackRoll}}
                 <option value="-">-</option>
                 <option value="melee">{{localize "DX3rd.Melee"}}</option>
                 <option value="ranged">{{localize "DX3rd.Ranged"}}</option>
@@ -173,11 +173,11 @@
               </select>
             </td>
             <th><span>{{localize "DX3rd.Active"}}</span></th>
-            <td><input type="checkbox" name="data.active.state" {{#if data.active.state}} checked {{/if}}></td>
+            <td><input type="checkbox" name="system.active.state" {{#if system.active.state}} checked {{/if}}></td>
             <th><span>{{localize "DX3rd.DisableTiming"}}</span></th>
             <td>
-              <select name="data.active.disable" data-dtype="String">
-                {{#select data.active.disable}}
+              <select name="system.active.disable" data-dtype="String">
+                {{#select system.active.disable}}
                 <option value="-">-</option>
                 <option value="notCheck">{{localize "DX3rd.NotCheck"}}</option>
                 <option value="roll">{{localize "DX3rd.AfterRoll"}}</option>
@@ -201,9 +201,9 @@
           </header>
     
           <ol class="attributes-list">
-          {{#each data.attributes as |attr key|}}
+          {{#each system.attributes as |attr key|}}
             <li class="attribute flexrow" data-attribute="{{key}}">
-              <select class="attribute-key" name="data.attributes.{{key}}.key" data-dtype="String">
+              <select class="attribute-key" name="system.attributes.{{key}}.key" data-dtype="String">
                 {{#select key}}
                 <option value="-">-</option>
                 <option value="attack">{{localize "DX3rd.Attack"}}</option>
@@ -239,7 +239,7 @@
                 {{/select}}
               </select>
 
-              <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="String"/>
+              <input class="attribute-value" type="text" name="system.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="String"/>
               <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
             </li>
           {{/each}}
@@ -255,12 +255,12 @@
         <table>
           <tr>
             <th><span>{{localize "DX3rd.Target"}}</span> </th>
-            <td><input type="checkbox" name="data.getTarget" {{#if data.getTarget}} checked {{/if}}></td>
+            <td><input type="checkbox" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}></td>
             
             <th><span>{{localize "DX3rd.DisableTiming"}}</span></th>
             <td>
-              <select name="data.effect.disable" data-dtype="String">
-                {{#select data.effect.disable}}
+              <select name="system.effect.disable" data-dtype="String">
+                {{#select system.effect.disable}}
                 <option value="-">-</option>
                 <option value="notCheck">{{localize "DX3rd.NotCheck"}}</option>
                 <option value="roll">{{localize "DX3rd.AfterRoll"}}</option>
@@ -284,9 +284,9 @@
           </header>
     
           <ol class="attributes-list">
-          {{#each data.effect.attributes as |attr key|}}
+          {{#each system.effect.attributes as |attr key|}}
             <li class="attribute flexrow" data-attribute="{{key}}">
-              <select class="attribute-key" name="data.effect.attributes.{{key}}.key" data-dtype="String">
+              <select class="attribute-key" name="system.effect.attributes.{{key}}.key" data-dtype="String">
                 {{#select key}}
                 <option value="-">-</option>
                 <option value="attack">{{localize "DX3rd.Attack"}}</option>
@@ -322,7 +322,7 @@
                 {{/select}}
               </select>
 
-              <input class="attribute-value" type="text" name="data.effect.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="String"/>
+              <input class="attribute-value" type="text" name="system.effect.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="String"/>
               <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
             </li>
           {{/each}}

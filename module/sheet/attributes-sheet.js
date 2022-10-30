@@ -7,7 +7,7 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
     let data = await super.getData(options);
 
     if (this.actor != null)
-      data.data.actorSkills = duplicate(this.actor.data.data.attributes.skills);
+      data.data.actorSkills = duplicate(this.actor.system.attributes.skills);
     else
       data.data.actorSkills = duplicate(game.DX3rd.baseSkills);
 
@@ -38,9 +38,9 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
 
     // Add new attribute
     if ( action === "create" ) {
-      let attr = 'data.attributes'
+      let attr = 'system.attributes'
       if (pos != "main")
-        attr = 'data.effect.attributes';
+        attr = 'system.effect.attributes';
 
       if ($(form).find(`select[name='${attr}.-.key']`).length != 0)
         return;
@@ -63,16 +63,15 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
   }
 
   /** @override */
-  _updateObject(event, formData) {
+  _getSubmitData(updateData) {
+    let formData = super._getSubmitData(updateData);
     formData = this.updateAttributes(formData);
-
-    // Update the Item
-    return this.object.update(formData);
+    return formData;
   }
 
   updateAttributes(formData) {
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.attributes || {};
+    const formAttrs = expandObject(formData).system.attributes || {};
 
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
@@ -83,15 +82,15 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
     }, {});
 
     // Remove attributes which are no longer used
-    for ( let k of Object.keys(this.object.data.data.attributes) ) {
+    for ( let k of Object.keys(this.object.system.attributes) ) {
       if ( !attributes.hasOwnProperty(k) ) attributes[`-=${k}`] = null;
     }
 
     // Re-combine formData
-    formData = Object.entries(formData).filter(e => !e[0].startsWith("data.attributes")).reduce((obj, e) => {
+    formData = Object.entries(formData).filter(e => !e[0].startsWith("system.attributes")).reduce((obj, e) => {
       obj[e[0]] = e[1];
       return obj;
-    }, {id: this.object.id, "data.attributes": attributes});
+    }, {id: this.object.id, "system.attributes": attributes});
 
     return formData;
   }

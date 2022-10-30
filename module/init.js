@@ -124,8 +124,8 @@ Hooks.on("updateActorEncroach", async (actor, key, type) => {
   if (itemUsage.target && itemUsage.roll) {
     console.log(itemUsage.encroach);
 
-    const last = Number(actor.data.data.attributes.encroachment.value);
-    let encroach = Number(actor.data.data.attributes.encroachment.value) + itemUsage.encroach;
+    const last = Number(actor.system.attributes.encroachment.value);
+    let encroach = Number(actor.system.attributes.encroachment.value) + itemUsage.encroach;
 
     let chatData = {
       speaker: ChatMessage.getSpeaker({actor: actor})
@@ -139,7 +139,7 @@ Hooks.on("updateActorEncroach", async (actor, key, type) => {
 
       let rollData = await roll.render();
 
-      encroach = Number(actor.data.data.attributes.encroachment.value) + roll.total;
+      encroach = Number(actor.system.attributes.encroachment.value) + roll.total;
       chatData.content = `
         <div class="dx3rd-roll" data-actor-id=${actor.id}>
           <h2 class="header"><div class="title">${actor.name}: ${last} -> ${encroach} (+${ roll.total })</div></h2>
@@ -151,7 +151,7 @@ Hooks.on("updateActorEncroach", async (actor, key, type) => {
       chatData.roll = roll;
     }
     
-    await actor.update({"data.attributes.encroachment.value": encroach});
+    await actor.update({"system.attributes.encroachment.value": encroach});
     let rollMode = game.settings.get("core", "rollMode");
     ChatMessage.create(chatData, {rollMode});
 
@@ -233,15 +233,15 @@ Hooks.on("hotbarDrop", async (bar, data, slot) => {
   if (data.data == undefined)
     return false;
 
-  const command = `const a = game.actors.get("${data.actorId}");\nconst item = a.items.get("${data.data._id}");\nitem.toMessage()`;
-  let macro = game.macros.contents.find(m => (m.data.name === data.data.name) && (m.data.command === command));
+  const command = `const a = game.actors.get("${data.actorId}");\nconst item = a.items.get("${system._id}");\nitem.toMessage()`;
+  let macro = game.macros.contents.find(m => (m.name === system.name) && (m.command === command));
 
   if (!macro) {
     macro = await Macro.create({
-      name: data.data.name,
+      name: system.name,
       type: "script",
       command: command,
-      img: data.data.img
+      img: system.img
     });
   }
 
@@ -259,11 +259,11 @@ async function chatListeners(html) {
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
-    let skill = item.data.data.skill;
+    let skill = item.system.skill;
     let base = "";
-    const rollType = item.data.data.roll;
-    const attackRoll = item.data.data.attackRoll;
-    const encroach = Number.isNaN(Number(item.data.data.encroach.value)) ? item.data.data.encroach.value : Number(item.data.data.encroach.value);
+    const rollType = item.system.roll;
+    const attackRoll = item.system.attackRoll;
+    const encroach = Number.isNaN(Number(item.system.encroach.value)) ? item.system.encroach.value : Number(item.system.encroach.value);
 
     let mainStat = ["body", "sense", "mind", "social"];
     if (mainStat.includes(skill)) {
@@ -271,26 +271,26 @@ async function chatListeners(html) {
       skill = "-";
     }
 
-    if (skill in actor.data.data.attributes.skills)
-      base = actor.data.data.attributes.skills[skill].base;
+    if (skill in actor.system.attributes.skills)
+      base = actor.system.attributes.skills[skill].base;
 
     let updates = {};
-    if (item.data.data.active.disable != 'notCheck')
-        updates["data.active.state"] = true;
+    if (item.system.active.disable != 'notCheck')
+        updates["system.active.state"] = true;
     await item.update(updates);
 
     Hooks.call("setActorEncroach", actor, item.id, encroach);
 
-    if (item.data.data.getTarget)
+    if (item.system.getTarget)
       await item.applyTargetDialog(true);
     else {
-      const macro = game.macros.contents.find(m => (m.data.name === item.data.data.macro));
+      const macro = game.macros.contents.find(m => (m.name === item.system.macro));
       if (macro != undefined)
           macro.execute();
-      else if (item.data.data.macro != "")
+      else if (item.system.macro != "")
           new Dialog({
               title: "macro",
-              content: `Do not find this macro: ${item.data.data.macro}`,
+              content: `Do not find this macro: ${item.system.macro}`,
               buttons: {}
           }).render(true);
 
@@ -309,7 +309,7 @@ async function chatListeners(html) {
       "skill": skill
     };
 
-    const title = item.data.name;
+    const title = item.name;
     if (diceOptions["rollType"] != '-') {
       if (attackRoll == "-")
         await actor.rollDice(title, diceOptions, append);
@@ -317,7 +317,7 @@ async function chatListeners(html) {
         let confirm = async (weaponData) => {
           diceOptions["attack"] = {
             "value": weaponData.attack,
-            "type": item.data.data.attackRoll
+            "type": item.system.attackRoll
           };
 
           console.log(diceOptions);
@@ -340,21 +340,21 @@ async function chatListeners(html) {
     const item = actor.items.get(itemInfo.dataset.itemId);
 
     let updates = {};
-    if (item.data.data.active.disable != 'notCheck')
-        updates["data.active.state"] = true;
+    if (item.system.active.disable != 'notCheck')
+        updates["system.active.state"] = true;
     await item.update(updates);
 
-    const skillId = item.data.data.skill;
-    const encroach = item.data.data.encroach.value;
+    const skillId = item.system.skill;
+    const encroach = item.system.encroach.value;
 
-    const skill = item.data.data.skill;
-    const base = item.data.data.base;
-    const rollType = item.data.data.roll;
-    const attackRoll = item.data.data.attackRoll;
+    const skill = item.system.skill;
+    const base = item.system.base;
+    const rollType = item.system.roll;
+    const attackRoll = item.system.attackRoll;
 
     Hooks.call("setActorEncroach", actor, item.id, encroach);
 
-    const effectItems = item.data.data.effect;
+    const effectItems = item.system.effect;
     const appliedList = [];
     const macroList = [];
 
@@ -363,30 +363,30 @@ async function chatListeners(html) {
         continue;
 
       let effect = actor.items.get(e);
-      if (effect.data.data.effect.disable != "-")
+      if (effect.system.effect.disable != "-")
         appliedList.push(effect);
       
-      if (!effect.data.data.getTarget) {
-        const macro = game.macros.contents.find(m => (m.data.name === effect.data.data.macro));
+      if (!effect.system.getTarget) {
+        const macro = game.macros.contents.find(m => (m.name === effect.system.macro));
         if (macro != undefined)
             macro.execute();
-        else if (effect.data.data.macro != "")
+        else if (effect.system.macro != "")
             new Dialog({
                 title: "macro",
-                content: `Do not find this macro: ${effect.data.data.macro}`,
+                content: `Do not find this macro: ${effect.system.macro}`,
                 buttons: {}
             }).render(true);
       } else
         macroList.push(effect);
 
       let updates = {};
-      if (effect.data.data.active.disable != 'notCheck')
-          updates["data.active.state"] = true;
+      if (effect.system.active.disable != 'notCheck')
+          updates["system.active.state"] = true;
       await effect.update(updates);
     }
 
 
-    if (!item.data.data.getTarget)
+    if (!item.system.getTarget)
       Hooks.call("updateActorEncroach", actor, item.id, "target");
     else {
       new Dialog({
@@ -407,13 +407,13 @@ async function chatListeners(html) {
                   await e.applyTarget(a);
 
                 for (let e of macroList) {
-                  const macro = game.macros.contents.find(m => (m.data.name === e.data.data.macro));
+                  const macro = game.macros.contents.find(m => (m.name === e.system.macro));
                   if (macro != undefined)
                       macro.execute();
-                  else if (e.data.data.macro != "")
+                  else if (e.system.macro != "")
                       new Dialog({
                           title: "macro",
-                          content: `Do not find this macro: ${e.data.data.macro}`,
+                          content: `Do not find this macro: ${e.system.macro}`,
                           buttons: {}
                       }).render(true);
                 }
@@ -433,7 +433,7 @@ async function chatListeners(html) {
     if (event.ctrlKey)
       append = true;
 
-    const title = item.data.name;
+    const title = item.name;
     const diceOptions = {
       "key": item.id,
       "rollType": rollType,
@@ -445,7 +445,7 @@ async function chatListeners(html) {
       if (attackRoll == "-")
         await actor.rollDice(title, diceOptions, append);
       else {
-        if (item.data.data.weaponSelect) {
+        if (item.system.weaponSelect) {
             let confirm = async (weaponData) => {
             diceOptions["attack"] = {
               "value": weaponData.attack,
@@ -457,8 +457,8 @@ async function chatListeners(html) {
           new WeaponDialog(actor, confirm).render(true);
 
         } else {
-          const weaponItems = Object.values(item.data.data.weaponItems);
-          let attack = await weaponItems.reduce((acc, v) => acc + v.data.attack, 0);
+          const weaponItems = Object.values(item.system.weaponItems);
+          let attack = await weaponItems.reduce((acc, v) => acc + v.attack, 0);
 
           diceOptions["attack"] = {
             "value": attack,
@@ -485,15 +485,15 @@ async function chatListeners(html) {
     if (event.ctrlKey)
       append = true;
 
-    const id = item.data.data.skill;
-    const skill = actor.data.data.attributes.skills[id];
+    const id = item.system.skill;
+    const skill = actor.system.attributes.skills[id];
     const title = (skill.name.indexOf('DX3rd.') != -1) ? game.i18n.localize(skill.name) : skill.name;
 
     const diceOptions = {
       "rollType": "major",
       "attack": {
-        "value": item.data.data.attack,
-        "type": item.data.data.type
+        "value": item.system.attack,
+        "type": item.system.type
       },
       "base": skill.base,
       "skill": id
@@ -583,7 +583,7 @@ async function chatListeners(html) {
       const targets = game.users.get(game.user.id).targets;
       for (var target of targets) {
         let actor = target.actor;
-        let actorData = actor.data.data;
+        let actorData = actor.system;
         let realDamage = damage;
 
         let share = game.user.id;
@@ -663,16 +663,16 @@ Hooks.on("enterScene", (actor) => {
           let roll = new Roll(formula);
           await roll.roll({async: true})
 
-          let before = actor.data.data.attributes.encroachment.value;
+          let before = actor.system.attributes.encroachment.value;
           let after = Number(before) + Number(roll.total);
 
-          await actor.update({"data.attributes.encroachment.value": after});
+          await actor.update({"system.attributes.encroachment.value": after});
 
           let rollMode = game.settings.get("core", "rollMode");
           let rollData = await roll.render();
           let content = `
             <div class="dx3rd-roll">
-              <h2 class="header"><div class="title">${actor.data.name} ${game.i18n.localize("DX3rd.EnterScene")}</div></h2>
+              <h2 class="header"><div class="title">${actor.name} ${game.i18n.localize("DX3rd.EnterScene")}</div></h2>
               <div class="context-box">
                 ${game.i18n.localize("DX3rd.Encroachment")}: ${before} -> ${after} (+${roll.total})
               </div>

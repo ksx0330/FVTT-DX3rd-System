@@ -27,7 +27,7 @@
           <select id="weapon">
             <option value="-" data-guard=0>-</option>
             {{#each weaponList as |item id|}}
-            <option value="{{item.name}}" data-guard={{item.data.guard}}>{{item.name}} ({{item.data.guard}})</option>
+            <option value="{{item.name}}" data-guard={{item.system.guard}}>{{item.name}} ({{item.system.guard}})</option>
             {{/each}}
           </select>
         </td>

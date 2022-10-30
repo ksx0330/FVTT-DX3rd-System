@@ -71,7 +71,7 @@
             <h4 class="item-name">
               <span class="item-label">
                 <img src="{{item.img}}" class="echo-item" title="{{item.name}}" width="32" height="32" style="vertical-align : middle;margin-right:4px;">
-                <span class="level">{{item.data.level.value}}</span>
+                <span class="level">{{item.system.level.value}}</span>
                 {{item.name}}
 
                 <div class="item-controls">
@@ -90,16 +90,16 @@
                 <th class="width-14">{{localize "DX3rd.Limit"}}</th>
               </tr>
               <tr>
-                <td class="width-18">{{timing item.data.timing}}</td>
-                <td class="width-18">{{skillByKey ../actor item.data.skill}}</td>
-                <td class="width-18">{{item.data.target}}</td>
-                <td class="width-18">{{item.data.range}}</td>
-                <td class="width-14">{{item.data.encroach.value}}</td>
-                <td class="width-14">{{item.data.limit}}</td>
+                <td class="width-18">{{timing item.system.timing}}</td>
+                <td class="width-18">{{skillByKey ../actor item.system.skill}}</td>
+                <td class="width-18">{{item.system.target}}</td>
+                <td class="width-18">{{item.system.range}}</td>
+                <td class="width-14">{{item.system.encroach.value}}</td>
+                <td class="width-14">{{item.system.limit}}</td>
               </tr>
             </table>
 
-            <div class="item-description">{{{item.data.description}}}</div>
+            <div class="item-description">{{{item.system.description}}}</div>
           </li>
           {{/each}}
 

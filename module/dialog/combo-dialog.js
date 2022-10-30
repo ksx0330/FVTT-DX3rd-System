@@ -13,7 +13,7 @@ export class ComboDialog extends Dialog {
     this.base = diceOptions.base;
 
     if (this.skillId != null)
-      this.skill = actor.data.data.attributes.skills[this.skillId];
+      this.skill = actor.system.attributes.skills[this.skillId];
     else
       this.skill = "-";
 
@@ -52,14 +52,12 @@ export class ComboDialog extends Dialog {
 
   /** @override */
   getData() {
-    let actorSkills = duplicate(this.actor.data.data.attributes.skills);
+    let actorSkills = duplicate(this.actor.system.attributes.skills);
     let effectList = [];
 
-    for (let i of this.actor.data.items) {
-      let item = i.data;
-
+    for (let i of this.actor.items) {
       if (i.type == 'effect')
-        effectList.push(item);
+        effectList.push(i);
     }
 
     return {
@@ -67,7 +65,7 @@ export class ComboDialog extends Dialog {
       content: this.data.content,
       buttons: this.data.buttons,
       
-      actor: this.actor.data,
+      actor: this.actor,
       skill: this.skillId,
       base: this.base,
       effectList: effectList,
@@ -89,14 +87,14 @@ export class ComboDialog extends Dialog {
         let effect = this.actor.items.get(val.dataset.id);
         effectList.push(effect);
         
-        if ( Number.isNaN(Number(effect.data.data.encroach.value)) )
-          encroachStr.push(effect.data.data.encroach.value);
+        if ( Number.isNaN(Number(effect.system.encroach.value)) )
+          encroachStr.push(effect.system.encroach.value);
         else
-          encroach += Number(effect.data.data.encroach.value);
+          encroach += Number(effect.system.encroach.value);
 
         let updates = {};
-        if (effect.data.data.active.disable != 'notCheck')
-            updates["data.active.state"] = true;
+        if (effect.system.active.disable != 'notCheck')
+            updates["system.active.state"] = true;
         await effect.update(updates);
       }
     });
@@ -105,14 +103,14 @@ export class ComboDialog extends Dialog {
         encroach += "+" + encroachStr.join("+");
 
     for (let effect of effectList) {
-      if (!effect.data.data.getTarget) {
-        const macro = game.macros.contents.find(m => (m.data.name === effect.data.data.macro));
+      if (!effect.system.getTarget) {
+        const macro = game.macros.contents.find(m => (m.name === effect.system.macro));
         if (macro != undefined)
             macro.execute();
-        else if (effect.data.data.macro != "")
+        else if (effect.system.macro != "")
             new Dialog({
                 title: "macro",
-                content: `Do not find this macro: ${effect.data.data.macro}`,
+                content: `Do not find this macro: ${effect.system.macro}`,
                 buttons: {}
             }).render(true);
       } else
@@ -138,19 +136,19 @@ export class ComboDialog extends Dialog {
       if (e.img != "icons/svg/item-bag.svg")  
         content += `<img src="${e.img}" width="20" height="20" style="vertical-align : middle;margin-right:8px;">`;
 
-      content += `<span class="item-label">[${e.data.data.level.value}] ${e.data.name}<br>
+      content += `<span class="item-label">[${e.system.level.value}] ${e.name}<br>
               <span style="color : gray; font-size : smaller;">
-                ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.data.data.timing}) } / 
-                ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor.data, key: e.data.data.skill}) } / 
-                ${game.i18n.localize("DX3rd.Target")} : ${e.data.data.target} / 
-                ${game.i18n.localize("DX3rd.Range")} : ${e.data.data.range} /
-                ${game.i18n.localize("DX3rd.Encroach")} : ${e.data.data.encroach.value} /
-                ${game.i18n.localize("DX3rd.Limit")} : ${e.data.data.limit}
+                ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.system.timing}) } / 
+                ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.system.skill}) } / 
+                ${game.i18n.localize("DX3rd.Target")} : ${e.system.target} / 
+                ${game.i18n.localize("DX3rd.Range")} : ${e.system.range} /
+                ${game.i18n.localize("DX3rd.Encroach")} : ${e.system.encroach.value} /
+                ${game.i18n.localize("DX3rd.Limit")} : ${e.system.limit}
                 <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
               </span>
             </span>
           </h4>
-          <div class="item-description">${e.data.data.description}</div>
+          <div class="item-description">${e.system.description}</div>
         </div>
         `;
     }
@@ -184,9 +182,9 @@ export class ComboDialog extends Dialog {
     let getTarget = false;
     let appliedList = [];
     for (let e of effectList) {
-      if (e.data.data.effect.disable != "-")
+      if (e.system.effect.disable != "-")
         appliedList.push(e);
-      if (e.data.data.getTarget)
+      if (e.system.getTarget)
         getTarget = true;
     }
 
@@ -211,13 +209,13 @@ export class ComboDialog extends Dialog {
                   await e.applyTarget(a);
 
                 for (let e of macroList) {
-                  const macro = game.macros.contents.find(m => (m.data.name === e.data.data.macro));
+                  const macro = game.macros.contents.find(m => (m.name === e.system.macro));
                   if (macro != undefined)
                       macro.execute();
-                  else if (e.data.data.macro != "")
+                  else if (e.system.macro != "")
                       new Dialog({
                           title: "macro",
-                          content: `Do not find this macro: ${e.data.data.macro}`,
+                          content: `Do not find this macro: ${e.system.macro}`,
                           buttons: {}
                       }).render(true);
                 }

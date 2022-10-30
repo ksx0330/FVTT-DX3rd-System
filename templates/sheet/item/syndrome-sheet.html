@@ -13,28 +13,28 @@
           <label class="cell--title">
             {{localize "DX3rd.Body"}}
           </label>
-          <input type="text" name="data.attributes.body.value" value="{{data.attributes.body.value}}" data-dtype="Number"/>
+          <input type="text" name="system.attributes.body.value" value="{{system.attributes.body.value}}" data-dtype="Number"/>
         </div>
 
         <div class="cell grid-4">
           <label class="cell--title">
             {{localize "DX3rd.Sense"}}
           </label>
-          <input type="text" name="data.attributes.sense.value" value="{{data.attributes.sense.value}}" data-dtype="Number"/>
+          <input type="text" name="system.attributes.sense.value" value="{{system.attributes.sense.value}}" data-dtype="Number"/>
         </div>
 
         <div class="cell grid-4">
           <label class="cell--title">
             {{localize "DX3rd.Mind"}}
           </label>
-          <input type="text" name="data.attributes.mind.value" value="{{data.attributes.mind.value}}" data-dtype="Number"/>
+          <input type="text" name="system.attributes.mind.value" value="{{system.attributes.mind.value}}" data-dtype="Number"/>
         </div>
 
         <div class="cell grid-4">
           <label class="cell--title">
             {{localize "DX3rd.Social"}}
           </label>
-          <input type="text" name="data.attributes.social.value" value="{{data.attributes.social.value}}" data-dtype="Number"/>
+          <input type="text" name="system.attributes.social.value" value="{{system.attributes.social.value}}" data-dtype="Number"/>
         </div>
 
       </section>
@@ -44,7 +44,7 @@
           {{localize "DX3rd.Description"}}
         </label>
         {{!-- We're avoiding WYSIWYGs... for now... --}}
-        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        {{editor enrichedBiography target="system.description" button=true editable=editable }}
       </div>
     </div>
   </section>

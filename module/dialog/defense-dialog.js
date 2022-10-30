@@ -19,7 +19,7 @@ export class DefenseDialog extends Dialog {
         
             Hooks.call("afterReaction", this.actor);
             
-            await this.actor.update({"data.attributes.hp.value": life});
+            await this.actor.update({"system.attributes.hp.value": life});
             let chatData = {"content": this.actor.name + " (" + realDamage + ")", "speaker": ChatMessage.getSpeaker({ actor: this.actor })};
             ChatMessage.create(chatData);
           }
@@ -52,16 +52,16 @@ export class DefenseDialog extends Dialog {
   getData() {
     let weaponList = [];
 
-    for (let i of this.actor.data.items) {
-      let item = i.data;
+    for (let i of this.actor.items) {
+      let item = i;
 
       if (i.type == 'weapon')
         weaponList.push(item);
     }
 
     let defense = {
-      armor: Number(this.actor.data.data.attributes.armor.value),
-      guard: Number(this.actor.data.data.attributes.guard.value),
+      armor: Number(this.actor.system.attributes.armor.value),
+      guard: Number(this.actor.system.attributes.guard.value),
       reduce: 0,
       double: false,
       guardCheck: false
@@ -116,7 +116,7 @@ export class DefenseDialog extends Dialog {
 
   calcDefenseDamage(def) {
     let defense = duplicate(def);
-    let actorData = this.actor.data.data;
+    let actorData = this.actor.system;
 
     if (this.damageData.data.ignoreArmor)
       defense.armor = 0;

@@ -7,9 +7,11 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
     let data = await super.getData(options);
 
     if (this.actor != null)
-      data.data.actorSkills = duplicate(this.actor.data.data.attributes.skills);
+      data.system.actorSkills = duplicate(this.actor.system.attributes.skills);
     else
-      data.data.actorSkills = duplicate(game.DX3rd.baseSkills);
+      data.system.actorSkills = duplicate(game.DX3rd.baseSkills);
+
+    console.log(data);
 
     return data;
   }
@@ -31,10 +33,10 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
   /* -------------------------------------------- */
 
   async _onSkillCreate(event) {
-    let key = this.item.data.data.skillTmp;
+    let key = this.item.system.skillTmp;
 
     let newKey = document.createElement("div");
-    const skill = `<input type="hidden" name="data.skills.${key}.key" value="${key}"/>`;
+    const skill = `<input type="hidden" name="system.skills.${key}.key" value="${key}"/>`;
     newKey.innerHTML = skill;
 
     newKey = newKey.children[0];
@@ -54,11 +56,11 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
 
     // Add new attribute
     if ( action === "create" ) {
-      if ($(form).find("input[name='data.skills.-.key']").length != 0)
+      if ($(form).find("input[name='system.skills.-.key']").length != 0)
         return;
 
       let newKey = document.createElement("div");
-      const skill = `<input type="hidden" name="data.skills.-.key" value="-"/>`;
+      const skill = `<input type="hidden" name="system.skills.-.key" value="-"/>`;
       newKey.innerHTML = skill;
 
       newKey = newKey.children[0];
@@ -75,16 +77,15 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
   }
 
   /** @override */
-  _updateObject(event, formData) {
+  _getSubmitData(updateData) {
+    let formData = super._getSubmitData(updateData);
     formData = this.updateAttributes(formData);
-
-    // Update the Item
-    return this.object.update(formData);
+    return formData;
   }
 
   updateAttributes(formData) {
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.skills || {};
+    const formAttrs = expandObject(formData).system.skills || {};
 
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
@@ -95,15 +96,17 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
     }, {});
 
     // Remove attributes which are no longer used
-    for ( let k of Object.keys(this.object.data.data.skills) ) {
+    for ( let k of Object.keys(this.object.system.skills) ) {
       if ( !attributes.hasOwnProperty(k) ) attributes[`-=${k}`] = null;
     }
 
     // Re-combine formData
-    formData = Object.entries(formData).filter(e => !e[0].startsWith("data.skills")).reduce((obj, e) => {
+    formData = Object.entries(formData).filter(e => !e[0].startsWith("system.skills")).reduce((obj, e) => {
       obj[e[0]] = e[1];
       return obj;
-    }, {id: this.object.id, "data.skills": attributes});
+    }, {id: this.object.id, "system.skills": attributes});
+
+    console.log(formData);
 
     return formData;
   }

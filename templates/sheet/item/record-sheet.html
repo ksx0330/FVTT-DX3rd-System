@@ -5,7 +5,7 @@
       <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
       <div class="level">
         <label>{{localize "DX3rd.EXP"}}</label>
-        <input name="data.exp" type="text" value="{{data.exp}}" data-dtype="Number"/>
+        <input name="system.exp" type="text" value="{{system.exp}}" data-dtype="Number"/>
       </div>
     </div>
   </header>
@@ -20,7 +20,7 @@
     <div class="sheet-wrapper">
       <div class="cell cell--bio">
         {{!-- We're avoiding WYSIWYGs... for now... --}}
-        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        {{editor enrichedBiography target="system.description" button=true editable=editable }}
       </div>
     </div>
   </section>

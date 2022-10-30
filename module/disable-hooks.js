@@ -34,17 +34,17 @@ export class DisableHooks {
     static async disableTalents(actor, active, used) {
         for (let item of actor.items) {
             let updates = {};
-            if (item.data.data.active != undefined)
-            if (active.findIndex(i => i == item.data.data.active.disable) != -1)
-                updates["data.active.state"] = false;
+            if (item.system.active != undefined)
+            if (active.findIndex(i => i == item.system.active.disable) != -1)
+                updates["system.active.state"] = false;
 
             await item.update(updates);
         }
 
         let updates = {};
-        for (let [key, effect] of Object.entries(actor.data.data.attributes.applied)) {
+        for (let [key, effect] of Object.entries(actor.system.attributes.applied)) {
             if (active.findIndex(i => i == effect.disable) != -1)
-                updates[`data.attributes.applied.-=${key}`] = null;
+                updates[`system.attributes.applied.-=${key}`] = null;
         }
         await actor.update(updates);
     }

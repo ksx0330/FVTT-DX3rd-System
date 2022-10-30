@@ -6,8 +6,8 @@ export class DX3rdEquipmentSheet extends DX3rdWorksSheet {
   async getData(options) {
     let data = await super.getData(options);
 
-    let skills = data.data.skills;
-    let actorSkills = data.data.actorSkills;
+    let skills = data.system.skills;
+    let actorSkills = data.system.actorSkills;
 
     for (const [key, value] of Object.entries(skills)) {
       if (key in actorSkills)
