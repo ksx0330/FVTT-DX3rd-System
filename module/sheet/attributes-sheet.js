@@ -7,9 +7,9 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
     let data = await super.getData(options);
 
     if (this.actor != null)
-      data.data.actorSkills = duplicate(this.actor.system.attributes.skills);
+      data.system.actorSkills = duplicate(this.actor.system.attributes.skills);
     else
-      data.data.actorSkills = duplicate(game.DX3rd.baseSkills);
+      data.system.actorSkills = duplicate(game.DX3rd.baseSkills);
 
     return data;
   }
