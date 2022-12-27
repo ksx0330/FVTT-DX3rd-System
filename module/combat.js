@@ -20,45 +20,10 @@ export class DX3rdCombat extends Combat {
           endActor = a;
       }
     
-      if (startActor == null) {
-        const itemData = {
-          name: endLabel,
-          type: "effect",
-          system: {
-            attributes: {
-              init:  {
-                value: "99"
-              }
-            },
-            active: {
-              state: true
-            }
-          }
-        };
-
+      if (startActor == null)
         startActor = await Actor.create({name: startLabel, type: "character", img: "icons/pings/chevron.webp"});
-        startActor.createEmbeddedDocuments('Item', [itemData], {});
-      }
-        
-      if (endActor == null) {
-        const itemData = {
-          name: endLabel,
-          type: "effect",
-          system: {
-            attributes: {
-              init:  {
-                value: "-1"
-              }
-            },
-            active: {
-              state: true
-            }
-          }
-        };
-
-        endActor = await Actor.create({name: endLabel, type: "character", img: "icons/pings/chevron.webp", system: {"attributes.init.value": -1}});
-        endActor.createEmbeddedDocuments('Item', [itemData], {});
-      }
+      if (endActor == null)
+        endActor = await Actor.create({name: endLabel, type: "character", img: "icons/pings/chevron.webp"});
   
   
       for (let a of this.scene.tokens) {
@@ -77,13 +42,19 @@ export class DX3rdCombat extends Combat {
       await this.setFlag("dx3rd", "startToken", startToken.uuid);
       await this.setFlag("dx3rd", "endToken", endToken.uuid);
   
-      await this.createEmbeddedDocuments("Combatant", [{actorId: startActor.id, tokenId: startToken.id, name: startLabel, initiative: 99}, {actorId: endActor.id, tokenId: endToken.id, name: endLabel, initiative: -1}], {});
+      await this.createEmbeddedDocuments("Combatant", [{actorId: startActor.id, tokenId: startToken.id, name: startLabel, img: startActor.img, initiative: 99}, {actorId: endActor.id, tokenId: endToken.id, name: endLabel, img: startActor.img, initiative: -99}], {});
       
       if ( !this.collection.viewed ) ui.combat.initialize({combat: this});
     }
       
     /** @Override */
     async rollInitiative(ids, {formula=null, updateTurn=true, messageOptions={}}={}) {
+      let startTokenUUID = this.flags["dx3rd"].startToken;
+      let endTokenUUID = this.flags["dx3rd"].endToken;
+
+      let startToken = await fromUuid(startTokenUUID);
+      let endToken = await fromUuid(endTokenUUID);
+
   
       // Structure input data
       ids = typeof ids === "string" ? [ids] : ids;
@@ -94,15 +65,22 @@ export class DX3rdCombat extends Combat {
       const updates = [];
       const messages = [];
       for ( let [i, id] of ids.entries() ) {
-  
+
         // Get Combatant data (non-strictly)
         const combatant = this.combatants.get(id);
         if ( !combatant?.isOwner ) return results;
-  
+
         // Produce an initiative roll for the Combatant
         const roll = combatant.getInitiativeRoll(formula);
         await roll.evaluate({async: true});
-        updates.push({_id: id, initiative: roll.total});
+
+        let init = roll.total;
+        if (combatant.tokenId == startToken.id)
+          init = 99
+        else if (combatant.tokenId == endToken.id)
+          init = -99
+ 
+        updates.push({_id: id, initiative: init});
       }
       if ( !updates.length ) return this;
   
@@ -117,6 +95,24 @@ export class DX3rdCombat extends Combat {
       // Create multiple chat messages
       await ChatMessage.implementation.create(messages);
       return this;
+    }
+
+    _sortCombatants(a, b) {
+      const ia = Number.isNumeric(a.initiative) ? a.initiative : -9999;
+      const ib = Number.isNumeric(b.initiative) ? b.initiative : -9999;
+      let ci = ib - ia;
+      if ( ci !== 0 ) return ci;
+
+      if (a.isNPC !== b.isNPC) {
+        if (a.isNPC)
+          return 1;
+        else
+          return -1;
+      }
+
+      let cn = a.name.localeCompare(b.name);   
+      if ( cn !== 0 ) return cn;
+      return a.id - b.id;
     }
   
     /* -------------------------------------------- */	

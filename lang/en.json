@@ -151,6 +151,7 @@
   
     "DX3rd.Melee": "Melee",
     "DX3rd.Ranged": "Ranged",
+    "DX3rd.Engage": "Engagement",
   
     "DX3rd.DamageApply": "DamageApply",
     "DX3rd.Use": "Use",

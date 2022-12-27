@@ -99,6 +99,7 @@ export class DX3rdActor extends Actor {
         values = this._updateData(values, s.system.attributes);
     }
 
+    let fullMove = 0;
     let weaponAdd = { "melee": 0, "ranged": 0 };
     let tmp = {
       "dodge": { "value": 0 },
@@ -115,6 +116,8 @@ export class DX3rdActor extends Actor {
 
       if (i.type == "weapon" && iData.type != "-")
         weaponAdd[iData.type] += iData.add;
+      if (i.type == "vehicle" && iData.move != "")
+        fullMove = iData.move;
 
       values["saving"].value += iData.saving.value;
       values["exp"].value += iData.exp;
@@ -168,8 +171,9 @@ export class DX3rdActor extends Actor {
     delete values.hp;
 
     values["init"].value += values['sense'].value * 2 + values['mind'].value;
+    values["init"].value = (values["init"].value < 0) ? 0 : values["init"].value;
     attributes.move.battle = values["init"].value + 5;
-    attributes.move.full = (values['init'].value + 5) * 2;
+    attributes.move.full = (fullMove == 0) ? (values['init'].value + 5) * 2 : fullMove;
 
     let mainStat = ["body", "sense", "mind", "social"];
     for (let l of mainStat) {
@@ -715,7 +719,7 @@ export class DX3rdActor extends Actor {
     else if (rollType == "reaction" || rollType == "dodge") 
       Hooks.call("afterReaction", this);
 
-    await this.update({ "data.attributes.sublimation.dice": 0, "data.attributes.sublimation.critical": 0 });
+    await this.update({ "system.attributes.sublimation.dice": 0, "system.attributes.sublimation.critical": 0 });
   }
 
 

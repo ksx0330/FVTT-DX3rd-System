@@ -134,8 +134,7 @@ export class ComboDialog extends Dialog {
       content += `
         <div>
           <h4 class="item-name toggle-btn" data-style="item-description">`;
-      if (e.img != "icons/svg/item-bag.svg")  
-        content += `<img src="${e.img}" width="20" height="20" style="vertical-align : middle;margin-right:8px;">`;
+      content += `<img src="${e.img}" width="20" height="20" style="vertical-align : middle;margin-right:8px;">`;
 
       content += `<span class="item-label">[${e.system.level.value}] ${e.name}<br>
               <span style="color : gray; font-size : smaller;">
@@ -154,8 +153,6 @@ export class ComboDialog extends Dialog {
         `;
     }
     content += `</div>`;
-
-    
 
     const diceOptions = {
       "key": key,

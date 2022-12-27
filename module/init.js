@@ -507,12 +507,13 @@ async function chatListeners(html) {
     const id = item.system.skill;
     const skill = actor.system.attributes.skills[id];
     const title = (skill.name.indexOf('DX3rd.') != -1) ? game.i18n.localize(skill.name) : skill.name;
+    const type = (item.type == "vehicle") ? "melee" : item.system.type;
 
     const diceOptions = {
       "rollType": "major",
       "attack": {
         "value": item.system.attack,
-        "type": item.system.type
+        "type": type
       },
       "base": skill.base,
       "skill": id
