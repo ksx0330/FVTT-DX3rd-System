@@ -17,6 +17,7 @@ import { DX3rdDiceTerm } from "./dice/dice-term.js";
 import { DX3rdRegisterHelpers } from "./handlebars.js";
 import { DisableHooks } from "./disable-hooks.js";
 import { SocketController } from "./socket.js";
+import { DX3rdCombat } from "./combat.js";
 
 
 /* -------------------------------------------- */
@@ -71,6 +72,7 @@ Hooks.once("init", async function() {
   DisableHooks.init();
   SocketController.init();
 
+  CONFIG.Combat.documentClass = DX3rdCombat;
   CONFIG.Combat.initiative.formula = "@attributes.init.value"
 
   Roll.TOOLTIP_TEMPLATE = "systems/dx3rd/templates/dice/tooltip.html";
