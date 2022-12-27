@@ -84,7 +84,6 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
           math.evaluate(num);
         }
       } catch (error) {
-        console.log(error);
         ui.notifications.error(v.value + ": Values other than formula, @level are not allowed.");
       }
 

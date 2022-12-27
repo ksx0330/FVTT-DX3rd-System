@@ -26,8 +26,6 @@ export class DX3rdRegisterHelpers {
     Handlebars.registerHelper('timing', function(arg) {
       if (arg == "" || arg == "-") return;
 
-      console.log(arg);
-
       let split = arg.split("-");
       let retList = [];
 

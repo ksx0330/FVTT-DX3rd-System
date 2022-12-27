@@ -69,8 +69,6 @@ export class DefenseDialog extends Dialog {
     }
     
     let {life, realDamage} = this.calcDefenseDamage(defense);
-
-    console.log(defense);
     
     return {
       name: this.actor.name,

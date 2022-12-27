@@ -465,8 +465,6 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     const actor = await Actor.implementation.fromDropData(data);
     const actorData = actor.toObject();
 
-    console.log(actor);
-
     const name = ``;
     const itemData = {
       name: actor.name,
@@ -476,8 +474,6 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
         "actor": actor.id
       }
     };
-
-    console.log(itemData);
 
     // Handle item sorting within the same Actor
     if ( this.actor.uuid === actor.parent?.uuid ) return this._onSortItem(event, itemData);

@@ -142,7 +142,6 @@ export class DX3rdItem extends Item {
     if (this.system.attackRoll != "-" && !this.system.weaponSelect) {
       content += `<button class="chat-btn toggle-btn" data-style="weapon-list">${game.i18n.localize("DX3rd.Weapon")}</button>
                     <div class="weapon-list">`;
-      console.log(this.system.weaponItems);
       for (let [key, e] of Object.entries(this.system.weaponItems)) {
         content += `
           <div>

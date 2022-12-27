@@ -661,8 +661,6 @@ export class DX3rdActor extends Actor {
     let rollType = diceOptions.rollType;
     let {dice, add, critical} = this._getDiceData(diceOptions);
 
-    console.log(diceOptions);
-
     if ("attack" in diceOptions) {
       add += Number(attributes.add[diceOptions.attack.type]);
     }

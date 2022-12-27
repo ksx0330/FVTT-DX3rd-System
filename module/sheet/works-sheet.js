@@ -11,8 +11,6 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
     else
       data.system.actorSkills = duplicate(game.DX3rd.baseSkills);
 
-    console.log(data);
-
     return data;
   }
 
@@ -112,8 +110,6 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
       obj[e[0]] = e[1];
       return obj;
     }, {id: this.object.id, "system.skills": attributes});
-
-    console.log(formData);
 
     return formData;
   }

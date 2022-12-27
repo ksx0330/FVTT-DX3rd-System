@@ -322,8 +322,6 @@ async function chatListeners(html) {
             "type": item.system.attackRoll
           };
 
-          console.log(diceOptions);
-
           await actor.rollDice(title, diceOptions, append);
         }
 
@@ -401,9 +399,6 @@ async function chatListeners(html) {
         
     } else if (item.system.macro != "")
       macroList.push(item.system.macro);
-      
-    console.log(macroList);
-
 
     if (!item.system.getTarget)
       Hooks.call("updateActorEncroach", actor, item.id, "target");
