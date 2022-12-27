@@ -916,6 +916,7 @@
 
 .chat-message .header {
   display: flex;
+  align-items: center;
 }
 
 .chat-message .header .title {
@@ -928,6 +929,7 @@
 
 .chat-message .header img {
   margin-right: 4px;
+  margin-bottom: 2px;
 }
 
 .chat-message table th {

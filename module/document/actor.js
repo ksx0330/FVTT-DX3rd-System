@@ -133,18 +133,18 @@ export class DX3rdActor extends Actor {
     for (let e of effect) {
       values = this._updateEffectData(values, e.system.attributes, e.system.level.value);
       if ("critical_min" in e.system.attributes && e.system.attributes.critical_min.value < attributes.critical.min)
-        attributes.critical.min = e.system.attributes.critical_min.value;
+        attributes.critical.min = Number(e.system.attributes.critical_min.value);
     }
     for (let e of combo) {
       values = this._updateEffectData(values, e.system.attributes, 0);
       if ("critical_min" in e.system.attributes && e.system.attributes.critical_min.value < attributes.critical.min)
-        attributes.critical.min = e.system.attributes.critical_min.value;
+        attributes.critical.min = Number(e.system.attributes.critical_min.value);
     }
 
     for (let e of Object.values(this.system.attributes.applied)) {
       values = this._updateEffectData(values, e.attributes, 0);
       if ("critical_min" in e.attributes && e.attributes.critical_min.value < attributes.critical.min)
-        attributes.critical.min = e.attributes.critical_min.value;
+        attributes.critical.min = Number(e.attributes.critical_min.value);
     }
 
     if (values.critical.value < attributes.critical.min)
@@ -205,8 +205,18 @@ export class DX3rdActor extends Actor {
       if (!(key in values))
         continue;
 
-      let num = value.value.replace("@level", level);
-      values[key].value += math.evaluate(num);
+      let val = 0;
+      try {
+        if (value.value != "") {
+          let num = value.value.replace("@level", level);
+          val = math.evaluate(num);
+        }
+        
+      } catch (error) {
+        console.error("Values other than formula, @level are not allowed.");
+      }
+
+      values[key].value += val;
     }
 
     return values;
@@ -405,15 +415,15 @@ export class DX3rdActor extends Actor {
 
         values = this._updateEffectData(values, effect.system.attributes, effect.system.level.value);
         if ("critical_min" in effect.system.attributes && effect.system.attributes.critical_min.value < critical_min)
-          critical_min = effect.system.attributes.critical_min.value;
+          critical_min = Number(effect.system.attributes.critical_min.value);
       }
 
       if (encroachStr.length > 0)
         comboData.encroach.value += "+" + encroachStr.join("+");
 
       values = this._updateEffectData(values, comboData.attributes, 0);
-      if ("critical_min" in comboData.attributes && comboData.critical_min.value < critical_min)
-        critical_min = comboData.attributes.critical_min.value;
+      if ("critical_min" in comboData.attributes && comboData.attributes.critical_min.value < critical_min)
+        critical_min = Number(comboData.attributes.critical_min.value);
 
 
       for (let weaponId of weaponList) {
@@ -623,12 +633,16 @@ export class DX3rdActor extends Actor {
 
     dice += Number(attributes.dice.value) + Number(attributes.encroachment.dice) + Number(attributes.sublimation.dice);
     add += Number(attributes.add.value);
-    let critical = attributes.critical.value + Number(attributes.sublimation.critical);;
+    let critical = attributes.critical.value;
 
     let rollType = diceOptions.rollType;
     dice += Number(attributes[rollType].dice);
     add += Number(attributes[rollType].value);
     critical += attributes[rollType].critical;
+
+    if (critical < attributes.critical.min)
+      critical = Number(attributes.critical.min);
+    critical += Number(attributes.sublimation.critical);
 
     if (rollType == "dodge") {
       dice += Number(attributes["reaction"].dice);

@@ -9,8 +9,7 @@ export class DX3rdItem extends Item {
 
   async toMessage() {
     let title = `<div class="title">${this.name}</div>`;
-    if (this.img != 'icons/svg/item-bag.svg')
-      title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`; 
+    title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`; 
     
     let content = `<div class="dx3rd-item-info" data-actor-id=${this.actor.id} data-item-id=${this.id}><h2 class="header">${title}</h2>`
 
@@ -143,6 +142,7 @@ export class DX3rdItem extends Item {
     if (this.system.attackRoll != "-" && !this.system.weaponSelect) {
       content += `<button class="chat-btn toggle-btn" data-style="weapon-list">${game.i18n.localize("DX3rd.Weapon")}</button>
                     <div class="weapon-list">`;
+      console.log(this.system.weaponItems);
       for (let [key, e] of Object.entries(this.system.weaponItems)) {
         content += `
           <div>
@@ -152,9 +152,9 @@ export class DX3rdItem extends Item {
 
         content += `<span class="item-label">${e.name}<br>
                 <span style="color : gray; font-size : smaller;">
-                  ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.type}) } / 
-                  ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.skill}) } / 
-                  ${game.i18n.localize("DX3rd.Attack")} : ${e.range}
+                  ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.system.type}) } / 
+                  ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.system.skill}) } / 
+                  ${game.i18n.localize("DX3rd.Attack")} : ${e.system.attack}
                   <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                 </span>
               </span>
@@ -426,8 +426,19 @@ export class DX3rdItem extends Item {
       if (key == '-' || key == 'critical_min')
         continue;
 
-      let num = value.value.replace("@level", level);
-      copy[key].value = String(math.evaluate(num));
+      let val = "0";
+      try {
+        if (value.value != "") {
+          let num = value.value.replace("@level", level);
+          val = String(math.evaluate(num));
+        }
+        
+      } catch (error) {
+        console.error("Values other than formula, @level are not allowed.");
+      }
+
+      copy[key].value = val;
+
     }
 
 

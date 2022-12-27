@@ -87,13 +87,20 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData).system.skills || {};
 
-    const attributes = Object.values(formAttrs).reduce((obj, v) => {
+    let attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
-      if ( /[\s\.]/.test(k) )  return ui.notifications.error("Attribute keys may not contain spaces or periods");
+      if ( /[\s\.]/.test(k) ) {
+        ui.notifications.error("Attribute keys may not contain spaces or periods");
+        return obj;
+      }
+
       delete v["key"];
       obj[k] = v;
       return obj;
     }, {});
+
+    if (attributes == undefined)
+      attributes = this.object.system.skills;
 
     // Remove attributes which are no longer used
     for ( let k of Object.keys(this.object.system.skills) ) {

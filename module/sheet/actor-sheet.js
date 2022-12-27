@@ -44,9 +44,13 @@ export class DX3rdActorSheet extends ActorSheet {
     this._prepareCharacterItems(actorData, data.items);
 
     let rollType = this.actor.system.attributes.dice.view;
-    data.dice = this.actor.system.attributes.dice.value + Number(this.actor.system.attributes[rollType].dice) + Number(this.actor.system.attributes.encroachment.dice) + Number(this.actor.system.attributes.sublimation.dice)
-    data.critical =this.actor.system.attributes.critical.value + this.actor.system.attributes[rollType].critical + Number(this.actor.system.attributes.sublimation.critical)
-    data.add = this.actor.system.attributes.add.value + Number(this.actor.system.attributes[rollType].value)
+    data.dice = this.actor.system.attributes.dice.value + Number(this.actor.system.attributes[rollType].dice) + Number(this.actor.system.attributes.encroachment.dice) + Number(this.actor.system.attributes.sublimation.dice);
+    data.add = this.actor.system.attributes.add.value + Number(this.actor.system.attributes[rollType].value);
+
+    let criticalVal = this.actor.system.attributes.critical.value + this.actor.system.attributes[rollType].critical;
+    if (criticalVal < this.actor.system.attributes.critical.min)
+      criticalVal = Number(this.actor.system.attributes.critical.min);
+    data.critical = criticalVal + Number(this.actor.system.attributes.sublimation.critical);
 
     data.enrichedBiography = await TextEditor.enrichHTML(this.object.system.description, {async: true});
 
@@ -280,8 +284,13 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
       let rollType = this.actor.system.attributes.dice.view;
 
       dice.val(this.actor.system.attributes.dice.value + Number(this.actor.system.attributes[rollType].dice) + Number(this.actor.system.attributes.encroachment.dice) + Number(this.actor.system.attributes.sublimation.dice));
-      critical.val(this.actor.system.attributes.critical.value + this.actor.system.attributes[rollType].critical) + Number(this.actor.system.attributes.sublimation.critical);
       add.val(this.actor.system.attributes.add.value + Number(this.actor.system.attributes[rollType].value));
+
+      let criticalVal = this.actor.system.attributes.critical.value + this.actor.system.attributes[rollType].critical;
+      if (criticalVal < this.actor.system.attributes.critical.min)
+        criticalVal = Number(this.actor.system.attributes.critical.min);
+      critical.val(criticalVal + Number(this.actor.system.attributes.sublimation.critical));
+      
       return;
     }
 
@@ -390,6 +399,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     const itemData = {
       name: name,
       type: type,
+      img: `icons/svg/${header.dataset.img}.svg`,
       system: data
     };
     //delete itemData.data["type"];
@@ -462,7 +472,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
       name: actor.name,
       img: actor.img,
       type: "rois",
-      data: {
+      system: {
         "actor": actor.id
       }
     };
@@ -470,7 +480,7 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
     console.log(itemData);
 
     // Handle item sorting within the same Actor
-    if ( await this._isFromSameActor(data) ) return this._onSortItem(event, itemData);
+    if ( this.actor.uuid === actor.parent?.uuid ) return this._onSortItem(event, itemData);
 
     // Create the owned item
     return this._onDropItemCreate(itemData);

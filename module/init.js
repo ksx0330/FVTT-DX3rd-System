@@ -160,7 +160,7 @@ Hooks.on("updateActorEncroach", async (actor, key, type) => {
 });
 
 
-Hooks.on("updateActor", function() {
+Hooks.on("updateActorDialog", function() {
     let reload = (dialogs) => {
         let d = dialogs.filter(e => e._state != -1);
         if (d.length != 0) {
@@ -174,7 +174,7 @@ Hooks.on("updateActor", function() {
     game.DX3rd.DamageDialog = reload(game.DX3rd.DamageDialog);
 });
 
-Hooks.on("updateItem", () => Hooks.call("updateActor"));
+Hooks.on("updateItem", () => Hooks.call("updateActorDialog"));
 
 Hooks.on("getSceneControlButtons", function(controls) {
   controls[0].tools.push({
@@ -368,6 +368,7 @@ async function chatListeners(html) {
       
       if (!effect.system.getTarget) {
         const macro = game.macros.contents.find(m => (m.name === effect.system.macro));
+
         if (macro != undefined)
             macro.execute();
         else if (effect.system.macro != "")
@@ -376,14 +377,30 @@ async function chatListeners(html) {
                 content: `Do not find this macro: ${effect.system.macro}`,
                 buttons: {}
             }).render(true);
-      } else
-        macroList.push(effect);
+      } else if (effect.system.macro != "")
+        macroList.push(effect.system.macro);
 
       let updates = {};
       if (effect.system.active.disable != 'notCheck')
           updates["system.active.state"] = true;
       await effect.update(updates);
     }
+
+    if (macroList.length == 0) {
+      const macro = game.macros.contents.find(m => (m.name === item.system.macro));
+      if (macro != undefined)
+        macro.execute();
+      else if (item.system.macro != "")
+        new Dialog({
+            title: "macro",
+            content: `Do not find this macro: ${item.system.macro}`,
+            buttons: {}
+        }).render(true);
+        
+    } else if (item.system.macro != "")
+      macroList.push(item.system.macro);
+      
+    console.log(macroList);
 
 
     if (!item.system.getTarget)
@@ -406,14 +423,14 @@ async function chatListeners(html) {
                 for (let e of appliedList)
                   await e.applyTarget(a);
 
-                for (let e of macroList) {
-                  const macro = game.macros.contents.find(m => (m.name === e.system.macro));
+                for (let name of macroList) {
+                  const macro = game.macros.contents.find(m => (m.name === name));
                   if (macro != undefined)
                       macro.execute();
-                  else if (e.system.macro != "")
+                  else if (name != "")
                       new Dialog({
                           title: "macro",
-                          content: `Do not find this macro: ${e.system.macro}`,
+                          content: `Do not find this macro: ${name}`,
                           buttons: {}
                       }).render(true);
                 }
@@ -458,7 +475,7 @@ async function chatListeners(html) {
 
         } else {
           const weaponItems = Object.values(item.system.weaponItems);
-          let attack = await weaponItems.reduce((acc, v) => acc + v.attack, 0);
+          let attack = await weaponItems.reduce((acc, v) => acc + v.system.attack, 0);
 
           diceOptions["attack"] = {
             "value": attack,
@@ -513,7 +530,6 @@ async function chatListeners(html) {
       new Dialog({
         title: game.i18n.localize("DX3rd.CalcDamage"),
         content: `
-          <p>
             <h2 style="text-align: center;">[${rollResult} / 10 + 1]D10 + ${attack}</h2>
 
             <table class="calc-dialog">
@@ -530,7 +546,6 @@ async function chatListeners(html) {
               </tr>
 
             </table>
-          </p>
         `,
         buttons: {
           confirm: {

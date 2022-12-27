@@ -77,6 +77,17 @@ export class DX3rdAttributesSheet extends DX3rdItemSheet {
       let k = v["key"].trim();
       if ( /[\s\.]/.test(k) )  return ui.notifications.error("Attribute keys may not contain spaces or periods");
       delete v["key"];
+      
+      try {
+        if (k != "-") {
+          let num = v.value.replace("@level", 0);
+          math.evaluate(num);
+        }
+      } catch (error) {
+        console.log(error);
+        ui.notifications.error(v.value + ": Values other than formula, @level are not allowed.");
+      }
+
       obj[k] = v;
       return obj;
     }, {});

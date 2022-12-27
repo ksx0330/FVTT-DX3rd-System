@@ -11,6 +11,7 @@ export class DX3rdSkillDialog extends Dialog {
       this.option = "edit";
       this.skill = actor.system.attributes.skills[skillId];
       this.skill.key = skillId;
+
     } else {
       this.option = "create";
       this.skill = {
@@ -33,7 +34,8 @@ export class DX3rdSkillDialog extends Dialog {
     this.data = {
       title: options.title,
       content: "",
-      buttons: buttons
+      buttons: buttons,
+      default: 'create'
     };
 
   }
@@ -66,6 +68,15 @@ export class DX3rdSkillDialog extends Dialog {
       delete: (this.option == "create") ? false : this.skill.delete,
       option: this.option 
     }
+  }
+
+  /** @override */
+  _onKeyDown(event) {
+    if ( event.key === "Enter" && this.option == "edit")
+      return this.close();
+
+    return super._onKeyDown(event);
+
   }
 
   async _skillChange(event) {

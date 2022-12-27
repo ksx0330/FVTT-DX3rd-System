@@ -24,7 +24,8 @@ export class DefenseDialog extends Dialog {
             ChatMessage.create(chatData);
           }
         }
-      }
+      },
+      default: 'confirm'
     };
 
     game.DX3rd.DamageDialog.push(this);

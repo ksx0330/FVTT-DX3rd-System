@@ -28,7 +28,8 @@ export class ComboDialog extends Dialog {
           callback: () => this._onSubmit()
 
         }
-      }
+      },
+      default: 'create'
     };
 
   }
