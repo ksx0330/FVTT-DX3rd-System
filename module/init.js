@@ -216,10 +216,10 @@ Hooks.on("deleteCombat", async function (data, delta) {
 
 Hooks.on("updateCombat", async function (data, delta) {
     var close = true;
-    if (data.round == 0 || data.active == true)
+    if (data.round == 0)
     return;
 
-    if (Object.keys(delta).some((k) => k === "round")) {
+    if (delta.round != undefined) {
         let actors = data.turns.reduce( (acc, i) => {
             acc.push(i.actor);
             return acc; 
