@@ -231,24 +231,36 @@ Hooks.on("updateCombat", async function (data, delta) {
     
 });
 
-Hooks.on("hotbarDrop", async (bar, data, slot) => {
-  if (data.data == undefined)
-    return false;
+async function createItemMacro(dropData, slot) {
+  // Get the dropped document
+  const doc = await Item.fromDropData(dropData);
+  if ( !doc ) return;
 
-  const command = `const a = game.actors.get("${data.actorId}");\nconst item = a.items.get("${system._id}");\nitem.toMessage()`;
-  let macro = game.macros.contents.find(m => (m.name === system.name) && (m.command === command));
-
-  if (!macro) {
-    macro = await Macro.create({
-      name: system.name,
-      type: "script",
-      command: command,
-      img: system.img
+  // Get the Macro to add to the bar
+  let macro;
+  if ( dropData.type === "Macro" ) {
+    macro = game.macros.has(doc.id) ? doc : await Item.create(doc.toObject());
+  }
+  else {
+    macro = await Macro.implementation.create({
+      name: doc.name,
+      type: CONST.MACRO_TYPES.SCRIPT,
+      img: doc.img,
+      command: `let item = await fromUuid("${dropData.uuid}");\nitem.toMessage();`
     });
   }
 
-  game.user.assignHotbarMacro(macro, slot);
-  return false;
+  // Assign the macro to the hotbar
+  if ( !macro ) return;
+  game.user.assignHotbarMacro(macro, slot, {fromSlot: dropData.slot});
+}
+
+Hooks.on("hotbarDrop", (bar, data, slot) => {
+  if (data.type == "Item") {
+    createItemMacro(data, slot);
+    return false;
+  }
+
 });
 
 Hooks.on("renderChatLog", (app, html, data) => chatListeners(html));
