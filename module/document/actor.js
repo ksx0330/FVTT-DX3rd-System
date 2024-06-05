@@ -497,8 +497,8 @@ export class DX3rdActor extends Actor {
   /* -------------------------------------------- */
 
   /** @override */
-  _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId) {
-    super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+  _onCreateDescendantDocuments(parent, collection, documents, data, options, userId) {
+    super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
 
     for (let doc of documents) {
       if (doc.type == "effect" || doc.type == "combo" || doc.type == "rois" || doc.type == "syndrome" || doc.type == "record")
@@ -511,8 +511,8 @@ export class DX3rdActor extends Actor {
   /* -------------------------------------------- */
 
   /** @override */
-  _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId) {
-    super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+  _onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId) {
+    super._onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId);
 
     for (let doc of documents) {
       if (doc.type == "effect" || doc.type == "combo" || doc.type == "rois" || doc.type == "syndrome" || doc.type == "record")
