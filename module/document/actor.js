@@ -99,6 +99,8 @@ export class DX3rdActor extends Actor {
         values = this._updateData(values, s.system.attributes);
     }
 
+    values["exp"].value = this._calExp(values);
+
     let fullMove = 0;
     let weaponAdd = { "melee": 0, "ranged": 0 };
     let tmp = {
@@ -129,7 +131,7 @@ export class DX3rdActor extends Actor {
 
     attributes.exp.append = record.reduce((acc, i) => acc + i.system.exp, 0);
     attributes.exp.total = Number(attributes.exp.init) + Number(attributes.exp.append);
-    this._calExp(values);
+    this.system.attributes.exp.now = this.system.attributes.exp.total - values["exp"].value;
     delete values["exp"];
 
     attributes.critical.min = 10;
@@ -279,7 +281,7 @@ export class DX3rdActor extends Actor {
       }
     }
 
-    this.system.attributes.exp.now = this.system.attributes.exp.total - exp;
+    return exp;
   }
 
   _prepareActorSkills() {
