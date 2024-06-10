@@ -48,6 +48,10 @@ export class DX3rdActor extends Actor {
       "dodge_dice": { "value": 0 },
       "dodge_critical": { "value": 0 },
 
+      "body_value": { "value": 0 },
+      "sense_value": { "value": 0 },
+      "mind_value": { "value": 0 },
+      "social_value": { "value": 0 },
       "body_add": { "value": 0 },
       "sense_add": { "value": 0 },
       "mind_add": { "value": 0 },
@@ -165,6 +169,14 @@ export class DX3rdActor extends Actor {
       delete values[l + "_dice"];
     }
 
+    let mainStat = ["body", "sense", "mind", "social"];
+    for (let l of mainStat) {
+      values[l].value += values[l + "_value"].value;
+      attributes[l].add = values[l + "_add"].value;
+      delete values[l + "_value"];
+      delete values[l + "_add"];
+    }
+
     attributes.saving.max = values['social'].value * 2 + skills['procure'].value * 2;
     attributes.saving.remain = attributes.saving.max - values["saving"].value;
 
@@ -177,13 +189,9 @@ export class DX3rdActor extends Actor {
     attributes.move.battle = values["init"].value + 5;
     attributes.move.full = (fullMove == 0) ? (values['init'].value + 5) * 2 : fullMove;
 
-    let mainStat = ["body", "sense", "mind", "social"];
     for (let l of mainStat) {
       values[l].value += values[l + "_dice"].value;
-      attributes[l].add = values[l + "_add"].value;
-
       delete values[l + "_dice"];
-      delete values[l + "_add"];
     }
 
     attributes.encroachment.init.value = values["enc_init"].value;

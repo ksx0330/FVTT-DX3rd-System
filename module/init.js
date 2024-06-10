@@ -41,7 +41,6 @@ Hooks.once("init", async function() {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("dx3rd", DX3rdActorSheet, { makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("dx3rd", DX3rdItemSheet, { makeDefault: false });
   Items.registerSheet("dx3rd", DX3rdWorksSheet, {
     types: ['works'],
     makeDefault: true
@@ -63,6 +62,7 @@ Hooks.once("init", async function() {
     types: ['weapon', 'protect', 'vehicle', 'connection', 'item'],
     makeDefault: true
   });
+  Items.registerSheet("dx3rd", DX3rdItemSheet, { makeDefault: false });
 
   CONFIG.Actor.documentClass = DX3rdActor;
   CONFIG.Item.documentClass = DX3rdItem;
