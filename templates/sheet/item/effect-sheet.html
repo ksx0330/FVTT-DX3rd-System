@@ -190,6 +190,26 @@
             </td>
 
           </tr>
+          <tr>
+            <th></th>
+            <td></td>
+            
+            <th><span>{{localize "DX3rd.Used"}}</span></th>
+            <td><input type="number" class="checkbox-input" name="system.used.state" value="{{system.used.state}}" {{#ifEquals system.used.disable "notCheck"}} disabled {{/ifEquals}}></td>
+            <th><span>{{localize "DX3rd.ResetTiming"}}</span></th>
+            <td>
+              <select name="system.used.disable" data-dtype="String">
+                {{#select system.used.disable}}
+                <option value="-">-</option>
+                <option value="notCheck">{{localize "DX3rd.NotCheck"}}</option>
+                <option value="round">{{localize "DX3rd.AfterRound"}}</option>
+                <option value="battle">{{localize "DX3rd.AfterScene"}}</option>
+                <option value="session">{{localize "DX3rd.AfterSession"}}</option>
+                {{/select}}
+              </select>
+            </td>
+            
+          </tr>
         </table>
 
 
@@ -217,6 +237,8 @@
                 <option value="armor">{{localize "DX3rd.Armor"}}</option>
                 <option value="guard">{{localize "DX3rd.Guard"}}</option>
                 <option value="saving">{{localize "DX3rd.Saving"}}</option>
+                <option value="battleMove">{{localize "DX3rd.BattleMove"}}</option>
+                <option value="fullMove">{{localize "DX3rd.FullMove"}}</option>
 
                 <option value="major_dice">{{localize "DX3rd.MajorDice"}}</option>
                 <option value="major">{{localize "DX3rd.MajorAdd"}}</option>

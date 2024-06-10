@@ -35,6 +35,8 @@ export class DX3rdActor extends Actor {
       "saving": { "value": 0 },
       "exp": { "value": 0 },
 
+      "battleMove": { "value": 0 },
+      "fullMove": { "value": 0 },
 
       "major": { "value": 0 },
       "major_dice": { "value": 0 },
@@ -186,8 +188,11 @@ export class DX3rdActor extends Actor {
 
     values["init"].value += values['sense'].value * 2 + values['mind'].value;
     values["init"].value = (values["init"].value < 0) ? 0 : values["init"].value;
-    attributes.move.battle = values["init"].value + 5;
-    attributes.move.full = (fullMove == 0) ? (values['init'].value + 5) * 2 : fullMove;
+    attributes.move.battle = values["init"].value + 5 + values["battleMove"].value;
+    attributes.move.full = ((fullMove == 0) ? (values['init'].value + 5) * 2 : fullMove) + values["fullMove"].value;
+
+    delete values["battleMove"];
+    delete values["fullMove"];
 
     for (let l of mainStat) {
       values[l].value += values[l + "_dice"].value;
