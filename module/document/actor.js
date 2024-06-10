@@ -487,7 +487,7 @@ export class DX3rdActor extends Actor {
         comboData.add.value += base.add + values[comboData.base + "_add"].value;
       }
 
-      if (c.sheet && c.sheet.rendered)
+      if (game.ready && c.sheet.rendered)
         c.render(true);
     }
 
