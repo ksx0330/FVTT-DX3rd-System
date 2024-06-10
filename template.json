@@ -188,6 +188,10 @@
       "state": false,
       "disable": "-"
     },
+    "used": {
+      "state": 0,
+      "disable": "-"
+    },
     "attributes": {},
     "getTarget": false,
     "macro": ""

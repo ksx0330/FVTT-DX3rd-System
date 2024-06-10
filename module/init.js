@@ -291,6 +291,8 @@ async function chatListeners(html) {
     let updates = {};
     if (item.system.active.disable != 'notCheck')
         updates["system.active.state"] = true;
+    if (item.system.used.disable != 'notCheck')
+        updates["system.used.state"] = item.system.used.state + 1;
     await item.update(updates);
 
     Hooks.call("setActorEncroach", actor, item.id, encroach);
@@ -395,6 +397,8 @@ async function chatListeners(html) {
       let updates = {};
       if (effect.system.active.disable != 'notCheck')
           updates["system.active.state"] = true;
+      if (effect.system.used.disable != 'notCheck')
+          updates["system.used.state"] = effect.system.used.state + 1;
       await effect.update(updates);
     }
 

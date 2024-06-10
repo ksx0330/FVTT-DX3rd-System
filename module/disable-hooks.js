@@ -15,17 +15,17 @@ export class DisableHooks {
 
         Hooks.on("afterRound", async actors => {
             for (let actor of actors)
-                await this.disableTalents(actor, ['roll','major', 'reaction', 'round']);
+                await this.disableTalents(actor, ['roll','major', 'reaction', 'round'], ['round']);
         });
 
         Hooks.on("afterCombat", async actors => {
             for (let actor of actors)
-                await this.disableTalents(actor, ['roll','major', 'reaction', 'round', 'battle']);
+                await this.disableTalents(actor, ['roll','major', 'reaction', 'round', 'battle'], ['round', 'battle']);
         });
 
         Hooks.on("afterSession", async () => {
             for (let actor of game.actors) {
-                await this.disableTalents(actor, ['roll','major', 'reaction', 'round', 'battle']);
+                await this.disableTalents(actor, ['roll','major', 'reaction', 'round', 'battle'], ['round', 'battle', 'session']);
             }
         });
 
@@ -37,6 +37,10 @@ export class DisableHooks {
             if (item.system.active != undefined)
             if (active.findIndex(i => i == item.system.active.disable) != -1)
                 updates["system.active.state"] = false;
+
+            if (item.system.used != undefined)
+            if (active.findIndex(i => i == item.system.used.disable) != -1)
+                updates["system.used.state"] = 0;
 
             await item.update(updates);
         }

@@ -115,6 +115,8 @@
   "DX3rd.Active": "有効化",
   "DX3rd.DisableTiming": "非有効化",
   "DX3rd.NotCheck": "集計しない",
+  "DX3rd.Used": "使い",
+  "DX3rd.ResetTiming": "リセット",
   "DX3rd.AfterRoll": "判定後",
   "DX3rd.AfterMajor": "メジャー後",
   "DX3rd.AfterReaction": "リアクション後",

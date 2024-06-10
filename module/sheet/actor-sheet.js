@@ -164,6 +164,13 @@ export class DX3rdActorSheet extends ActorSheet {
       await item.update({'system.active.state': !item.system.active.state});
     });
 
+    html.find('.used-input').on('change', async event => {
+      event.preventDefault();
+      const li = event.currentTarget.closest(".item");
+      const item = this.actor.items.get(li.dataset.itemId);
+      await item.update({'system.used.state': +$(event.currentTarget).val()});
+    });
+
     html.find('.active-equipment').on('click', async event => {
       event.preventDefault();
       const li = event.currentTarget.closest(".item");

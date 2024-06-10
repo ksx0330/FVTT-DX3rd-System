@@ -114,6 +114,8 @@
   "DX3rd.Macro": "매크로",
   "DX3rd.Active": "활성화",
   "DX3rd.DisableTiming": "비활성화",
+  "DX3rd.Used": "사용됨",
+  "DX3rd.ResetTiming": "횟수 리셋",
   "DX3rd.NotCheck": "체크 안한다",
   "DX3rd.AfterRoll": "판정 이후",
   "DX3rd.AfterMajor": "메이저 이후",

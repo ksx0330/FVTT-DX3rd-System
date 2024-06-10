@@ -79,7 +79,6 @@
   text-align: center;
 }
 
-
 .dx3rd .sheet-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -495,6 +494,8 @@
   font-size: 17px;
   font-weight: bold;
   flex: initial;
+  display: flex;
+  justify-content: center;
 }
 
 .dx3rd .item-addon .btn-titus {
@@ -541,6 +542,13 @@
   margin: 0;
   width: 40px;
   font-weight: bold;
+  text-align: center;
+}
+
+.dx3rd .sheet-wrapper .checkbox-input {
+  width: 22px;
+  height: 22px;
+  margin: 2px 5px;
   text-align: center;
 }
 
