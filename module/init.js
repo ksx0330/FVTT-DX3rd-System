@@ -288,6 +288,15 @@ async function chatListeners(html) {
     if (skill in actor.system.attributes.skills)
       base = actor.system.attributes.skills[skill].base;
 
+    let used = item.system.used;
+    if (used.disable != 'notCheck') {
+      let max = used.max + (used.level ? item.system.level.value : 0);
+      if (used.state >= max) {
+        ui.notifications.info(`Do not use this effect: ${item.name}`);
+        return;
+      }
+    }
+
     let updates = {};
     if (item.system.active.disable != 'notCheck')
         updates["system.active.state"] = true;
@@ -353,11 +362,6 @@ async function chatListeners(html) {
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
-    let updates = {};
-    if (item.system.active.disable != 'notCheck')
-        updates["system.active.state"] = true;
-    await item.update(updates);
-
     const skillId = item.system.skill;
     const encroach = item.system.encroach.value;
 
@@ -366,11 +370,36 @@ async function chatListeners(html) {
     const rollType = item.system.roll;
     const attackRoll = item.system.attackRoll;
 
-    Hooks.call("setActorEncroach", actor, item.id, encroach);
-
     const effectItems = item.system.effect;
     const appliedList = [];
     const macroList = [];
+
+    let usedCheck = true;
+    for (let e of effectItems) {
+      if (e == "-")
+        continue;
+
+      let effect = actor.items.get(e);
+      let used = effect.system.used;
+
+      if (used.disable != 'notCheck') {
+        let max = used.max + (used.level ? effect.system.level.value : 0);
+        if (used.state >= max) {
+          ui.notifications.info(`Do not use this effect: ${effect.name}`);
+          usedCheck = false;
+        }
+      }
+    }
+    
+    if (!usedCheck)
+      return;
+    
+    let updates = {};
+    if (item.system.active.disable != 'notCheck')
+        updates["system.active.state"] = true;
+    await item.update(updates);
+
+    Hooks.call("setActorEncroach", actor, item.id, encroach);
 
     for (let e of effectItems) {
       if (e == "-")

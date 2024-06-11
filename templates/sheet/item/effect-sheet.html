@@ -191,11 +191,13 @@
 
           </tr>
           <tr>
-            <th></th>
-            <td></td>
-            
-            <th><span>{{localize "DX3rd.Used"}}</span></th>
-            <td><input type="number" class="checkbox-input" name="system.used.state" value="{{system.used.state}}" {{#ifEquals system.used.disable "notCheck"}} disabled {{/ifEquals}}></td>
+            <th><span>{{localize "DX3rd.UsedCount"}}</span></th>
+            <td>
+              <input type="number" class="checkbox-input" name="system.used.state" value="{{system.used.state}}" {{#ifEquals system.used.disable "notCheck"}} disabled {{/ifEquals}}>/
+              <input type="number" class="checkbox-input" name="system.used.max" value="{{system.used.max}}" {{#ifEquals system.used.disable "notCheck"}} disabled {{/ifEquals}}>
+            </td>
+            <th><span>+ {{localize "DX3rd.UsedLevel"}}</span></th>
+            <td><input type="checkbox" name="system.used.level" {{#if system.used.level}} checked {{/if}}></td>
             <th><span>{{localize "DX3rd.ResetTiming"}}</span></th>
             <td>
               <select name="system.used.disable" data-dtype="String">

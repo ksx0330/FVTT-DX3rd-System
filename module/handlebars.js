@@ -72,5 +72,36 @@ export class DX3rdRegisterHelpers {
         return `background: linear-gradient(90deg, darkcyan ${arg - 200}%, #7e0018 0%);`;
     });
 
+    Handlebars.registerHelper('usedMax', function(used, level) {
+      return used.max + (used.level ? level : 0);
+    });
+
+    Handlebars.registerHelper('usedFull', function(used, level, options) {
+      let max = used.max + (used.level ? level : 0);
+      return (used.disable != 'notCheck' && used.state >= max) ? options.fn(this) : options.inverse(this);
+    });
+
+    Handlebars.registerHelper('usedFullForCombo', function(actor, combo, options) {
+      console.log(actor);
+      console.log(combo);
+
+      const effectItems = combo.system.effect;
+      for (let e of effectItems) {
+        if (e == "-")
+          continue;
+  
+        let effect = actor.items.find(element => element._id == e);
+        let used = effect.system.used;
+  
+        if (used.disable != 'notCheck') {
+          let max = used.max + (used.level ? effect.system.level.value : 0);
+          if (used.state >= max) {
+            return options.fn(this);
+          }
+        }
+      }
+      return options.inverse(this);
+
+    });
   }
 }

@@ -117,6 +117,8 @@
   "DX3rd.Active": "Active",
   "DX3rd.DisableTiming": "DisableTiming",
   "DX3rd.NotCheck": "NotCheck",
+  "DX3rd.UsedCount": "UsedCount",
+  "DX3rd.UsedLevel": "UsedLevel",
   "DX3rd.AfterRoll": "AfterRoll",
   "DX3rd.AfterMajor": "AfterMajor",
   "DX3rd.AfterReaction": "AfterReaction",
