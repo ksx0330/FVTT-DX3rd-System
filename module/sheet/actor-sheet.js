@@ -494,9 +494,12 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
   async rollBackTrack() {
 
     let rois = 0;
+    let memory = 0;
     for (let item of this.actor.items) {
       if (item.type == "rois" && item.system.type != "D" && item.system.type != "M" && !item.system.titus && !item.system.sublimation)
         rois += 1;
+      if (item.system.type == "M")
+        memory += 1;
     }
 
     let extraBackTrackDialog = new Dialog({
@@ -681,10 +684,62 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
           }
         }
       },
+      default: "one",
       close: () => backTrackDialog.render(true)
     });
 
-    eRoisDialog.render(true);
+    let memoryDialog = new Dialog({
+      title: game.i18n.localize("DX3rd.Memory") + ' ' + game.i18n.localize("DX3rd.BackTrack"),
+      content: `
+        <h2>${game.i18n.localize("DX3rd.Memory")} ${game.i18n.localize("DX3rd.BackTrack")} (${memory})</h2>
+        <input type="number" id="memory" placeholder="0" value="${memory}">
+      `,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "Apply",
+          callback: async () => {
+            let memoryInput = $("#memory").val();
+            if (memoryInput != "" && memoryInput != 0) {
+              let formula =`${(memoryInput > memory) ? memory * 10 : memoryInput * 10}`;
+
+              let roll = new Roll(formula);
+              await roll.roll({async: true})
+
+              let before = this.actor.system.attributes.encroachment.value;
+              let after = (before - roll.total < 0) ? 0 : before - roll.total;
+
+              await this.actor.update({"system.attributes.encroachment.value": after});
+
+              let rollMode = game.settings.get("core", "rollMode");
+              let rollData = await roll.render();
+              let content = `
+                <div class="dx3rd-roll">
+                  <h2 class="header">
+                    <div class="title">${game.i18n.localize("DX3rd.Memory")} ${game.i18n.localize("DX3rd.BackTrack")}</div></h2>
+                  <div class="context-box">
+                    ${game.i18n.localize("DX3rd.Encroachment")}: ${before} -> ${after} (-${roll.total})
+                  </div>
+                  ${rollData}
+              `;
+
+              ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({actor: this.actor}),
+                content: content + `</div>`,
+                type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                sound: CONFIG.sounds.dice,
+                roll: roll,
+              }, {rollMode});
+            }
+
+          }
+        }
+      },
+      default: "one",
+      close: () => eRoisDialog.render(true)
+    });
+
+    memoryDialog.render(true);
 
   }
 
