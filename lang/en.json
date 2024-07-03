@@ -34,7 +34,6 @@
   "DX3rd.Init": "Initiative",
   "DX3rd.Move": "Move",
   "DX3rd.BattleMove": "BattleMove",
-  "DX3rd.FullMove": "FullMove",
   "DX3rd.Saving": "Stock",
   "DX3rd.EXP": "EXP",
   "DX3rd.EXPInit": "BaseEXP",
