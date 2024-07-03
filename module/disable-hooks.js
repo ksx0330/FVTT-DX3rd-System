@@ -39,7 +39,7 @@ export class DisableHooks {
                 updates["system.active.state"] = false;
 
             if (item.system.used != undefined)
-            if (active.findIndex(i => i == item.system.used.disable) != -1)
+            if (used.findIndex(i => i == item.system.used.disable) != -1)
                 updates["system.used.state"] = 0;
 
             await item.update(updates);
