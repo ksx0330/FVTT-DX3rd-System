@@ -124,11 +124,13 @@ export class DX3rdCombat extends Combat {
 
       super._onDelete(options, userId);
       
-      let startToken = await fromUuid(startTokenUUID);
-      let endToken = await fromUuid(endTokenUUID);
-
-      await startToken.delete();
-      await endToken.delete();
+      if (game.user.isGM) {
+        let startToken = await fromUuid(startTokenUUID);
+        let endToken = await fromUuid(endTokenUUID);
+  
+        await startToken.delete();
+        await endToken.delete();
+      }
     }
   
       
