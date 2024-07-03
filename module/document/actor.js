@@ -1,5 +1,10 @@
 
 export class DX3rdActor extends Actor {
+  
+  async _preCreate(data, options, user) {
+    await super._preCreate(data, options, user);
+    this.prototypeToken.updateSource({ actorLink: true });
+  }
 
   prepareData() {
     super.prepareData();
