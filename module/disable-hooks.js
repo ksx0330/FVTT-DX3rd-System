@@ -6,11 +6,11 @@ export class DisableHooks {
         });
 
         Hooks.on("afterMajor", async actor => {
-            await this.disableTalents(actor, ['roll', 'major']);
+            await this.disableTalents(actor, ['roll', 'major'], []);
         });
 
         Hooks.on("afterReaction", async actor => {
-            await this.disableTalents(actor, ['roll', 'reaction']);
+            await this.disableTalents(actor, ['roll', 'reaction'], []);
         });
 
         Hooks.on("afterRound", async actors => {
