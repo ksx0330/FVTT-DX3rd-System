@@ -46,7 +46,6 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
   /* -------------------------------------------- */
 
   async _onClickSKillControl(event) {
-    console.log("AAAA");
     event.preventDefault();
     const a = event.currentTarget;
     const action = a.dataset.action;
