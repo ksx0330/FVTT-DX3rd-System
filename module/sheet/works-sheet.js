@@ -25,7 +25,7 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
 
     // Add or Remove Attribute
     html.find(".add-skills").on("click", ".skill-create", this._onSkillCreate.bind(this));
-    html.find(".skills").on("click", "a.attribute-control", this._onClickAttributeControl.bind(this));
+    html.find(".skills").on("click", "a.attribute-control", this._onClickSKillControl.bind(this));
   }
 
   /* -------------------------------------------- */
@@ -45,7 +45,8 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
 
   /* -------------------------------------------- */
 
-  async _onClickAttributeControl(event) {
+  async _onClickSKillControl(event) {
+    console.log("AAAA");
     event.preventDefault();
     const a = event.currentTarget;
     const action = a.dataset.action;
