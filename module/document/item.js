@@ -8,8 +8,11 @@ export class DX3rdItem extends Item {
 
 
   async toMessage() {
-    let title = `<div class="title">${this.name}</div>`;
-    title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`; 
+    let name = this.name;
+    if (this.type == "item")
+      name += ` (${this.system.quantity.value} / ${this.system.quantity.max})`;
+    let title = `<div class="title">${name}</div>`;
+    title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`;
     
     let content = `<div class="dx3rd-item-info" data-actor-id=${this.actor.id} data-item-id=${this.id}><h2 class="header">${title}</h2>`
 
@@ -368,7 +371,7 @@ export class DX3rdItem extends Item {
         </tr>
       </table>
       <p>${this.system.description}</p>
-
+      <button class="chat-btn use-item">${game.i18n.localize("DX3rd.Use")}</button>
     `
 
     return content;
@@ -560,6 +563,29 @@ export class DX3rdItem extends Item {
       }
     }, {classes: ["dx3rd", "dialog", "sublimation"], top: 300, left: 20}).render(true);
 
+  }
+
+  async use(actor) {
+    let chatData = {
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      content: `${this.name}: ${game.i18n.localize("DX3rd.Use")}`
+    };
+    await ChatMessage.create(chatData);
+
+    await this.update({"system.quantity.value": this.system.quantity.value - 1});
+    const macro = game.macros.contents.find(m => (m.name === this.system.macro));
+    if (macro != undefined) {
+      let scope = {};
+      scope.item = this;
+      scope.actor = actor;
+      await macro.execute(scope);
+    } else if (this.system.macro != "")
+      new Dialog({
+        title: "macro",
+        content: `Do not find this macro: ${this.system.macro}`,
+        buttons: {}
+      }).render(true);
   }
 
 

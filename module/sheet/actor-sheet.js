@@ -246,6 +246,12 @@ body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseA
       const li = event.currentTarget.closest(".item");
       await this.actor.update({[`system.attributes.applied.-=${li.dataset.itemId}`]: null});
     });
+
+    html.find(".use-item").on('click', async event => {
+      const li = event.currentTarget.closest(".item");
+      const item = this.actor.items.get(li.dataset.itemId);
+      await item.use(this.document);
+    })
   }
 
   /* -------------------------------------------- */

@@ -138,7 +138,9 @@
     "templates": {
       "base": {
         "name": "",
-        "description": ""
+        "description": "",
+        "skillTmp": "melee",
+        "skills": {}
       },
       "item": {
         "saving": {
@@ -146,9 +148,7 @@
           "difficulty": "0"
         },
         "exp": 0,
-        "equipment": true,
-        "skillTmp": "melee",
-        "skills": {}
+        "equipment": true
       }
     },
     "effect": {
@@ -284,8 +284,12 @@
         "base", "item"
       ],
   
-      "type": "-"
-  
+      "type": "-",
+      "quantity": {
+        "value": 1,
+        "max": 1
+      },
+      "macro": ""
     },
     "works": {
       "templates": [

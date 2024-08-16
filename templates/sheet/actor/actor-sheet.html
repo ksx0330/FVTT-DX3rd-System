@@ -766,12 +766,14 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Type"}} : {{timing item.system.type}}
+                          {{localize "DX3rd.Type"}} : {{timing item.system.type}} /
+                          {{localize "DX3rd.Quantity"}} : {{item.system.quantity.value}} | {{item.system.quantity.max}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
                     <h4 class="item-addon">
+                      <button class="use-item">{{localize "DX3rd.Use"}}</button>
                       <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">

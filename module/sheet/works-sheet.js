@@ -77,11 +77,11 @@ export class DX3rdWorksSheet extends DX3rdItemSheet {
   /** @override */
   _getSubmitData(updateData) {
     let formData = super._getSubmitData(updateData);
-    formData = this.updateAttributes(formData);
+    formData = this.updateSkills(formData);
     return formData;
   }
 
-  updateAttributes(formData) {
+  updateSkills(formData) {
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData).system.skills || {};
 

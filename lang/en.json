@@ -136,6 +136,7 @@
   "DX3rd.Item": "Miscellaneous",
   "DX3rd.Etc": "Other",
   "DX3rd.Once": "Consumable",
+  "DX3rd.Quantity": "Quantity",
 
   "DX3rd.Type": "Type",
   "DX3rd.Memory": "Lasting",
@@ -168,6 +169,7 @@
   "DX3rd.ApplyDamage": "ApplyDamage",
   "DX3rd.DefenseDamage": "DefenseDamage",
   "DX3rd.AddResult": "AddResult",
+  "DX3rd.AddDice": "AddDice",
   "DX3rd.AddDamage": "AddDamage",
   "DX3rd.IgnoreArmor": "IgnoreArmor",
   "DX3rd.ReduceDamage": "ReduceDamage",

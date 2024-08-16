@@ -309,15 +309,18 @@ async function chatListeners(html) {
     if (item.system.getTarget)
       await item.applyTargetDialog(true);
     else {
-      const macro = game.macros.contents.find(m => (m.name === item.system.macro));
-      if (macro != undefined)
-          macro.execute();
-      else if (item.system.macro != "")
-          new Dialog({
-              title: "macro",
-              content: `Do not find this macro: ${item.system.macro}`,
-              buttons: {}
-          }).render(true);
+        const macro = game.macros.contents.find(m => (m.name === item.system.macro));
+        if (macro != undefined) {
+            let scope = {};
+            scope.item = item;
+            scope.actor = actor;
+            await macro.execute(scope);
+        } else if (item.system.macro != "")
+            new Dialog({
+                title: "macro",
+                content: `Do not find this macro: ${item.system.macro}`,
+                buttons: {}
+            }).render(true);
 
       Hooks.call("updateActorEncroach", actor, item.id, "target");
     }
@@ -412,9 +415,12 @@ async function chatListeners(html) {
       if (!effect.system.getTarget) {
         const macro = game.macros.contents.find(m => (m.name === effect.system.macro));
 
-        if (macro != undefined)
-            macro.execute();
-        else if (effect.system.macro != "")
+        if (macro != undefined) {
+            let scope = {};
+            scope.item = item;
+            scope.actor = actor;
+            await macro.execute(scope);
+        } else if (effect.system.macro != "")
             new Dialog({
                 title: "macro",
                 content: `Do not find this macro: ${effect.system.macro}`,
@@ -433,9 +439,12 @@ async function chatListeners(html) {
 
     if (macroList.length == 0) {
       const macro = game.macros.contents.find(m => (m.name === item.system.macro));
-      if (macro != undefined)
-        macro.execute();
-      else if (item.system.macro != "")
+      if (macro != undefined) {
+        let scope = {};
+        scope.item = item;
+        scope.actor = actor;
+        await macro.execute(scope);
+    } else if (item.system.macro != "")
         new Dialog({
             title: "macro",
             content: `Do not find this macro: ${item.system.macro}`,
@@ -466,15 +475,18 @@ async function chatListeners(html) {
                   await e.applyTarget(a);
 
                 for (let name of macroList) {
-                  const macro = game.macros.contents.find(m => (m.name === name));
-                  if (macro != undefined)
-                      macro.execute();
-                  else if (name != "")
-                      new Dialog({
-                          title: "macro",
-                          content: `Do not find this macro: ${name}`,
-                          buttons: {}
-                      }).render(true);
+                    const macro = game.macros.contents.find(m => (m.name === name));
+                    if (macro != undefined) {
+                        let scope = {};
+                        scope.item = item;
+                        scope.actor = actor;
+                        await macro.execute(scope);
+                    } else if (name != "")
+                        new Dialog({
+                            title: "macro",
+                            content: `Do not find this macro: ${name}`,
+                            buttons: {}
+                        }).render(true);
                 }
               }
               Hooks.call("updateActorEncroach", actor, item.id, "target");
@@ -582,10 +594,13 @@ async function chatListeners(html) {
 
                 <th>${game.i18n.localize("DX3rd.AddResult")}</th>
                 <td><input type="number" id="add-result"></td>
+
+                <th>${game.i18n.localize("DX3rd.AddDice")}</th>
+                <td><input type="number" id="add-dice"></td>
               </tr>
               <tr>
                 <th>${game.i18n.localize("DX3rd.AddDamage")}</th>
-                <td colspan="3"><input type="number" id="add-damage"></td>
+                <td colspan="5"><input type="number" id="add-damage"></td>
               </tr>
 
             </table>
@@ -598,7 +613,8 @@ async function chatListeners(html) {
               let ignoreArmor = $("#ignore-armor").is(":checked");
               let addResult = ($("#add-result").val() != "") ? Number($("#add-result").val()) : 0;
               let addDamage = ($("#add-damage").val() != "") ? Number($("#add-damage").val()) : 0;
-              let formula = `${parseInt((rollResult + addResult) / 10) + 1}d10 + ${attack + addDamage}`;
+              let addDice = ($("#add-dice").val() != "") ? Number($("#add-dice").val()) : 0;
+              let formula = `${parseInt((rollResult + addResult) / 10) + 1 + addDice}d10 + ${attack + addDamage}`;
 
               let roll = new Roll(formula);
               await roll.roll({async: true})
@@ -698,6 +714,18 @@ async function chatListeners(html) {
     await item.setSublimation();
 
   });
+
+    html.on('click', '.use-item', async event => {
+        event.preventDefault();
+        const itemInfo = event.currentTarget.closest(".dx3rd-item-info");
+        const actor = game.actors.get(itemInfo.dataset.actorId);
+        const item = actor.items.get(itemInfo.dataset.itemId);
+
+        if (item.system.quantity.value < 1)
+            return;
+        
+        await item.use(actor);
+    });
 
 }
 

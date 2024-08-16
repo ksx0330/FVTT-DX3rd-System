@@ -32,7 +32,18 @@
             </select>
           </div>
 
-          <div class="cell grid-8">
+          <div class="cell grid-4">
+            <label class="cell--title">
+              {{localize "DX3rd.Quantity"}}
+            </label>
+            <div class="flex">
+              <input type="text" name="system.quantity.value" value="{{system.quantity.value}}" data-dtype="String"/>
+              <span class="slash"> / </span>
+              <input type="text" name="system.quantity.max" value="{{system.quantity.max}}" data-dtype="Number"/>
+            </div>
+          </div>
+
+          <div class="cell grid-4">
             <label class="cell--title">
               {{localize "DX3rd.SellSaving"}}
             </label>
@@ -69,7 +80,14 @@
 
     {{!-- Skill Tab --}}
     <div class="tab" data-group="primary" data-tab="skills">
-      <div class="sheet-wrapper margin-top-10">
+      <div class="sheet-wrapper">
+        <table>
+          <tr>
+            <th><label for="system.macro">{{localize "DX3rd.Macro"}}</label></th>
+            <td colspan="3"><input type="text" name="system.macro" data-dtype="String" value="{{system.macro}}"></td>
+          </tr>
+        </table>
+
         <div class="add-skills">
           <select name="system.skillTmp" id="actor-skill">
             {{#select system.skillTmp}}

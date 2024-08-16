@@ -137,6 +137,7 @@
   "DX3rd.Item": "아이템",
   "DX3rd.Etc": "기타",
   "DX3rd.Once": "일회용",
+  "DX3rd.Quantity": "개수",
 
   "DX3rd.Type": "종류",
   "DX3rd.Memory": "메모리",
@@ -169,6 +170,7 @@
   "DX3rd.ApplyDamage": "대미지 적용",
   "DX3rd.DefenseDamage": "대미지 방어",
   "DX3rd.AddResult": "달성치 추가",
+  "DX3rd.AddDice": "주사위 추가",
   "DX3rd.AddDamage": "대미지 추가",
   "DX3rd.IgnoreArmor": "장갑 무시",
   "DX3rd.ReduceDamage": "대미지 감소",

@@ -1,6 +1,6 @@
-import { DX3rdItemSheet } from "./item-sheet.js";
+import { DX3rdWorksSheet } from "./works-sheet.js";
 
-export class DX3rdAttributesSheet extends DX3rdItemSheet {
+export class DX3rdAttributesSheet extends DX3rdWorksSheet {
 
   /** @override */
   async getData(options) {

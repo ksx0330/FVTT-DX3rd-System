@@ -136,6 +136,7 @@
   "DX3rd.Item": "アイテム",
   "DX3rd.Etc": "その他",
   "DX3rd.Once": "使い捨て",
+  "DX3rd.Quantity": "個数",
 
   "DX3rd.Type": "種別",
   "DX3rd.Memory": "メモリー",
@@ -168,6 +169,7 @@
   "DX3rd.ApplyDamage": "ダメージ適用",
   "DX3rd.DefenseDamage": "ダメージ防御",
   "DX3rd.AddResult": "達成値追加",
+  "DX3rd.AddDice": "ダイス追加",
   "DX3rd.AddDamage": "ダメージ追加",
   "DX3rd.IgnoreArmor": "装甲無視",
   "DX3rd.ReduceDamage": "ダメージ減少",

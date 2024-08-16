@@ -68,7 +68,7 @@ export class DX3rdActor extends Actor {
       "social_dice": { "value": 0 }
     }
 
-    let skills = attributes.skills
+    let skills = attributes.skills;
     for (const [key, value] of Object.entries(skills)) {
       skills[key].value = parseInt(skills[key].point);
       skills[key].dice = 0;
@@ -100,7 +100,7 @@ export class DX3rdActor extends Actor {
 
     if (works != null) {
       values = this._updateData(values, works.system.attributes);
-      this._updateSkillData(works.system.skills);
+      this._updateSkillData(skills, works.system.skills);
     }
 
     for (let s of syndrome) {
@@ -131,9 +131,14 @@ export class DX3rdActor extends Actor {
       if (i.type == "vehicle" && iData.move != "")
         fullMove = iData.move;
 
-      values["saving"].value += iData.saving.value;
-      values["exp"].value += iData.exp;
-      this._updateSkillData(iData.skills);
+      if (i.type == "item") {
+        values["saving"].value += iData.saving.value * iData.quantity.max;
+        values["exp"].value += iData.exp * iData.quantity.max;
+      } else {
+        values["saving"].value += iData.saving.value;
+        values["exp"].value += iData.exp;
+      }
+      this._updateSkillData(skills, iData.skills);
     }
     values = this._updateData(values, tmp);
     attributes.add.melee = weaponAdd.melee;
@@ -149,11 +154,13 @@ export class DX3rdActor extends Actor {
       values = this._updateEffectData(values, e.system.attributes, e.system.level.value);
       if ("critical_min" in e.system.attributes && e.system.attributes.critical_min.value < attributes.critical.min)
         attributes.critical.min = Number(e.system.attributes.critical_min.value);
+      this._updateSkillData(skills, e.system.skills);
     }
     for (let e of combo) {
       values = this._updateEffectData(values, e.system.attributes, 0);
       if ("critical_min" in e.system.attributes && e.system.attributes.critical_min.value < attributes.critical.min)
         attributes.critical.min = Number(e.system.attributes.critical_min.value);
+      this._updateSkillData(skills, e.system.skills);
     }
 
     for (let e of Object.values(this.system.attributes.applied)) {
@@ -209,9 +216,7 @@ export class DX3rdActor extends Actor {
       attributes[key].value = value.value;
   }
 
-  _updateSkillData(attributes) {
-    let data = this.system.attributes.skills;
-
+  _updateSkillData(data, attributes) {
     for (const [key, value] of Object.entries(attributes)) {
       if (value.apply && key in data) {
         data[key].value += value.add;
@@ -406,9 +411,11 @@ export class DX3rdActor extends Actor {
       "mind_dice": { "value": 0 },
       "social_dice": { "value": 0 }
     }
+    let skillsOriginal = attributes.skills;
 
     for (let c of combos) {
       let values = duplicate(valuesOriginal);
+      let skills = duplicate(skillsOriginal);
       let critical_min = attributes.critical.min;
 
       let comboData = c.system;
@@ -438,6 +445,7 @@ export class DX3rdActor extends Actor {
         values = this._updateEffectData(values, effect.system.attributes, effect.system.level.value);
         if ("critical_min" in effect.system.attributes && effect.system.attributes.critical_min.value < critical_min)
           critical_min = Number(effect.system.attributes.critical_min.value);
+        this._updateSkillData(skills, effect.system.skills);
       }
 
       if (encroachStr.length > 0)
@@ -446,6 +454,7 @@ export class DX3rdActor extends Actor {
       values = this._updateEffectData(values, comboData.attributes, 0);
       if ("critical_min" in comboData.attributes && comboData.attributes.critical_min.value < critical_min)
         critical_min = Number(comboData.attributes.critical_min.value);
+      this._updateSkillData(skills, comboData.skills);
 
 
       for (let weaponId of weaponList) {
@@ -491,8 +500,8 @@ export class DX3rdActor extends Actor {
         comboData.critical.value = comboData[comboData.roll].critical + Number(this.system.attributes.sublimation.critical);
       }
 
-      if (comboData.skill != "-" && comboData.skill in attributes.skills) {
-        let skill = attributes.skills[comboData.skill];
+      if (comboData.skill != "-" && comboData.skill in skills) {
+        let skill = skills[comboData.skill];
 
         comboData.dice.value += skill.dice;
         comboData.add.value += skill.value;
