@@ -704,7 +704,7 @@ export class DX3rdActor extends Actor {
     return { dice, add, critical };
   }
 
-  async rollDice(title, diceOptions, append) {
+  async rollDice(title, diceOptions) {
     // diceOptions에 기본값이 없는 경우 처리
     if (!diceOptions.dice || !diceOptions.critical || !diceOptions.add) {
       let { dice, add, critical } = this._getDiceData(diceOptions);
