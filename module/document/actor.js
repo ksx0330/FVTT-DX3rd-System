@@ -88,6 +88,7 @@ export class DX3rdActor extends Actor {
     let effect = [];
     let combo = [];
     let spell = [];
+    let psionic = [];
     let record = [];
 
     let itemType = ["weapon", "protect", "vehicle", "connection", "item"];
@@ -100,6 +101,7 @@ export class DX3rdActor extends Actor {
       else if (i.type == "effect" && i.system.active.state) effect.push(i);
       else if (i.type == "combo" && i.system.active.state) combo.push(i);
       else if (i.type == "spell") spell.push(i);
+      else if (i.type == "psionic") psionic.push(i);
       else if (itemType.includes(i.type) && i.system.equipment) item.push(i);
       else if (i.type == "record") record.push(i);
     }
@@ -185,6 +187,25 @@ export class DX3rdActor extends Actor {
         values,
         e.system.attributes,
         0
+      );
+      if (
+        "critical_min" in e.system.attributes &&
+        e.system.attributes.critical_min.value < attributes.critical.min
+      )
+        attributes.critical.min = Number(
+          e.system.attributes.critical_min.value
+        );
+      this._updateSkillData(skills, e.system.skills);
+    }
+
+    for (let e of psionic) {
+      if (!e.system.active.state)
+        continue;
+
+      values = this._updateEffectData(
+        values,
+        e.system.attributes,
+        e.system.level.value
       );
       if (
         "critical_min" in e.system.attributes &&
@@ -349,7 +370,7 @@ export class DX3rdActor extends Actor {
     }
 
     for (let i of this.items) {
-      if (i.type == "effect") {
+      if (i.type == "effect" || i.type == "psionic") {
         let level = i.system.level.init;
         let own = i.system.exp.own;
         let upgrade = i.system.exp.upgrade;
@@ -416,7 +437,7 @@ export class DX3rdActor extends Actor {
 
   _prepareItemEnc() {
     for (let i of this.items) {
-      if (i.type == "effect") {
+      if (i.type == "effect" || i.type == "psionic") {
         i.system.level.value = i.system.level.init;
         if (!i.system.level.upgrade) continue;
 
@@ -1255,6 +1276,12 @@ export class DX3rdActor extends Actor {
             content: `Do not find this macro: ${diceOptions.macro}`,
             buttons: {},
           }).render(true);
+        }
+        
+        let targets = Array.from(game.user.targets || []);
+        if (diceOptions.item.system.effect.disable != "-") {
+          for (let target of targets.map((t) => t.actor))
+            diceOptions.item.applyTarget(target);
         }
       }
 

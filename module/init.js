@@ -54,7 +54,11 @@ Hooks.once("init", async function () {
   Items.registerSheet("dx3rd", DX3rdEffectSheet, {
     types: ["spell"],
     makeDefault: true,
-  }); // spell-sheet 등록
+  });
+  Items.registerSheet("dx3rd", DX3rdEffectSheet, {
+    types: ["psionic"],
+    makeDefault: true,
+  });
   Items.registerSheet("dx3rd", DX3rdRoisSheet, {
     types: ["rois"],
     makeDefault: true,
@@ -136,24 +140,24 @@ Hooks.on("updateActorCost", async (actor, key, usage) => {
   itemUsage[usage] = true;
   if (itemUsage.target && itemUsage.roll) {
     const last = Number(actor.system.attributes[itemUsage.type].value);
-    let cost = last + itemUsage.cost;
+    let cost = (itemUsage.type == "encroachment") ? last + itemUsage.cost : last - itemUsage.cost;
 
     let chatData = {
       speaker: ChatMessage.getSpeaker({ actor: actor }),
     }
 
     if (Number.isNumeric(itemUsage.cost))
-      chatData.content = `<div class="context-box">${actor.name}(${itemUsage.type}): ${last} -> ${cost} (+${itemUsage.cost})</div>`;
+      chatData.content = `<div class="context-box">${actor.name}(${itemUsage.type}): ${last} -> ${cost} (${itemUsage.type != "hp" ? '+' : '-'}${itemUsage.cost})</div>`;
     else {
       let roll = new Roll(itemUsage.cost);
       await roll.roll({ async: true });
   
       let rollData = await roll.render();
   
-      cost = last + roll.total;
+      cost = (itemUsage.type == "encroachment") ? last + roll.total : last - roll.total;
       chatData.content = `
         <div class="dx3rd-roll" data-actor-id=${actor.id}>
-          <h2 class="header"><div class="title">${actor.name}: ${last} -> ${cost} (+${roll.total})</div></h2>
+          <h2 class="header"><div class="title">${actor.name}: ${last} -> ${cost} (${itemUsage.type != "hp" ? '+' : '-'}${roll.total})</div></h2>
           ${rollData}
         </div>
       `;
@@ -166,54 +170,6 @@ Hooks.on("updateActorCost", async (actor, key, usage) => {
     let rollMode = game.settings.get("core", "rollMode");
     ChatMessage.create(chatData, { rollMode });
   }
-});
-
-
-Hooks.on("setActorHP", (actor, key, hpCost) => {
-  game.DX3rd.itemUsage[key] = {
-    actor: actor,
-    hpCost: hpCost,
-    target: false,
-    roll: false,
-  };
-});
-
-Hooks.on("updateActorHP", async (actor, key, type) => {
-  let itemUsage = game.DX3rd.itemUsage[key];
-  itemUsage[type] = true;
-
-  const lastHP = Number(actor.system.attributes.hp.value);
-  let newHP = lastHP - itemUsage.hpCost;  // encroach 대신 hpCost 사용
-
-  let chatData = {
-    speaker: ChatMessage.getSpeaker({ actor: actor }),
-  };
-
-  // HP 소모량이 숫자인 경우
-  if (Number.isNumeric(itemUsage.hpCost)) {
-    chatData.content = `<div class="context-box">${actor.name}: ${lastHP} -> ${newHP} (-${itemUsage.hpCost})</div>`;
-  } else {
-    // 주사위 굴림을 통해 HP 소모량 계산
-    let roll = new Roll(itemUsage.hpCost);
-    await roll.roll({ async: true });
-
-    let rollData = await roll.render();
-    newHP = lastHP - roll.total;
-    chatData.content = `
-      <div class="dx3rd-roll" data-actor-id=${actor.id}>
-        <h2 class="header"><div class="title">${actor.name}: ${lastHP} -> ${newHP} (-${roll.total})</div></h2>
-        ${rollData}
-      </div>
-    `;
-    chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;
-    chatData.sound = CONFIG.sounds.dice;
-    chatData.roll = roll;
-  }
-
-  // HP 값 업데이트
-  await actor.update({ "system.attributes.hp.value": newHP });
-  let rollMode = game.settings.get("core", "rollMode");
-  ChatMessage.create(chatData, { rollMode });
 });
 
 Hooks.on("updateActorDialog", function () {
@@ -363,9 +319,6 @@ async function chatListeners(html) {
     });
   }
 
-
-
-
   html.on("click", ".use-effect", async (ev) => {
     ev.preventDefault();
     const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
@@ -413,8 +366,10 @@ async function chatListeners(html) {
 
     usingEffect(item);
     runningMacro(item.system.macro, actor, item);
-    for (let target of targets.map((t) => t.actor))
-      await item.applyTarget(target);
+    if (item.system.effect.disable != "-") {
+      for (let target of targets.map((t) => t.actor))
+        await item.applyTarget(target);
+    }
 
     Hooks.call("updateActorCost", actor, item.id, "target");
     
@@ -494,10 +449,10 @@ async function chatListeners(html) {
       if (e === "-") continue;
 
       let effect = actor.items.get(e);
-      if (effect.system.effect.disable !== "-") appliedList.push(effect);
-
-      for (let target of targets.map((t) => t.actor))
-        await effect.applyTarget(target);
+      if (effect.system.effect.disable != "-") {
+        for (let target of targets.map((t) => t.actor))
+          await effect.applyTarget(target);
+      }
       
       if (effect.system.macro !== "")
         await runningMacro(effect.system.macro);
@@ -577,7 +532,6 @@ async function chatListeners(html) {
     if (item.system.getTarget) {
       if (targets.length > 0) {
         targeting(targets, actor);
-
       } else {
         ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
         return;
@@ -587,9 +541,6 @@ async function chatListeners(html) {
     Hooks.call("setActorCost", actor, item.id, "encroachment", encroach);
 
     usingEffect(item);
-    runningMacro(item.system.macro, actor, item);
-    for (let target of targets.map((t) => t.actor))
-      await item.applyTarget(target);
 
     Hooks.call("updateActorCost", actor, item.id, "target");
     
@@ -604,12 +555,99 @@ async function chatListeners(html) {
         invoke: invoke,
         evocation: evocation,
         macro: macroName,
+        item: item,
       };
 
       await actor._onSpellRoll(diceOptions);
     }
 
   });
+
+  html.on("click", ".use-psionic", async (ev) => {
+    ev.preventDefault();
+    const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
+    const actor = game.actors.get(itemInfo.dataset.actorId);
+    const item = actor.items.get(itemInfo.dataset.itemId);
+
+    let skill = item.system.skill;
+    let base = "";
+    const rollType = item.system.roll;
+    const attackRoll = item.system.attackRoll;
+    const hp = Number.isNaN(Number(item.system.hp.value))
+      ? item.system.hp.value
+      : Number(item.system.hp.value);
+
+    let mainStat = ["body", "sense", "mind", "social"];
+    if (mainStat.includes(skill)) {
+      base = skill;
+      skill = "-";
+    }
+
+    if (skill in actor.system.attributes.skills) {
+      base = actor.system.attributes.skills[skill].base;
+    }
+
+    let used = item.system.used;
+    if (used.disable != "notCheck") {
+      let max = used.max + (used.level ? item.system.level.value : 0);
+      if (used.state >= max) {
+        ui.notifications.info(`Do not use this psionic: ${item.name}`);
+        return;
+      }
+    }
+
+    if (actor.system.attributes.hp.value - hp <= 0) {
+      ui.notifications.info(`Do not use this psionic: ${item.name}`);
+      return;
+    }
+
+    let targets = Array.from(game.user.targets || []);
+    if (item.system.getTarget) {
+      if (targets.length > 0)
+        targeting(targets, actor);
+      else {
+        ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
+        return;
+      }
+    }
+
+    Hooks.call("setActorCost", actor, item.id, "hp", hp);
+
+    usingEffect(item);
+    runningMacro(item.system.macro, actor, item);
+    if (item.system.effect.disable != "-") {
+      for (let target of targets.map((t) => t.actor))
+        await item.applyTarget(target);
+    }
+
+    Hooks.call("updateActorCost", actor, item.id, "target");
+    
+    if (rollType === "-")
+      Hooks.call("updateActorCost", actor, item.id, "roll");
+    else {
+      const diceOptions = {
+        key: item.id,
+        rollType: rollType,
+        base: base,
+        skill: skill,
+      };  
+
+      if (attackRoll == "-") {
+        await actor.rollDice(item.name, diceOptions);
+      } else {
+        let confirm = async (weaponData) => {
+          diceOptions["attack"] = {
+            value: weaponData.attack,
+            type: item.system.attackRoll,
+          };
+          await actor.rollDice(item.name, diceOptions);
+        };
+        new WeaponDialog(actor, confirm).render(true);
+      }
+    }
+  });
+
+
 
   html.on("click", ".roll-attack", async (ev) => {
     ev.preventDefault();

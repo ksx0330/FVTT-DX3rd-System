@@ -140,6 +140,7 @@
       "effect",
       "combo",
       "spell",
+      "psionic",
       "weapon",
       "protect",
       "vehicle",
@@ -272,6 +273,51 @@
         "disable": "-"
       },
       "attributes": {},
+      "macro": ""
+
+    },
+    "psionic": {
+      "templates": ["base"],
+
+      "type": "normal",
+      "skill": "-",
+      "difficulty": "",
+      "limit": "-",
+      "timing": "-",
+      "target": "",
+      "range": "",
+      "roll": "-",
+      "attackRoll": "-",
+
+      "hp": {
+        "value": ""
+      },
+      "level": {
+        "init": 1,
+        "max": 1,
+        "upgrade": true
+      },
+      "exp": {
+        "own": true,
+        "upgrade": true
+      },
+
+      "effect": {
+        "disable": "notCheck",
+        "attributes": {}
+      },
+      "active": {
+        "state": false,
+        "disable": "-"
+      },
+      "used": {
+        "state": 0,
+        "max": 0,
+        "level": false,
+        "disable": "notCheck"
+      },
+      "attributes": {},
+      "getTarget": false,
       "macro": ""
 
     },

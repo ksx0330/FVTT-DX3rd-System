@@ -21,7 +21,9 @@ export class DX3rdItem extends Item {
     else if (this.type == "combo")
       content += await this._getComboContent();
     else if (this.type == "spell")
-      content += await this._getSpellContent(); // 액터 시트에서 spell 아이템을 메시지로 출력하는 부분
+      content += await this._getSpellContent();
+    else if (this.type == "psionic")
+      content += await this._getPsionicContent();
     else if (this.type == "weapon")
       content += await this._getWeaponContent();
     else if (this.type == "protect")
@@ -173,7 +175,7 @@ export class DX3rdItem extends Item {
 
     return content;
   }
-  // 스펠 출력 시 출력되는 메시지 양식 //
+
   async _getSpellContent() {
 
     let spellType = this.system.spelltype;
@@ -206,7 +208,44 @@ export class DX3rdItem extends Item {
 
     return content;
   }
-  //
+  
+  async _getPsionicContent() {
+    let content = `
+      <table>
+        <tr>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Level")}:&nbsp&nbsp</b>
+          ${this.system.level.value} / ${this.system.level.max}</td>
+        </tr>
+        <tr>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Timing")}:&nbsp&nbsp</b>
+          ${Handlebars.compile('{{timing arg}}')({ arg: this.system.timing })}</td>
+        </tr>
+        <tr>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
+          ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: this.system.skill })}</td>
+        </tr>
+        <tr>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Difficulty")}:&nbsp&nbsp</b>
+          ${this.system.difficulty}</td>
+        </tr>
+
+        <tr>
+          <td><b>${game.i18n.localize("DX3rd.Target")}:&nbsp&nbsp</b>${this.system.target}</td>
+          <td><b>${game.i18n.localize("DX3rd.Range")}:&nbsp&nbsp</b>${this.system.range}</td>
+        </tr>
+        <tr>
+          <td><b>${game.i18n.localize("DX3rd.HP")}:&nbsp&nbsp</b>${this.system.hp.value}</td>
+          <td><b>${game.i18n.localize("DX3rd.Limit")}:&nbsp&nbsp</b>${this.system.limit}</td>
+        </tr>
+      </table>
+      <p>${this.system.description}</p>
+      <button class="chat-btn use-psionic">${game.i18n.localize("DX3rd.Use")}</button>
+
+    `
+
+    return content;
+  }
+
   async _getRoisContent() {
     let typeName = "";
     if (this.system.type == "D")
@@ -412,7 +451,7 @@ export class DX3rdItem extends Item {
 
   async applyTarget(actor) {
     let attributes = this.system.effect.attributes;
-    let level = this.system.level.value;
+    let level = ("level" in this.system) ? this.system.level.value : 0;
 
     let copy = duplicate(attributes);
     for (const [key, value] of Object.entries(attributes)) {

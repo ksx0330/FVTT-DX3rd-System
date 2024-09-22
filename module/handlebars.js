@@ -24,7 +24,7 @@ export class DX3rdRegisterHelpers {
     });
 
     Handlebars.registerHelper('timing', function(arg) {
-      if (arg == "" || arg == "-") return;
+      if (arg == "" || arg == "-" || arg == undefined) return;
 
       let split = arg.split("-");
       let retList = [];
@@ -96,9 +96,6 @@ export class DX3rdRegisterHelpers {
     });
 
     Handlebars.registerHelper('usedFullForCombo', function(actor, combo, options) {
-      console.log(actor);
-      console.log(combo);
-
       const effectItems = combo.system.effect;
       for (let e of effectItems) {
         if (e == "-")
