@@ -118,7 +118,7 @@ export class ComboDialog extends Dialog {
         macroList.push(effect);
     }
 
-    Hooks.call("setActorEncroach", this.actor, key, encroach);
+    Hooks.call("setActorCost", this.actor, key, "encroachment", encroach);
 
 
     let skill = $("#skill").val();
@@ -187,7 +187,7 @@ export class ComboDialog extends Dialog {
     }
 
     if (!getTarget)
-      Hooks.call("updateActorEncroach", this.actor, key, "target");
+      Hooks.call("updateActorCost", this.actor, key, "target");
     else {
       new Dialog({
         title: game.i18n.localize("DX3rd.SelectTarget"),
@@ -218,12 +218,12 @@ export class ComboDialog extends Dialog {
                       }).render(true);
                 }
               }
-              Hooks.call("updateActorEncroach", this.actor, key, "target");
+              Hooks.call("updateActorCost", this.actor, key, "target");
             }
           }
         },
         close: () => {
-          //Hooks.call("updateActorEncroach", this.actor, key, "target")
+          //Hooks.call("updateActorCost", this.actor, key, "target")
         }
       }, {top: 300, left: 20}).render(true);
     }

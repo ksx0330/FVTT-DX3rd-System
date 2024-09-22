@@ -864,7 +864,7 @@ export class DX3rdActor extends Actor {
 
     // 기타 후처리 로직
     if ("key" in diceOptions) {
-      await Hooks.call("updateActorEncroach", this, diceOptions.key, "roll");
+      await Hooks.call("updateActorCost", this, diceOptions.key, "roll");
     }
 
     if (rollType == "major") Hooks.call("afterMajor", this);
@@ -1011,7 +1011,7 @@ export class DX3rdActor extends Actor {
             }
             if ("key" in diceOptions) {
               await Hooks.call(
-                "updateActorEncroach",
+                "updateActorCost",
                 this,
                 diceOptions.key,
                 "roll"

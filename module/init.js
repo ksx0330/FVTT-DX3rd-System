@@ -121,38 +121,39 @@ Hooks.once("ready", async function () {
   game.settings.set("core", "defaultToken", { disposition: 0 });
 });
 
-Hooks.on("setActorEncroach", (actor, key, encroach) => {
+Hooks.on("setActorCost", (actor, key, type, cost) => {
   game.DX3rd.itemUsage[key] = {
     actor: actor,
-    encroach: encroach,
+    type: type, // encroachment, hp
+    cost: cost,
     target: false,
     roll: false,
   };
 });
 
-Hooks.on("updateActorEncroach", async (actor, key, type) => {
+Hooks.on("updateActorCost", async (actor, key, usage) => {
   let itemUsage = game.DX3rd.itemUsage[key];
-  itemUsage[type] = true;
+  itemUsage[usage] = true;
   if (itemUsage.target && itemUsage.roll) {
-    const last = Number(actor.system.attributes.encroachment.value);
-    let encroach = last + itemUsage.encroach;
+    const last = Number(actor.system.attributes[itemUsage.type].value);
+    let cost = last + itemUsage.cost;
 
     let chatData = {
       speaker: ChatMessage.getSpeaker({ actor: actor }),
     }
 
-    if (Number.isNumeric(itemUsage.encroach))
-      chatData.content = `<div class="context-box">${actor.name}: ${last} -> ${encroach} (+${itemUsage.encroach})</div>`;
+    if (Number.isNumeric(itemUsage.cost))
+      chatData.content = `<div class="context-box">${actor.name}(${itemUsage.type}): ${last} -> ${cost} (+${itemUsage.cost})</div>`;
     else {
-      let roll = new Roll(itemUsage.encroach);
+      let roll = new Roll(itemUsage.cost);
       await roll.roll({ async: true });
   
       let rollData = await roll.render();
   
-      encroach = last + roll.total;
+      cost = last + roll.total;
       chatData.content = `
         <div class="dx3rd-roll" data-actor-id=${actor.id}>
-          <h2 class="header"><div class="title">${actor.name}: ${last} -> ${encroach} (+${roll.total})</div></h2>
+          <h2 class="header"><div class="title">${actor.name}: ${last} -> ${cost} (+${roll.total})</div></h2>
           ${rollData}
         </div>
       `;
@@ -161,15 +162,11 @@ Hooks.on("updateActorEncroach", async (actor, key, type) => {
       chatData.roll = roll;
     }
   
-    await actor.update({ "system.attributes.encroachment.value": encroach });
+    await actor.update({ [`system.attributes.${itemUsage.type}.value`]: cost });
     let rollMode = game.settings.get("core", "rollMode");
     ChatMessage.create(chatData, { rollMode });
   }
 });
-
-
-
-
 
 
 Hooks.on("setActorHP", (actor, key, hpCost) => {
@@ -412,17 +409,17 @@ async function chatListeners(html) {
       }
     }
 
-    Hooks.call("setActorEncroach", actor, item.id, encroach);
+    Hooks.call("setActorCost", actor, item.id, "encroachment", encroach);
 
     usingEffect(item);
     runningMacro(item.system.macro, actor, item);
     for (let target of targets.map((t) => t.actor))
       await item.applyTarget(target);
 
-    Hooks.call("updateActorEncroach", actor, item.id, "target");
+    Hooks.call("updateActorCost", actor, item.id, "target");
     
     if (rollType === "-")
-      Hooks.call("updateActorEncroach", actor, item.id, "roll");
+      Hooks.call("updateActorCost", actor, item.id, "roll");
     else {
       const diceOptions = {
         key: item.id,
@@ -508,15 +505,15 @@ async function chatListeners(html) {
       await usingEffect(effect);
     }
 
-    Hooks.call("setActorEncroach", actor, item.id, encroach);
+    Hooks.call("setActorCost", actor, item.id, "encroachment", encroach);
     
     await usingEffect(item);
     await runningMacro(item.system.macro, actor, item);
 
-    Hooks.call("updateActorEncroach", actor, item.id, "target");
+    Hooks.call("updateActorCost", actor, item.id, "target");
 
     if (rollType === "-")
-      Hooks.call("updateActorEncroach", actor, item.id, "roll");
+      Hooks.call("updateActorCost", actor, item.id, "roll");
     else {
       const diceOptions = {
         key: item.id,
@@ -576,8 +573,8 @@ async function chatListeners(html) {
       ? item.system.encroach.value
       : Number(item.system.encroach.value);
 
+    let targets = Array.from(game.user.targets || []);
     if (item.system.getTarget) {
-      let targets = Array.from(game.user.targets || []);
       if (targets.length > 0) {
         targeting(targets, actor);
 
@@ -587,18 +584,18 @@ async function chatListeners(html) {
       }
     }
 
-    Hooks.call("setActorEncroach", actor, item.id, encroach);
+    Hooks.call("setActorCost", actor, item.id, "encroachment", encroach);
 
     usingEffect(item);
     runningMacro(item.system.macro, actor, item);
     for (let target of targets.map((t) => t.actor))
       await item.applyTarget(target);
 
-    Hooks.call("updateActorEncroach", actor, item.id, "target");
+    Hooks.call("updateActorCost", actor, item.id, "target");
     
     if (rollType === "-") {
       runningMacro(item.system.macro, actor, item);
-      Hooks.call("updateActorEncroach", actor, item.id, "roll");
+      Hooks.call("updateActorCost", actor, item.id, "roll");
     } else {
       const diceOptions = {
         key: item.id,
@@ -610,7 +607,7 @@ async function chatListeners(html) {
       };
 
       await actor._onSpellRoll(diceOptions);
-      Hooks.call("updateActorEncroach", actor, item.id, "roll"); // 침식률 업데이트
+      Hooks.call("updateActorCost", actor, item.id, "roll"); // 침식률 업데이트
     }
 
   });
