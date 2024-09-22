@@ -6,7 +6,6 @@ import { DX3rdItemSheet } from "./sheet/item-sheet.js";
 import { DX3rdWorksSheet } from "./sheet/works-sheet.js";
 import { DX3rdEffectSheet } from "./sheet/effect-sheet.js";
 import { DX3rdComboSheet } from "./sheet/combo-sheet.js";
-import { DX3rdSpellSheet } from "./sheet/spell-sheet.js"; // spell-sheet.js 파일을 임포트
 import { DX3rdRoisSheet } from "./sheet/rois-sheet.js";
 import { DX3rdEquipmentSheet } from "./sheet/equipment-sheet.js";
 
@@ -52,7 +51,7 @@ Hooks.once("init", async function () {
     types: ["combo"],
     makeDefault: true,
   });
-  Items.registerSheet("dx3rd", DX3rdSpellSheet, {
+  Items.registerSheet("dx3rd", DX3rdEffectSheet, {
     types: ["spell"],
     makeDefault: true,
   }); // spell-sheet 등록
@@ -403,8 +402,8 @@ async function chatListeners(html) {
       }
     }
 
+    let targets = Array.from(game.user.targets || []);
     if (item.system.getTarget) {
-      let targets = Array.from(game.user.targets || []);
       if (targets.length > 0)
         targeting(targets, actor);
       else {
@@ -414,10 +413,13 @@ async function chatListeners(html) {
     }
 
     Hooks.call("setActorEncroach", actor, item.id, encroach);
-    Hooks.call("updateActorEncroach", actor, item.id, "target");
-    
+
     usingEffect(item);
     runningMacro(item.system.macro, actor, item);
+    for (let target of targets.map((t) => t.actor))
+      await item.applyTarget(target);
+
+    Hooks.call("updateActorEncroach", actor, item.id, "target");
     
     if (rollType === "-")
       Hooks.call("updateActorEncroach", actor, item.id, "roll");
@@ -459,8 +461,6 @@ async function chatListeners(html) {
       : Number(item.system.encroach.value);
 
     const effectItems = item.system.effect;
-    const appliedList = [];
-    const macroList = [];
 
     let usedCheck = true;
 
@@ -499,11 +499,11 @@ async function chatListeners(html) {
       let effect = actor.items.get(e);
       if (effect.system.effect.disable !== "-") appliedList.push(effect);
 
-      if (!effect.system.getTarget) {
-        await runningMacro(effect.system.macro, actor, effect);
-      } else if (effect.system.macro !== "") {
-        macroList.push(effect.system.macro);
-      }
+      for (let target of targets.map((t) => t.actor))
+        await effect.applyTarget(target);
+      
+      if (effect.system.macro !== "")
+        await runningMacro(effect.system.macro);
 
       await usingEffect(effect);
     }
@@ -512,11 +512,6 @@ async function chatListeners(html) {
     
     await usingEffect(item);
     await runningMacro(item.system.macro, actor, item);
-
-    for (let target of targets.map((t) => t.actor)) {
-      for (let effect of appliedList) await effect.applyTarget(target);
-      for (let macroName of macroList) await runningMacro(macroName);
-    }
 
     Hooks.call("updateActorEncroach", actor, item.id, "target");
 
@@ -583,15 +578,22 @@ async function chatListeners(html) {
 
     if (item.system.getTarget) {
       let targets = Array.from(game.user.targets || []);
-      if (targets.length > 0)
+      if (targets.length > 0) {
         targeting(targets, actor);
-      else {
+
+      } else {
         ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
         return;
       }
     }
 
     Hooks.call("setActorEncroach", actor, item.id, encroach);
+
+    usingEffect(item);
+    runningMacro(item.system.macro, actor, item);
+    for (let target of targets.map((t) => t.actor))
+      await item.applyTarget(target);
+
     Hooks.call("updateActorEncroach", actor, item.id, "target");
     
     if (rollType === "-") {

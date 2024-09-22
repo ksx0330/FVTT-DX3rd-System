@@ -127,8 +127,6 @@ export class DX3rdActor extends Actor {
 
     for (let s of spell) {
       let sData = s.system;
-      for (let [key, value] of Object.entries(tmp))
-        if (key in sData) tmp[key].value += sData[key];
       values["exp"].value += sData.exp;
     }
 
@@ -178,6 +176,26 @@ export class DX3rdActor extends Actor {
         );
       this._updateSkillData(skills, e.system.skills);
     }
+
+    for (let e of spell) {
+      if (!e.system.active.state)
+        continue;
+
+      values = this._updateEffectData(
+        values,
+        e.system.attributes,
+        0
+      );
+      if (
+        "critical_min" in e.system.attributes &&
+        e.system.attributes.critical_min.value < attributes.critical.min
+      )
+        attributes.critical.min = Number(
+          e.system.attributes.critical_min.value
+        );
+      this._updateSkillData(skills, e.system.skills);
+    }
+    
     for (let e of combo) {
       values = this._updateEffectData(values, e.system.attributes, 0);
       if (

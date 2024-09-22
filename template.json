@@ -263,7 +263,17 @@
       "encroach": {
         "value": "0"
       },
+      "effect": {
+        "disable": "notCheck",
+        "attributes": {}
+      },
+      "active": {
+        "state": false,
+        "disable": "-"
+      },
+      "attributes": {},
       "macro": ""
+
     },
     "weapon": {
       "templates": ["base", "item"],
