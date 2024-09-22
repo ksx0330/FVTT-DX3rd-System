@@ -325,10 +325,10 @@ async function chatListeners(html) {
 
   async function usingEffect(item) {
     let updates = {};
-    if (item.system.active.disable != "notCheck") {
+    if ("active" in item.system && item.system.active.disable != "notCheck") {
       updates["system.active.state"] = true;
     }
-    if (item.system.used.disable != "notCheck") {
+    if ("used" in item.system && item.system.used.disable != "notCheck") {
       updates["system.used.state"] = item.system.used.state + 1;
     }
     await item.update(updates);
@@ -559,7 +559,7 @@ async function chatListeners(html) {
             type: attackRoll,
           };
 
-          await actor.rollDice(title, diceOptions);
+          await actor.rollDice(item.name, diceOptions);
         }
       }
     }
@@ -648,6 +648,7 @@ async function chatListeners(html) {
     ev.preventDefault();
     const data = ev.currentTarget.dataset;
     const attack = Number(data.attack);
+    const damage = Number(data.damage);
     const rollResult = Number(
       $(ev.currentTarget).parent().find(".dice-total").first().text()
     );
@@ -655,7 +656,7 @@ async function chatListeners(html) {
     new Dialog({
       title: game.i18n.localize("DX3rd.CalcDamage"),
       content: `
-            <h2 style="text-align: center;">[${rollResult} / 10 + 1]D10 + ${attack}</h2>
+            <h2 style="text-align: center;">[${rollResult} / 10 + 1 + ${damage}]D10 + ${attack}</h2>
 
             <table class="calc-dialog">
               <tr>
@@ -688,7 +689,7 @@ async function chatListeners(html) {
             let addDice =
               $("#add-dice").val() != "" ? Number($("#add-dice").val()) : 0;
             let formula = `${
-              parseInt((rollResult + addResult) / 10) + 1 + addDice
+              parseInt((rollResult + addResult) / 10) + 1 + damage + addDice
             }d10 + ${attack + addDamage}`;
 
             let roll = new Roll(formula);

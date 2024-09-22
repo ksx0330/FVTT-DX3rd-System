@@ -27,6 +27,7 @@ export class DX3rdActor extends Actor {
       social: { value: attributes.social.point },
 
       attack: { value: 0 },
+      damage_roll: { value: 0 },
       dice: { value: 0 },
       add: { value: 0 },
       critical: { value: 10 },
@@ -257,6 +258,9 @@ export class DX3rdActor extends Actor {
 
     attributes.encroachment.init.value = values["enc_init"].value;
     delete values["enc_init"];
+
+    attributes.attack.dice = values["damage_roll"].value;
+    delete values["damage_roll"];
 
     for (const [key, value] of Object.entries(values))
       attributes[key].value = value.value;
@@ -824,7 +828,7 @@ export class DX3rdActor extends Actor {
     // attack 버튼에서 추가 기능이 필요한 경우 처리
     if ("attack" in diceOptions) {
       let attack = Number(attributes.attack.value) + diceOptions.attack.value;
-      content += `<button class="chat-btn calc-damage" data-attack="${attack}">${game.i18n.localize(
+      content += `<button class="chat-btn calc-damage" data-attack="${attack}" data-damage="${attributes.attack.dice}">${game.i18n.localize(
         "DX3rd.DamageRoll"
       )}</button>`;
     }
