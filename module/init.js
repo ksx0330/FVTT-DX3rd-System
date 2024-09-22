@@ -607,7 +607,6 @@ async function chatListeners(html) {
       };
 
       await actor._onSpellRoll(diceOptions);
-      Hooks.call("updateActorCost", actor, item.id, "roll"); // 침식률 업데이트
     }
 
   });
