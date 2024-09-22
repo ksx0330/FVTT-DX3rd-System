@@ -713,6 +713,11 @@ export class DX3rdActor extends Actor {
       diceOptions.critical = critical;
     }
 
+    // attack 타입의 값을 처리할 때 add를 제대로 반영
+    if ("attack" in diceOptions) {
+      diceOptions.add += Number(this.system.attributes.add[diceOptions.attack.type]); // 추가 보정치 반영
+    }
+
     // 다이얼로그 내용 생성
     let content = `
         <table style="text-align: center;">
@@ -802,11 +807,6 @@ export class DX3rdActor extends Actor {
     let rollType = diceOptions.rollType;
     let { dice, add, critical } = diceOptions;
 
-    // attack 타입의 값을 처리할 때 add를 제대로 반영
-    if ("attack" in diceOptions) {
-      add += Number(attributes.add[diceOptions.attack.type]); // 추가 보정치 반영
-    }
-
     // 주사위 공식 생성
     let formula = `${dice}dx${critical} + ${add}`;
     let roll = new Roll(formula);
@@ -815,11 +815,11 @@ export class DX3rdActor extends Actor {
     let rollMode = game.settings.get("core", "rollMode");
     let rollData = await roll.render();
     let content = `
-  <div class="dx3rd-roll" data-actor-id=${this.id}>
-    <h2 class="header"><div class="title">${title}</div></h2>
-    ${rollData}
-  </div>
-`;
+      <div class="dx3rd-roll" data-actor-id=${this.id}>
+        <h2 class="header"><div class="title">${title}</div></h2>
+        ${rollData}
+      </div>
+    `;
 
     // attack 버튼에서 추가 기능이 필요한 경우 처리
     if ("attack" in diceOptions) {
@@ -889,26 +889,18 @@ export class DX3rdActor extends Actor {
       )}: ${invokeText}</h2>
         <table class="calc-dialog">
           <tr>
-            <th style="white-space: nowrap;">${game.i18n
-              .localize("DX3rd.AddDice")
-              .replace(" ", "<br>")}</th>
+            <th style="white-space: nowrap;">${game.i18n.localize("DX3rd.AddDice").replace(" ", "<br>")}</th>
             <td><input type="number" id="append-dice" value="${appendDice}" style="width: 100px;"></td>
     
-            <th style="white-space: nowrap;">${game.i18n
-              .localize("DX3rd.AddResult")
-              .replace(" ", "<br>")}</th>
+            <th style="white-space: nowrap;">${game.i18n.localize("DX3rd.AddResult").replace(" ", "<br>")}</th>
             <td><input type="number" id="append-add" value="${appendAdd}" style="width: 100px;"></td>
           </tr>
     
           <tr>
-            <th style="white-space: nowrap;">${game.i18n
-              .localize("DX3rd.Eibon")
-              .replace(" ", "<br>")}</th>
+            <th style="white-space: nowrap;">${game.i18n.localize("DX3rd.Eibon").replace(" ", "<br>")}</th>
             <td><input type="checkbox" id="eibon"></td>
     
-            <th style="white-space: nowrap;">${game.i18n
-              .localize("DX3rd.Angel")
-              .replace(" ", "<br>")}</th>
+            <th style="white-space: nowrap;">${game.i18n.localize("DX3rd.Angel").replace(" ", "<br>")}</th>
             <td><input type="checkbox" id="angel"></td>
           </tr>
         </table>

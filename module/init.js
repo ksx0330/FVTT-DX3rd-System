@@ -585,80 +585,36 @@ async function chatListeners(html) {
       ? item.system.encroach.value
       : Number(item.system.encroach.value);
 
+    if (item.system.getTarget) {
+      let targets = Array.from(game.user.targets || []);
+      if (targets.length > 0)
+        targeting(targets, actor);
+      else {
+        ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
+        return;
+      }
+    }
+
     Hooks.call("setActorEncroach", actor, item.id, encroach);
-
-    async function runningMacro() {
-      const macro = game.macros.contents.find((m) => m.name === macroName);
-      if (macro != undefined) {
-        let scope = {};
-        scope.item = item;
-        scope.actor = actor;
-        await macro.execute(scope);
-      } else if (macroName !== "") {
-        new Dialog({
-          title: "macro",
-          content: `Do not find this macro: ${macroName}`,
-          buttons: {},
-        }).render(true);
-      }
-    }
-
-    let targets = Array.from(game.user.targets || []);
-
-    async function targeting() {
-      let names = targets.map((target) => target.name).join(", ");
-      let message = `
-            <div class="dx3rd-roll">
-                <div class="context-box">
-                    ${game.i18n.localize("DX3rd.Target")}: ${names}
-                </div>
-            </div>`;
-
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor: actor }),
-        content: message,
-        type: CONST.CHAT_MESSAGE_TYPES.IC,
-      });
-    }
-
-    const diceOptions = {
-      key: item.id,
-      rollType: rollType,
-      spelltype: spellType,
-      invoke: invoke,
-      evocation: evocation,
-      macro: macroName,
-    };
-
-    if (rollType !== "-") {
-      if (item.system.getTarget) {
-        if (targets.length > 0) {
-          // 대상이 있을 때
-          targeting(); // 대상 챗 메시지 생성 로직 호출
-          await actor._onSpellRoll(diceOptions); // 주사위 굴림 로직 호출
-        } else {
-          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
-        }
-      } else {
-        // 대상이 없을 때
-        await actor._onSpellRoll(diceOptions);
-      }
+    Hooks.call("updateActorEncroach", actor, item.id, "target");
+    
+    if (rollType === "-") {
+      runningMacro(item.system.macro, actor, item);
+      Hooks.call("updateActorEncroach", actor, item.id, "roll");
     } else {
-      if (item.system.getTarget) {
-        if (targets.length > 0) {
-          // 대상이 있을 때
-          targeting(); // 대상 챗 메시지 생성 로직 호출
-          runningMacro(); // 매크로 사용 로직 호출
-          Hooks.call("updateActorEncroach", actor, item.id, "target"); // 침식률 업데이트
-        } else {
-          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
-        }
-      } else {
-        // 대상이 없을 때
-        runningMacro(); // 매크로 사용 로직 호출
-        Hooks.call("updateActorEncroach", actor, item.id, "target"); // 침식률 업데이트
-      }
+      const diceOptions = {
+        key: item.id,
+        rollType: rollType,
+        spelltype: spellType,
+        invoke: invoke,
+        evocation: evocation,
+        macro: macroName,
+      };
+
+      await actor._onSpellRoll(diceOptions);
+      Hooks.call("updateActorEncroach", actor, item.id, "roll"); // 침식률 업데이트
     }
+
   });
 
   html.on("click", ".roll-attack", async (ev) => {
