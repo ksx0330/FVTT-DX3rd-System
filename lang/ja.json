@@ -22,6 +22,7 @@
   "DX3rd.art": "芸術",
   "DX3rd.rc": "RC",
   "DX3rd.will": "意志",
+  "DX3rd.cthulhu": "知識: クトゥルフ",
   "DX3rd.knowledge": "知識",
   "DX3rd.negotiation": "交渉",
   "DX3rd.procure": "調達",
@@ -35,6 +36,7 @@
   "DX3rd.Move": "移動",
   "DX3rd.Saving": "常備化P",
   "DX3rd.BattleMove": "戦闘移動",
+  "DX3rd.FullMove": "全力移動",
   "DX3rd.EXP": "経験点",
   "DX3rd.EXPInit": "初期経験点",
   "DX3rd.EXPAppend": "獲得経験点",
@@ -84,6 +86,7 @@
   "DX3rd.Initiative": "イニシアチブ",
   "DX3rd.Always": "常時",
   "DX3rd.Easy": "イージー",
+  "DX3rd.ExtraData": "その他",
 
   "DX3rd.Attributes": "効果",
   "DX3rd.Critical": "クリティカル",
@@ -115,9 +118,10 @@
   "DX3rd.Macro": "マクロ",
   "DX3rd.Active": "有効化",
   "DX3rd.DisableTiming": "非有効化",
-  "DX3rd.NotCheck": "集計しない",
   "DX3rd.UsedCount": "使用回数",
   "DX3rd.UsedLevel": "レベル修正",
+  "DX3rd.ResetTiming": "回数リセット",
+  "DX3rd.NotCheck": "集計しない",
   "DX3rd.AfterRoll": "判定後",
   "DX3rd.AfterMajor": "メジャー後",
   "DX3rd.AfterReaction": "リアクション後",
@@ -125,7 +129,41 @@
   "DX3rd.AfterScene": "シーン終了後",
   "DX3rd.AfterSession": "セッション終了後",
 
-  "DX3rd.Target": "対象",
+  "DX3rd.Special": "特殊",
+
+  "DX3rd.Psionics": "サイオニック",
+
+  "DX3rd.Spell": "術式",
+  "DX3rd.SpellType": "種別",
+  "DX3rd.Invoke": "発動値",
+  "DX3rd.EvocationInvoke": "喚起 発動値",
+  "DX3rd.NormalSpell": "通常",
+  "DX3rd.NormalKeep": "通常/維持",
+  "DX3rd.SignSpell": "印形",
+  "DX3rd.Ritual": "儀式",
+  "DX3rd.RitualKeep": "儀式/維持",
+  "DX3rd.RitualCurse": "儀式/呪咀",
+  "DX3rd.Summon": "召喚",
+  "DX3rd.SummonRitual": "召喚/儀式",
+  "DX3rd.Evocation": "喚起",
+  "DX3rd.EvocationRitual": "喚起/儀式",
+  "DX3rd.Contact": "接触",
+  "DX3rd.CastingRoll": "魔術ロール",
+  "DX3rd.CastingDice": "魔術ダイス",
+  "DX3rd.CastingAdd": "魔術修正",
+  "DX3rd.Eibon": "エイボンの禁呪法",
+  "DX3rd.Angel": "守護天使の召喚",
+
+  "DX3rd.SpellResult": "魔術ロール結果",
+  "DX3rd.OverflowDice": "暴走ダイス",
+
+  "DX3rd.SpellDisaster": "魔術暴走發生",
+  "DX3rd.SpellCalamity": "魔術大暴走發生",
+  "DX3rd.SpellCatastrophe": "魔術災厄發生",
+
+  "DX3rd.Success": "成功",
+  "DX3rd.Failure": "失敗",
+
   "DX3rd.EquipType": "種別",
   "DX3rd.SellSaving": "購入/常備化",
 
@@ -136,6 +174,7 @@
   "DX3rd.Item": "アイテム",
   "DX3rd.Etc": "その他",
   "DX3rd.Once": "使い捨て",
+  "DX3rd.Book": "魔導書",
   "DX3rd.Quantity": "個数",
 
   "DX3rd.Type": "種別",
@@ -160,7 +199,7 @@
   "DX3rd.Melee": "白兵",
   "DX3rd.Ranged": "射撃",
   "DX3rd.Engage": "至近",
-  
+
   "DX3rd.DamageApply": "ダメージ適用",
   "DX3rd.Use": "使用する",
   "DX3rd.Roll": "ロール",
@@ -192,5 +231,10 @@
   "DX3rd.SubAction2": "判定の達成値を+1D10する",
   "DX3rd.SubAction3": "判定のクリティカル値を-1する",
   "DX3rd.SubAction4": "戦闘不能から回復",
-  "DX3rd.SubAction5": "不利な効果を消す"
+  "DX3rd.SubAction5": "不利な効果を消す",
+  "DX3rd.SubAction6": "魔術ダイスを+2個する",
+  "DX3rd.SubAction7": "その他",
+  "DX3rd.SubAction8": "ダメージロールのダイスを+5個する",
+  "DX3rd.SubAction9": "戦闘不能から完全回復",
+  "DX3rd.SubAction0": "エフェクトの使用回数回復"
 }

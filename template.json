@@ -3,7 +3,7 @@
     "types": ["character"],
     "character": {
       "codeName": "",
-  
+
       "attributes": {
         "hp": {
           "value": 0,
@@ -19,20 +19,20 @@
           },
           "type": "-"
         },
-  
+
         "attack": {},
         "add": {},
         "dice": {
           "view": "major"
         },
         "critical": {},
-  
+
         "guard": {},
         "armor": {},
         "major": {},
         "reaction": {},
         "dodge": {},
-  
+
         "init": {},
         "move": {},
         "stock": {
@@ -44,7 +44,7 @@
           "append": 0,
           "total": 0
         },
-  
+
         "body": {
           "point": 0
         },
@@ -57,7 +57,7 @@
         "social": {
           "point": 0
         },
-  
+
         "skills": {
           "melee": {
             "name": "DX3rd.melee",
@@ -71,7 +71,7 @@
             "base": "body",
             "delete": false
           },
-  
+
           "ranged": {
             "name": "DX3rd.ranged",
             "point": 0,
@@ -84,7 +84,7 @@
             "base": "sense",
             "delete": false
           },
-  
+
           "rc": {
             "name": "DX3rd.rc",
             "point": 0,
@@ -97,7 +97,13 @@
             "base": "mind",
             "delete": false
           },
-  
+          "cthulhu": {
+            "name": "DX3rd.cthulhu",
+            "point": 0,
+            "base": "mind",
+            "delete": false
+          },
+
           "negotiation": {
             "name": "DX3rd.negotiation",
             "point": 0,
@@ -117,7 +123,6 @@
           "dice": 0,
           "critical": 0
         }
-  
       },
       "details": {
         "cover": "",
@@ -128,13 +133,23 @@
         "impulse": "",
         "desire": ""
       }
-      
-  
     }
-  
   },
   "Item": {
-    "types": ["effect", "combo", "weapon", "protect", "vehicle", "connection", "item", "works", "syndrome", "rois", "record"],
+    "types": [
+      "effect",
+      "combo",
+      "spell",
+      "weapon",
+      "protect",
+      "vehicle",
+      "connection",
+      "item",
+      "works",
+      "syndrome",
+      "rois",
+      "record"
+    ],
     "templates": {
       "base": {
         "name": "",
@@ -152,10 +167,8 @@
       }
     },
     "effect": {
-      "templates": [
-        "base"
-      ],
-  
+      "templates": ["base"],
+
       "type": "normal",
       "skill": "-",
       "difficulty": "",
@@ -165,7 +178,7 @@
       "range": "",
       "roll": "-",
       "attackRoll": "-",
-  
+
       "encroach": {
         "init": 0,
         "value": ""
@@ -179,9 +192,9 @@
         "own": true,
         "upgrade": true
       },
-  
+
       "effect": {
-        "disable": "-",
+        "disable": "notCheck",
         "attributes": {}
       },
       "active": {
@@ -199,10 +212,8 @@
       "macro": ""
     },
     "combo": {
-      "templates": [
-        "base"
-      ],
-  
+      "templates": ["base"],
+
       "type": "normal",
       "base": "-",
       "skill": "-",
@@ -214,58 +225,64 @@
       "roll": "-",
       "attackRoll": "-",
       "encroach": {},
-  
+
       "attack": {},
       "add": {},
       "dice": {},
       "critical": {},
-  
+
       "guard": {},
       "armor": {},
-  
+
       "major": {},
       "reaction": {},
       "dodge": {},
-  
+
       "weapon": [],
       "effect": [],
-  
+
       "active": {
         "state": false,
         "disable": "-"
       },
       "attributes": {},
-  
+
       "weaponSelect": false,
       "getTarget": false,
       "macro": ""
     },
+    "spell": {
+      "templates": ["base"],
+
+      "spelltype": "-",
+      "exp": 0,
+      "invoke": {
+        "value": "0",
+        "evocation": "0"
+      },
+      "encroach": {
+        "value": "0"
+      },
+      "macro": ""
+    },
     "weapon": {
-      "templates": [
-        "base", "item"
-      ],
+      "templates": ["base", "item"],
       "type": "-",
       "skill": "-",
       "add": 0,
       "attack": 0,
       "guard": 0,
       "range": ""
-  
     },
     "protect": {
-      "templates": [
-        "base", "item"
-      ],
+      "templates": ["base", "item"],
       "dodge": 0,
       "init": 0,
       "armor": 0
-  
     },
     "vehicle": {
-      "templates": [
-        "base", "item"
-      ],
-  
+      "templates": ["base", "item"],
+
       "skill": "-",
       "attack": 0,
       "init": 0,
@@ -273,17 +290,13 @@
       "move": 0
     },
     "connection": {
-      "templates": [
-        "base", "item"
-      ],
-  
+      "templates": ["base", "item"],
+
       "skill": "-"
     },
     "item": {
-      "templates": [
-        "base", "item"
-      ],
-  
+      "templates": ["base", "item"],
+
       "type": "-",
       "quantity": {
         "value": 1,
@@ -292,9 +305,7 @@
       "macro": ""
     },
     "works": {
-      "templates": [
-        "base"
-      ],
+      "templates": ["base"],
       "attributes": {
         "body": {
           "value": 0
@@ -313,9 +324,7 @@
       "skills": {}
     },
     "syndrome": {
-      "templates": [
-        "base"
-      ],
+      "templates": ["base"],
       "attributes": {
         "body": {
           "value": 0
@@ -332,9 +341,7 @@
       }
     },
     "rois": {
-      "templates": [
-        "base"
-      ],
+      "templates": ["base"],
       "type": "-",
       "positive": {
         "state": false,
@@ -344,17 +351,14 @@
         "state": false,
         "feeling": ""
       },
-  
+
       "actor": null,
       "titus": false,
-      "sublimation": false   
+      "sublimation": false
     },
     "record": {
-      "templates": [
-        "base"
-      ],
+      "templates": ["base"],
       "exp": 0
     }
   }
-  }
-  
+}

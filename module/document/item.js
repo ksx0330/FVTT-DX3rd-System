@@ -13,14 +13,15 @@ export class DX3rdItem extends Item {
       name += ` (${this.system.quantity.value} / ${this.system.quantity.max})`;
     let title = `<div class="title">${name}</div>`;
     title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`;
-    
+
     let content = `<div class="dx3rd-item-info" data-actor-id=${this.actor.id} data-item-id=${this.id}><h2 class="header">${title}</h2>`
 
     if (this.type == "effect")
       content += await this._getEffectContent();
     else if (this.type == "combo")
       content += await this._getComboContent();
-
+    else if (this.type == "spell")
+      content += await this._getSpellContent(); // 액터 시트에서 spell 아이템을 메시지로 출력하는 부분
     else if (this.type == "weapon")
       content += await this._getWeaponContent();
     else if (this.type == "protect")
@@ -57,11 +58,11 @@ export class DX3rdItem extends Item {
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Timing")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing arg}}')({arg: this.system.timing}) }</td>
+          ${Handlebars.compile('{{timing arg}}')({ arg: this.system.timing })}</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
+          ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: this.system.skill })}</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Difficulty")}:&nbsp&nbsp</b>
@@ -90,12 +91,12 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Timing")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing arg}}')({arg: this.system.timing}) }</td>
+          ${Handlebars.compile('{{timing arg}}')({ arg: this.system.timing })}</td>
           <td><b>${game.i18n.localize("DX3rd.Limit")}:&nbsp&nbsp</b>${this.system.limit}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
+          ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: this.system.skill })}</td>
           <td><b>${game.i18n.localize("DX3rd.Difficulty")}:&nbsp&nbsp</b>
           ${this.system.difficulty}</td>
         </tr>
@@ -121,13 +122,13 @@ export class DX3rdItem extends Item {
       content += `
         <div>
           <h4 class="item-name toggle-btn" data-style="item-description">`;
-      if (e.img != "icons/svg/item-bag.svg")  
+      if (e.img != "icons/svg/item-bag.svg")
         content += `<img src="${e.img}" width="20" height="20" style="vertical-align : middle;margin-right:8px;">`;
 
       content += `<span class="item-label">[${e.system.level.value}] ${e.name}<br>
               <span style="color : gray; font-size : smaller;">
-                ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.system.timing}) } / 
-                ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.system.skill}) } / 
+                ${game.i18n.localize("DX3rd.Timing")} : ${Handlebars.compile('{{timing arg}}')({ arg: e.system.timing })} / 
+                ${game.i18n.localize("DX3rd.Skill")} : ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: e.system.skill })} / 
                 ${game.i18n.localize("DX3rd.Target")} : ${e.system.target} / 
                 ${game.i18n.localize("DX3rd.Range")} : ${e.system.range} /
                 ${game.i18n.localize("DX3rd.Encroach")} : ${e.system.encroach.value} /
@@ -149,13 +150,13 @@ export class DX3rdItem extends Item {
         content += `
           <div>
             <h4 class="item-name toggle-btn" data-style="item-description">`;
-        if (e.img != "icons/svg/item-bag.svg")  
+        if (e.img != "icons/svg/item-bag.svg")
           content += `<img src="${e.img}" width="20" height="20" style="vertical-align : middle;margin-right:8px;">`;
 
         content += `<span class="item-label">${e.name}<br>
                 <span style="color : gray; font-size : smaller;">
-                  ${game.i18n.localize("DX3rd.Timing")} : ${ Handlebars.compile('{{timing arg}}')({arg: e.system.type}) } / 
-                  ${game.i18n.localize("DX3rd.Skill")} : ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: e.system.skill}) } / 
+                  ${game.i18n.localize("DX3rd.Timing")} : ${Handlebars.compile('{{timing arg}}')({ arg: e.system.type })} / 
+                  ${game.i18n.localize("DX3rd.Skill")} : ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: e.system.skill })} / 
                   ${game.i18n.localize("DX3rd.Attack")} : ${e.system.attack}
                   <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                 </span>
@@ -172,8 +173,40 @@ export class DX3rdItem extends Item {
 
     return content;
   }
+  // 스펠 출력 시 출력되는 메시지 양식 //
+  async _getSpellContent() {
 
+    let spellType = this.system.spelltype;
+    let invoke = this.system.invoke.value ?? 0;
 
+    let invokeText = `${invoke}`;
+    if (spellType === "Evocation" || spellType === "EvocationRitual") {
+      let evocation = this.system.evocation.value ?? 0;
+      invokeText = `${invoke}(${evocation})`
+    }
+
+    let content = `
+      <table>
+        <tr>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.SpellType")}:&nbsp&nbsp</b>
+          ${Handlebars.compile('{{timing arg}}')({ arg: this.system.spelltype })}</td>
+        </tr>
+        <tr>
+          <td colspan="2"><b>${game.i18n.localize("DX3rd.Invoke")}:&nbsp&nbsp</b>
+          ${invokeText}</td>
+        </tr>
+        <tr>
+          <td><b>${game.i18n.localize("DX3rd.Encroach")}:&nbsp&nbsp</b>
+          ${this.system.encroach.value}</td>
+        </tr>
+      </table>
+      <p>${this.system.description}</p>
+      <button class="chat-btn use-spell">${game.i18n.localize("DX3rd.Use")}</button>
+    `;
+
+    return content;
+  }
+  //
   async _getRoisContent() {
     let typeName = "";
     if (this.system.type == "D")
@@ -230,11 +263,11 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing key}}')({key: this.system.type}) }</td>
+          ${Handlebars.compile('{{timing key}}')({ key: this.system.type })}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
+          ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: this.system.skill })}</td>
           <td><b>${game.i18n.localize("DX3rd.Add")}:&nbsp&nbsp</b>
           ${this.system.add}</td>
         </tr>
@@ -266,7 +299,7 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ game.i18n.localize("DX3rd.Protect") }</td>
+          ${game.i18n.localize("DX3rd.Protect")}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.Dodge")}:&nbsp&nbsp</b>
@@ -296,11 +329,11 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ game.i18n.localize("DX3rd.Vehicle") }</td>
+          ${game.i18n.localize("DX3rd.Vehicle")}</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
+          ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: this.system.skill })}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
@@ -336,11 +369,11 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ game.i18n.localize("DX3rd.Connection") }</td>
+          ${game.i18n.localize("DX3rd.Connection")}</td>
         </tr>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.Skill")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{skillByKey actor key}}')({actor: this.actor, key: this.system.skill}) }</td>
+          ${Handlebars.compile('{{skillByKey actor key}}')({ actor: this.actor, key: this.system.skill })}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
@@ -361,7 +394,7 @@ export class DX3rdItem extends Item {
       <table>
         <tr>
           <td colspan="2"><b>${game.i18n.localize("DX3rd.EquipType")}:&nbsp&nbsp</b>
-          ${ Handlebars.compile('{{timing key}}')({ key: this.system.type}) }</td>
+          ${Handlebars.compile('{{timing key}}')({ key: this.system.type })}</td>
         </tr>
         <tr>
           <td><b>${game.i18n.localize("DX3rd.SellSaving")}:&nbsp&nbsp</b>
@@ -376,48 +409,6 @@ export class DX3rdItem extends Item {
 
     return content;
   }
-
-
-  async applyTargetDialog(macro = true) {
-    new Dialog({
-      title: game.i18n.localize("DX3rd.SelectTarget"),
-      content: `
-        <h2><b>${game.i18n.localize("DX3rd.SelectTarget")}</b></h2>
-      `,
-      buttons: {
-        confirm: {
-          icon: '<i class="fas fa-check"></i>',
-          label: "Confirm",
-          callback: async () => {
-            const macro = game.macros.contents.find(m => (m.name === this.system.macro));
-            if (macro != undefined)
-                macro.execute();
-            else if (this.system.macro != "")
-                new Dialog({
-                    title: "macro",
-                    content: `Do not find this macro: ${this.system.macro}`,
-                    buttons: {}
-                }).render(true);
-
-
-            if (this.system.effect.disable != "-") {
-              let targets = game.user.targets;
-              for (let t of targets) {
-                let a = t.actor;
-                this.applyTarget(a);
-              }
-            }
-            Hooks.call("updateActorEncroach", this.actor, this.id, "target");
-          }
-        }
-      },
-      close: () => {
-        //Hooks.call("updateActorEncroach", this.actor, this.id, "target")
-      }
-    }, {top: 300, left: 20}).render(true);
-
-  }
-
 
   async applyTarget(actor) {
     let attributes = this.system.effect.attributes;
@@ -434,7 +425,7 @@ export class DX3rdItem extends Item {
           let num = value.value.replace("@level", level);
           val = String(math.evaluate(num));
         }
-        
+
       } catch (error) {
         console.error("Values other than formula, @level are not allowed.");
       }
@@ -451,12 +442,12 @@ export class DX3rdItem extends Item {
       disable: this.system.effect.disable,
       attributes: copy
     }
-    
-    await actor.update({"system.attributes.applied": applied});
+
+    await actor.update({ "system.attributes.applied": applied });
   }
 
   async setTitus() {
-    await this.update({"system.titus": true});
+    await this.update({ "system.titus": true });
 
     let chatData = {
       user: game.user.id,
@@ -468,7 +459,7 @@ export class DX3rdItem extends Item {
   }
 
   async setSublimation() {
-    await this.update({"system.sublimation": true});
+    await this.update({ "system.sublimation": true });
 
     let dialog = new Dialog({
       title: game.i18n.localize("DX3rd.Sublimation"),
@@ -486,7 +477,7 @@ export class DX3rdItem extends Item {
           label: `${game.i18n.localize("DX3rd.SubAction1")}`,
           callback: async () => {
             let dice = this.actor.system.attributes.sublimation.dice + 10;
-            await this.actor.update({"system.attributes.sublimation.dice": dice});
+            await this.actor.update({ "system.attributes.sublimation.dice": dice });
 
             let chatData = {
               user: game.user.id,
@@ -508,7 +499,7 @@ export class DX3rdItem extends Item {
             ChatMessage.create(chatData);
 
             let roll = new Roll("1d10");
-            await roll.roll({async: true});
+            await roll.roll({ async: true });
 
             roll.toMessage();
           }
@@ -518,8 +509,8 @@ export class DX3rdItem extends Item {
           label: `${game.i18n.localize("DX3rd.SubAction3")}`,
           callback: async () => {
 
-            let critical = this.actor.system.attributes.sublimation.critical -1;
-            await this.actor.update({"system.attributes.sublimation.critical": critical});
+            let critical = this.actor.system.attributes.sublimation.critical - 1;
+            await this.actor.update({ "system.attributes.sublimation.critical": critical });
 
             let chatData = {
               user: game.user.id,
@@ -535,7 +526,7 @@ export class DX3rdItem extends Item {
           callback: async () => {
 
             let body = this.actor.system.attributes.body.value + 10;
-            await this.actor.update({"system.attributes.hp.value": body});
+            await this.actor.update({ "system.attributes.hp.value": body });
 
             let chatData = {
               user: game.user.id,
@@ -561,7 +552,7 @@ export class DX3rdItem extends Item {
 
 
       }
-    }, {classes: ["dx3rd", "dialog", "sublimation"], top: 300, left: 20}).render(true);
+    }, { classes: ["dx3rd", "dialog", "sublimation"], top: 300, left: 20 }).render(true);
 
   }
 
@@ -573,7 +564,7 @@ export class DX3rdItem extends Item {
     };
     await ChatMessage.create(chatData);
 
-    await this.update({"system.quantity.value": this.system.quantity.value - 1});
+    await this.update({ "system.quantity.value": this.system.quantity.value - 1 });
     const macro = game.macros.contents.find(m => (m.name === this.system.macro));
     if (macro != undefined) {
       let scope = {};

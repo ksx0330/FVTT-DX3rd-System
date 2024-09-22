@@ -1,4 +1,3 @@
-
 //Import Modules
 import { DX3rdActor } from "./document/actor.js";
 import { DX3rdItem } from "./document/item.js";
@@ -7,6 +6,7 @@ import { DX3rdItemSheet } from "./sheet/item-sheet.js";
 import { DX3rdWorksSheet } from "./sheet/works-sheet.js";
 import { DX3rdEffectSheet } from "./sheet/effect-sheet.js";
 import { DX3rdComboSheet } from "./sheet/combo-sheet.js";
+import { DX3rdSpellSheet } from "./sheet/spell-sheet.js"; // spell-sheet.js 파일을 임포트
 import { DX3rdRoisSheet } from "./sheet/rois-sheet.js";
 import { DX3rdEquipmentSheet } from "./sheet/equipment-sheet.js";
 
@@ -19,7 +19,6 @@ import { DisableHooks } from "./disable-hooks.js";
 import { SocketController } from "./socket.js";
 import { DX3rdCombat } from "./combat.js";
 
-
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
@@ -27,40 +26,43 @@ import { DX3rdCombat } from "./combat.js";
 /**
  * Init hook.
  */
-Hooks.once("init", async function() {
+Hooks.once("init", async function () {
   console.log(`Initializing Double Cross 3rd System`);
 
   game.DX3rd = {
     baseSkills: game.system.model.Actor.character.attributes.skills,
     itemUsage: {},
-    DamageDialog: []
-  }
-
+    DamageDialog: [],
+  };
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("dx3rd", DX3rdActorSheet, { makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("dx3rd", DX3rdWorksSheet, {
-    types: ['works'],
-    makeDefault: true
+    types: ["works"],
+    makeDefault: true,
   });
   Items.registerSheet("dx3rd", DX3rdEffectSheet, {
-    types: ['effect'],
-    makeDefault: true
+    types: ["effect"],
+    makeDefault: true,
   });
   Items.registerSheet("dx3rd", DX3rdComboSheet, {
-    types: ['combo'],
-    makeDefault: true
+    types: ["combo"],
+    makeDefault: true,
   });
+  Items.registerSheet("dx3rd", DX3rdSpellSheet, {
+    types: ["spell"],
+    makeDefault: true,
+  }); // spell-sheet 등록
   Items.registerSheet("dx3rd", DX3rdRoisSheet, {
-    types: ['rois'],
-    makeDefault: true
+    types: ["rois"],
+    makeDefault: true,
   });
-  
+
   Items.registerSheet("dx3rd", DX3rdEquipmentSheet, {
-    types: ['weapon', 'protect', 'vehicle', 'connection', 'item'],
-    makeDefault: true
+    types: ["weapon", "protect", "vehicle", "connection", "item"],
+    makeDefault: true,
   });
   Items.registerSheet("dx3rd", DX3rdItemSheet, { makeDefault: false });
 
@@ -73,7 +75,7 @@ Hooks.once("init", async function() {
   SocketController.init();
 
   CONFIG.Combat.documentClass = DX3rdCombat;
-  CONFIG.Combat.initiative.formula = "@attributes.init.value"
+  CONFIG.Combat.initiative.formula = "@attributes.init.value";
 
   Roll.TOOLTIP_TEMPLATE = "systems/dx3rd/templates/dice/tooltip.html";
   DiceTerm.fromMatch = (match) => {
@@ -81,104 +83,155 @@ Hooks.once("init", async function() {
 
     // Get the denomination of DiceTerm
     denomination = denomination.toLowerCase();
-    const cls = denomination in CONFIG.Dice.terms ? CONFIG.Dice.terms[denomination] : CONFIG.Dice.terms.d;
-    if ( !getParentClasses(cls).includes(DiceTerm) ) {
-      throw new Error(`DiceTerm denomination ${denomination} not registered to CONFIG.Dice.terms as a valid DiceTerm class`);
+    const cls =
+      denomination in CONFIG.Dice.terms
+        ? CONFIG.Dice.terms[denomination]
+        : CONFIG.Dice.terms.d;
+    if (!getParentClasses(cls).includes(DiceTerm)) {
+      throw new Error(
+        `DiceTerm denomination ${denomination} not registered to CONFIG.Dice.terms as a valid DiceTerm class`
+      );
     }
 
     // Get the term arguments
     number = Number.isNumeric(number) ? parseInt(number) : 1;
-    const faces = Number.isNumeric(denomination) ? parseInt(denomination) : null;
+    const faces = Number.isNumeric(denomination)
+      ? parseInt(denomination)
+      : null;
 
     if (denomination == "x")
-      return new cls({number, faces, modifiers: [modifiers], options: {flavor}});
+      return new cls({
+        number,
+        faces,
+        modifiers: [modifiers],
+        options: { flavor },
+      });
 
     // Match modifiers
-    modifiers = Array.from((modifiers || "").matchAll(DiceTerm.MODIFIER_REGEXP)).map(m => m[0]);
+    modifiers = Array.from(
+      (modifiers || "").matchAll(DiceTerm.MODIFIER_REGEXP)
+    ).map((m) => m[0]);
 
     // Construct a term of the appropriate denomination
-    return new cls({number, faces, modifiers, options: {flavor}});
-  }
-
-
+    return new cls({ number, faces, modifiers, options: { flavor } });
+  };
 });
 
-
-Hooks.once("ready", async function() {
-    game.settings.set("core", "defaultToken", {"disposition": 0});
+Hooks.once("ready", async function () {
+  game.settings.set("core", "defaultToken", { disposition: 0 });
 });
-
 
 Hooks.on("setActorEncroach", (actor, key, encroach) => {
   game.DX3rd.itemUsage[key] = {
     actor: actor,
     encroach: encroach,
     target: false,
-    roll: false
+    roll: false,
   };
-
 });
-
 
 Hooks.on("updateActorEncroach", async (actor, key, type) => {
   let itemUsage = game.DX3rd.itemUsage[key];
   itemUsage[type] = true;
-  if (itemUsage.target && itemUsage.roll) {
-    console.log(itemUsage.encroach);
+  console.log(itemUsage.encroach);
 
-    const last = Number(actor.system.attributes.encroachment.value);
-    let encroach = Number(actor.system.attributes.encroachment.value) + itemUsage.encroach;
+  const last = Number(actor.system.attributes.encroachment.value);
+  let encroach =
+    Number(actor.system.attributes.encroachment.value) + itemUsage.encroach;
 
-    let chatData = {
-      speaker: ChatMessage.getSpeaker({actor: actor})
-    };
+  let chatData = {
+    speaker: ChatMessage.getSpeaker({ actor: actor }),
+  };
 
-    if (Number.isNumeric(itemUsage.encroach))
-      chatData.content = `<div class="context-box">${actor.name}: ${last} -> ${encroach} (+${ itemUsage.encroach })</div>`;
-    else {
-      let roll = new Roll(itemUsage.encroach);
-      await roll.roll({async: true});
+  if (Number.isNumeric(itemUsage.encroach))
+    chatData.content = `<div class="context-box">${actor.name}: ${last} -> ${encroach} (+${itemUsage.encroach})</div>`;
+  else {
+    let roll = new Roll(itemUsage.encroach);
+    await roll.roll({ async: true });
 
-      let rollData = await roll.render();
+    let rollData = await roll.render();
 
-      encroach = Number(actor.system.attributes.encroachment.value) + roll.total;
-      chatData.content = `
-        <div class="dx3rd-roll" data-actor-id=${actor.id}>
-          <h2 class="header"><div class="title">${actor.name}: ${last} -> ${encroach} (+${ roll.total })</div></h2>
-          ${rollData}
-        </div>
-      `;
-      chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;
-      chatData.sound = CONFIG.sounds.dice;
-      chatData.roll = roll;
-    }
-    
-    await actor.update({"system.attributes.encroachment.value": encroach});
-    let rollMode = game.settings.get("core", "rollMode");
-    ChatMessage.create(chatData, {rollMode});
-
+    encroach =
+      Number(actor.system.attributes.encroachment.value) + roll.total;
+    chatData.content = `
+      <div class="dx3rd-roll" data-actor-id=${actor.id}>
+        <h2 class="header"><div class="title">${actor.name}: ${last} -> ${encroach} (+${roll.total})</div></h2>
+        ${rollData}
+      </div>
+    `;
+    chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;
+    chatData.sound = CONFIG.sounds.dice;
+    chatData.roll = roll;
   }
 
+  await actor.update({ "system.attributes.encroachment.value": encroach });
+  let rollMode = game.settings.get("core", "rollMode");
+  ChatMessage.create(chatData, { rollMode });
 });
 
+Hooks.on("setActorHP", (actor, key, hpCost) => {
+  game.DX3rd.itemUsage[key] = {
+    actor: actor,
+    hpCost: hpCost,
+    target: false,
+    roll: false,
+  };
+});
 
-Hooks.on("updateActorDialog", function() {
-    let reload = (dialogs) => {
-        let d = dialogs.filter(e => e._state != -1);
-        if (d.length != 0) {
-            for (let dialog of d)
-                dialog.render(true);
-        }
-        
-        return d
+Hooks.on("updateActorHP", async (actor, key, type) => {
+  let itemUsage = game.DX3rd.itemUsage[key];
+  itemUsage[type] = true;
+
+  const lastHP = Number(actor.system.attributes.hp.value);
+  let newHP = lastHP - itemUsage.hpCost;  // encroach 대신 hpCost 사용
+
+  let chatData = {
+    speaker: ChatMessage.getSpeaker({ actor: actor }),
+  };
+
+  // HP 소모량이 숫자인 경우
+  if (Number.isNumeric(itemUsage.hpCost)) {
+    chatData.content = `<div class="context-box">${actor.name}: ${lastHP} -> ${newHP} (-${itemUsage.hpCost})</div>`;
+  } else {
+    // 주사위 굴림을 통해 HP 소모량 계산
+    let roll = new Roll(itemUsage.hpCost);
+    await roll.roll({ async: true });
+
+    let rollData = await roll.render();
+    newHP = lastHP - roll.total;
+    chatData.content = `
+      <div class="dx3rd-roll" data-actor-id=${actor.id}>
+        <h2 class="header"><div class="title">${actor.name}: ${lastHP} -> ${newHP} (-${roll.total})</div></h2>
+        ${rollData}
+      </div>
+    `;
+    chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;
+    chatData.sound = CONFIG.sounds.dice;
+    chatData.roll = roll;
+  }
+
+  // HP 값 업데이트
+  await actor.update({ "system.attributes.hp.value": newHP });
+  let rollMode = game.settings.get("core", "rollMode");
+  ChatMessage.create(chatData, { rollMode });
+});
+
+Hooks.on("updateActorDialog", function () {
+  let reload = (dialogs) => {
+    let d = dialogs.filter((e) => e._state != -1);
+    if (d.length != 0) {
+      for (let dialog of d) dialog.render(true);
     }
-    
-    game.DX3rd.DamageDialog = reload(game.DX3rd.DamageDialog);
+
+    return d;
+  };
+
+  game.DX3rd.DamageDialog = reload(game.DX3rd.DamageDialog);
 });
 
 Hooks.on("updateItem", () => Hooks.call("updateActorDialog"));
 
-Hooks.on("getSceneControlButtons", function(controls) {
+Hooks.on("getSceneControlButtons", function (controls) {
   controls[0].tools.push({
     name: "EnterScene",
     title: game.i18n.localize("DX3rd.EnterScene"),
@@ -191,68 +244,68 @@ Hooks.on("getSceneControlButtons", function(controls) {
       }
 
       let share = game.user.id;
-      let users = game.users.filter(u => u.active && u.character != null && u.character.id !== share);
+      let users = game.users.filter(
+        (u) => u.active && u.character != null && u.character.id !== share
+      );
       for (let user of users) {
-        game.socket.emit("system.dx3rd", { id: "enterScene", sender: game.user.id, receiver: user.id, data: {
-          actorId: user.character.id
-        } });
+        game.socket.emit("system.dx3rd", {
+          id: "enterScene",
+          sender: game.user.id,
+          receiver: user.id,
+          data: {
+            actorId: user.character.id,
+          },
+        });
       }
-
     },
-    button: true
+    button: true,
   });
-
 });
 
 Hooks.on("deleteCombat", async function (data, delta) {
-    let actors = data.turns.reduce( (acc, i) => {
-        acc.push(i.actor);
-        return acc; 
-    }, []);
-    
-    Hooks.call("afterCombat", actors);
-  
+  let actors = data.turns.reduce((acc, i) => {
+    acc.push(i.actor);
+    return acc;
+  }, []);
+
+  Hooks.call("afterCombat", actors);
 });
 
 Hooks.on("updateCombat", async function (data, delta) {
-    var close = true;
-    if (data.round == 0)
-    return;
+  var close = true;
+  if (data.round == 0) return;
 
-    if (delta.round != undefined) {
-        let actors = data.turns.reduce( (acc, i) => {
-            acc.push(i.actor);
-            return acc; 
-        }, []);
-        
-        Hooks.call("afterRound", actors);
-    }
-    
-    
+  if (delta.round != undefined) {
+    let actors = data.turns.reduce((acc, i) => {
+      acc.push(i.actor);
+      return acc;
+    }, []);
+
+    Hooks.call("afterRound", actors);
+  }
 });
 
 async function createItemMacro(dropData, slot) {
   // Get the dropped document
   const doc = await Item.fromDropData(dropData);
-  if ( !doc ) return;
+  if (!doc) return;
 
   // Get the Macro to add to the bar
   let macro;
-  if ( dropData.type === "Macro" ) {
+  if (dropData.type === "Macro") {
     macro = game.macros.has(doc.id) ? doc : await Item.create(doc.toObject());
-  }
-  else {
+  } else {
     macro = await Macro.implementation.create({
       name: doc.name,
       type: CONST.MACRO_TYPES.SCRIPT,
       img: doc.img,
-      command: `let item = await fromUuid("${dropData.uuid}");\nitem.toMessage();`
+      command: `let item = await fromUuid("${dropData.uuid}");\nitem.toMessage();`,
     });
   }
 
   // Assign the macro to the hotbar
-  if ( !macro ) return;
-  game.user.assignHotbarMacro(macro, slot, {fromSlot: dropData.slot});
+  if (!macro) return;
+  game.user.assignHotbarMacro(macro, slot, { fromSlot: dropData.slot });
 }
 
 Hooks.on("hotbarDrop", (bar, data, slot) => {
@@ -260,24 +313,27 @@ Hooks.on("hotbarDrop", (bar, data, slot) => {
     createItemMacro(data, slot);
     return false;
   }
-
 });
 
 Hooks.on("renderChatLog", (app, html, data) => chatListeners(html));
 Hooks.on("renderChatPopout", (app, html, data) => chatListeners(html));
 
 async function chatListeners(html) {
-  html.on('click', '.use-effect', async ev => {
+  html.on("click", ".use-effect", async (ev) => {
     ev.preventDefault();
     const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
+    const title = item.name;
+
     let skill = item.system.skill;
     let base = "";
     const rollType = item.system.roll;
     const attackRoll = item.system.attackRoll;
-    const encroach = Number.isNaN(Number(item.system.encroach.value)) ? item.system.encroach.value : Number(item.system.encroach.value);
+    const encroach = Number.isNaN(Number(item.system.encroach.value))
+      ? item.system.encroach.value
+      : Number(item.system.encroach.value);
 
     let mainStat = ["body", "sense", "mind", "social"];
     if (mainStat.includes(skill)) {
@@ -285,11 +341,12 @@ async function chatListeners(html) {
       skill = "-";
     }
 
-    if (skill in actor.system.attributes.skills)
+    if (skill in actor.system.attributes.skills) {
       base = actor.system.attributes.skills[skill].base;
+    }
 
     let used = item.system.used;
-    if (used.disable != 'notCheck') {
+    if (used.disable != "notCheck") {
       let max = used.max + (used.level ? item.system.level.value : 0);
       if (used.state >= max) {
         ui.notifications.info(`Do not use this effect: ${item.name}`);
@@ -297,95 +354,140 @@ async function chatListeners(html) {
       }
     }
 
-    let updates = {};
-    if (item.system.active.disable != 'notCheck')
-        updates["system.active.state"] = true;
-    if (item.system.used.disable != 'notCheck')
-        updates["system.used.state"] = item.system.used.state + 1;
-    await item.update(updates);
-
     Hooks.call("setActorEncroach", actor, item.id, encroach);
 
-    if (item.system.getTarget)
-      await item.applyTargetDialog(true);
-    else {
-        const macro = game.macros.contents.find(m => (m.name === item.system.macro));
-        if (macro != undefined) {
-            let scope = {};
-            scope.item = item;
-            scope.actor = actor;
-            await macro.execute(scope);
-        } else if (item.system.macro != "")
-            new Dialog({
-                title: "macro",
-                content: `Do not find this macro: ${item.system.macro}`,
-                buttons: {}
-            }).render(true);
-
-      Hooks.call("updateActorEncroach", actor, item.id, "target");
+    async function using() {
+      let updates = {};
+      if (item.system.active.disable != "notCheck") {
+        updates["system.active.state"] = true;
+      }
+      if (item.system.used.disable != "notCheck") {
+        updates["system.used.state"] = item.system.used.state + 1;
+      }
+      await item.update(updates);
     }
 
+    async function runningMacro() {
+      const macro = game.macros.contents.find(
+        (m) => m.name === item.system.macro
+      );
+      if (macro != undefined) {
+        let scope = {};
+        scope.item = item;
+        scope.actor = actor;
+        await macro.execute(scope);
+      } else if (item.system.macro != "")
+        new Dialog({
+          title: "macro",
+          content: `Do not find this macro: ${item.system.macro}`,
+          buttons: {},
+        }).render(true);
+    }
+
+    async function attack() {
+      let confirm = async (weaponData) => {
+        diceOptions["attack"] = {
+          value: weaponData.attack,
+          type: item.system.attackRoll,
+        };
+        await actor.rollDice(title, diceOptions, append);
+      };
+      new WeaponDialog(actor, confirm).render(true);
+    }
+
+    let targets = Array.from(game.user.targets || []);
+    async function targeting() {
+      let names = targets.map((target) => target.name).join(", ");
+      let message = `
+            <div class="dx3rd-roll">
+                <div class="context-box">
+                    ${game.i18n.localize("DX3rd.Target")}: ${names}
+                </div>
+            </div>`;
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: actor }),
+        content: message,
+        type: CONST.CHAT_MESSAGE_TYPES.IC,
+      });
+    }
 
     let append = false;
-    if (event.ctrlKey)
-      append = true;
+    if (ev.ctrlKey) append = true;
 
     const diceOptions = {
-      "key": item.id,
-      "rollType": rollType,
-      "base": base,
-      "skill": skill
+      key: item.id,
+      rollType: rollType,
+      base: base,
+      skill: skill,
     };
 
-    const title = item.name;
-    if (diceOptions["rollType"] != '-') {
-      if (attackRoll == "-")
-        await actor.rollDice(title, diceOptions, append);
-      else {
-        let confirm = async (weaponData) => {
-          diceOptions["attack"] = {
-            "value": weaponData.attack,
-            "type": item.system.attackRoll
-          };
-
-          await actor.rollDice(title, diceOptions, append);
+    if (rollType !== "-") {
+      if (item.system.getTarget) {
+        if (targets.length > 0) {
+          using(); // 효과 사용 로직 호출
+          targeting(); // 대상 챗 메시지 생성 로직 호출
+          runningMacro(); // 매크로 사용 로직 호출
+          if (attackRoll == "-") {
+            await actor.rollDice(item.name, diceOptions, append);
+          } else {
+            attack();
+          }
+        } else {
+          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
         }
-
-        new WeaponDialog(actor, confirm).render(true);
+      } else {
+        using(); // 효과 사용 로직 호출
+        runningMacro(); // 매크로 사용 로직 호출
+        await actor.rollDice(item.name, diceOptions, append);
       }
-
-    } else
-      Hooks.call("updateActorEncroach", actor, item.id, "roll");
-
+    } else {
+      if (item.system.getTarget) {
+        if (targets.length > 0) {
+          using(); // 효과 사용 로직 호출
+          targeting(); // 대상 챗 메시지 생성 로직 호출
+          runningMacro(); // 매크로 사용 로직 호출
+          Hooks.call("updateActorEncroach", actor, item.id, "target"); // 침식률 업데이트
+        } else {
+          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
+        }
+      } else {
+        using(); // 효과 사용 로직 호출
+        runningMacro(); // 매크로 사용 로직 호출
+        Hooks.call("updateActorEncroach", actor, item.id, "target"); // 침식률 업데이트
+      }
+    }
   });
 
-  html.on('click', '.use-combo', async ev => {
+  html.on("click", ".use-combo", async (ev) => {
     ev.preventDefault();
     const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
-    const skillId = item.system.skill;
-    const encroach = item.system.encroach.value;
-
+    const title = item.name;
     const skill = item.system.skill;
     const base = item.system.base;
     const rollType = item.system.roll;
     const attackRoll = item.system.attackRoll;
+    const encroach = Number.isNaN(Number(item.system.encroach.value))
+      ? item.system.encroach.value
+      : Number(item.system.encroach.value);
 
     const effectItems = item.system.effect;
     const appliedList = [];
     const macroList = [];
 
     let usedCheck = true;
+
+    // 모든 효과 항목 확인
     for (let e of effectItems) {
-      if (e == "-")
-        continue;
+      if (e === "-") continue;
 
       let effect = actor.items.get(e);
       let used = effect.system.used;
 
-      if (used.disable != 'notCheck') {
+      if (used.disable !== "notCheck") {
         let max = used.max + (used.level ? effect.system.level.value : 0);
         if (used.state >= max) {
           ui.notifications.info(`Do not use this effect: ${effect.name}`);
@@ -393,198 +495,286 @@ async function chatListeners(html) {
         }
       }
     }
-    
-    if (!usedCheck)
-      return;
-    
-    let updates = {};
-    if (item.system.active.disable != 'notCheck')
-        updates["system.active.state"] = true;
-    await item.update(updates);
 
-    Hooks.call("setActorEncroach", actor, item.id, encroach);
+    if (!usedCheck) return;
 
-    for (let e of effectItems) {
-      if (e == "-")
-        continue;
-
-      let effect = actor.items.get(e);
-      if (effect.system.effect.disable != "-")
-        appliedList.push(effect);
-      
-      if (!effect.system.getTarget) {
-        const macro = game.macros.contents.find(m => (m.name === effect.system.macro));
-
-        if (macro != undefined) {
-            let scope = {};
-            scope.item = item;
-            scope.actor = actor;
-            await macro.execute(scope);
-        } else if (effect.system.macro != "")
-            new Dialog({
-                title: "macro",
-                content: `Do not find this macro: ${effect.system.macro}`,
-                buttons: {}
-            }).render(true);
-      } else if (effect.system.macro != "")
-        macroList.push(effect.system.macro);
-
+    async function usingEffect(effect) {
       let updates = {};
-      if (effect.system.active.disable != 'notCheck')
-          updates["system.active.state"] = true;
-      if (effect.system.used.disable != 'notCheck')
-          updates["system.used.state"] = effect.system.used.state + 1;
+      if (effect.system.active.disable !== "notCheck") {
+        updates["system.active.state"] = true;
+      }
+      if (effect.system.used.disable !== "notCheck") {
+        updates["system.used.state"] = effect.system.used.state + 1;
+      }
       await effect.update(updates);
     }
 
-    if (macroList.length == 0) {
-      const macro = game.macros.contents.find(m => (m.name === item.system.macro));
+    async function runningMacro(macroName) {
+      const macro = game.macros.contents.find((m) => m.name === macroName);
+      if (macro) {
+        let scope = {};
+        scope.item = item;
+        scope.actor = actor;
+        await macro.execute(scope);
+      } else if (macroName !== "") {
+        new Dialog({
+          title: "macro",
+          content: `Do not find this macro: ${macroName}`,
+          buttons: {},
+        }).render(true);
+      }
+    }
+
+    async function attack() {
+      let confirm = async (weaponData) => {
+        diceOptions["attack"] = {
+          value: weaponData.attack,
+          type: item.system.attackRoll,
+        };
+        await actor.rollDice(title, diceOptions, append);
+      };
+      new WeaponDialog(actor, confirm).render(true);
+    }
+
+    let targets = Array.from(game.user.targets || []);
+    async function targeting() {
+      let names = targets.map((target) => target.name).join(", ");
+      let message = `
+              <div class="dx3rd-roll">
+                  <div class="context-box">
+                      ${game.i18n.localize("DX3rd.Target")}: ${names}
+                  </div>
+              </div>`;
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: actor }),
+        content: message,
+        type: CONST.CHAT_MESSAGE_TYPES.IC,
+      });
+    }
+
+    // 효과와 매크로 실행
+    for (let e of effectItems) {
+      if (e === "-") continue;
+
+      let effect = actor.items.get(e);
+      if (effect.system.effect.disable !== "-") appliedList.push(effect);
+
+      if (!effect.system.getTarget) {
+        await runningMacro(effect.system.macro);
+      } else if (effect.system.macro !== "") {
+        macroList.push(effect.system.macro);
+      }
+
+      await usingEffect(effect);
+    }
+
+    Hooks.call("setActorEncroach", actor, item.id, encroach);
+
+    let append = false;
+    if (ev.ctrlKey) append = true;
+
+    const diceOptions = {
+      key: item.id,
+      rollType: rollType,
+      base: base,
+      skill: skill,
+    };
+
+    if (rollType !== "-") {
+      if (item.system.getTarget) {
+        if (targets.length > 0) {
+          await targeting(); // 대상 메시지 출력
+          for (let a of targets.map((t) => t.actor)) {
+            for (let effect of appliedList) await effect.applyTarget(a);
+            for (let macroName of macroList) await runningMacro(macroName);
+          }
+          if (attackRoll === "-") {
+            await actor.rollDice(title, diceOptions, append);
+          } else {
+            if (item.system.weaponSelect) {
+              await attack();
+            } else {
+              const weaponItems = Object.values(item.system.weaponItems);
+              let attack = await weaponItems.reduce(
+                (acc, v) => acc + v.system.attack,
+                0
+              );
+
+              diceOptions["attack"] = {
+                value: attack,
+                type: attackRoll,
+              };
+
+              await actor.rollDice(title, diceOptions, append);
+            }
+          }
+        } else {
+          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
+        }
+      } else {
+        await runningMacro(item.system.macro);
+        for (let macroName of macroList) await runningMacro(macroName);
+        await actor.rollDice(title, diceOptions, append);
+      }
+    } else {
+      if (item.system.getTarget) {
+        if (targets.length > 0) {
+          await targeting();
+          for (let a of targets.map((t) => t.actor)) {
+            for (let effect of appliedList) await effect.applyTarget(a);
+            for (let macroName of macroList) await runningMacro(macroName);
+          }
+          Hooks.call("updateActorEncroach", actor, item.id, "target");
+        } else {
+          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
+        }
+      } else {
+        await runningMacro(item.system.macro);
+        for (let macroName of macroList) await runningMacro(macroName);
+        Hooks.call("updateActorEncroach", actor, item.id, "target");
+      }
+    }
+  });
+
+  // 채팅창에 호출된 spell 아이템의 사용 버튼을 누를 경우 실행되는 기능 구현 //
+  html.on("click", ".use-spell", async (ev) => {
+    ev.preventDefault();
+    const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
+    const actor = game.actors.get(itemInfo.dataset.actorId);
+    const item = actor.items.get(itemInfo.dataset.itemId);
+
+    const title = item.name;
+    const rollType = item.system.roll;
+    const spellType = item.system.spelltype;
+    const invoke = item.system.invoke?.value ?? 0;
+    const evocation = item.system.evocation?.value ?? 0;
+    const macroName = item.system.macro;
+
+    const encroach = Number.isNaN(Number(item.system.encroach.value))
+      ? item.system.encroach.value
+      : Number(item.system.encroach.value);
+
+    Hooks.call("setActorEncroach", actor, item.id, encroach);
+
+    async function runningMacro() {
+      const macro = game.macros.contents.find((m) => m.name === macroName);
       if (macro != undefined) {
         let scope = {};
         scope.item = item;
         scope.actor = actor;
         await macro.execute(scope);
-    } else if (item.system.macro != "")
+      } else if (macroName !== "") {
         new Dialog({
-            title: "macro",
-            content: `Do not find this macro: ${item.system.macro}`,
-            buttons: {}
+          title: "macro",
+          content: `Do not find this macro: ${macroName}`,
+          buttons: {},
         }).render(true);
-        
-    } else if (item.system.macro != "")
-      macroList.push(item.system.macro);
-
-    if (!item.system.getTarget)
-      Hooks.call("updateActorEncroach", actor, item.id, "target");
-    else {
-      new Dialog({
-        title: game.i18n.localize("DX3rd.SelectTarget"),
-        content: `
-          <h2><b>${game.i18n.localize("DX3rd.SelectTarget")}</b></h2>
-        `,
-        buttons: {
-          confirm: {
-            icon: '<i class="fas fa-check"></i>',
-            label: "Confirm",
-            callback: async () => {
-              let targets = game.user.targets;
-              for (let t of targets) {
-                let a = t.actor;
-
-                for (let e of appliedList)
-                  await e.applyTarget(a);
-
-                for (let name of macroList) {
-                    const macro = game.macros.contents.find(m => (m.name === name));
-                    if (macro != undefined) {
-                        let scope = {};
-                        scope.item = item;
-                        scope.actor = actor;
-                        await macro.execute(scope);
-                    } else if (name != "")
-                        new Dialog({
-                            title: "macro",
-                            content: `Do not find this macro: ${name}`,
-                            buttons: {}
-                        }).render(true);
-                }
-              }
-              Hooks.call("updateActorEncroach", actor, item.id, "target");
-            }
-          }
-        },
-        close: () => {
-          //Hooks.call("updateActorEncroach", actor, item.id, "target")
-        }
-      }, {top: 300, left: 20}).render(true);
+      }
     }
 
+    let targets = Array.from(game.user.targets || []);
 
-    let append = false;
-    if (event.ctrlKey)
-      append = true;
+    async function targeting() {
+      let names = targets.map((target) => target.name).join(", ");
+      let message = `
+            <div class="dx3rd-roll">
+                <div class="context-box">
+                    ${game.i18n.localize("DX3rd.Target")}: ${names}
+                </div>
+            </div>`;
 
-    const title = item.name;
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: actor }),
+        content: message,
+        type: CONST.CHAT_MESSAGE_TYPES.IC,
+      });
+    }
+
     const diceOptions = {
-      "key": item.id,
-      "rollType": rollType,
-      "base": base,
-      "skill": skill
+      key: item.id,
+      rollType: rollType,
+      spelltype: spellType,
+      invoke: invoke,
+      evocation: evocation,
+      macro: macroName,
     };
 
-    if (rollType != "-") {
-      if (attackRoll == "-")
-        await actor.rollDice(title, diceOptions, append);
-      else {
-        if (item.system.weaponSelect) {
-            let confirm = async (weaponData) => {
-            diceOptions["attack"] = {
-              "value": weaponData.attack,
-              "type": attackRoll
-            };
+    let append = false;
+    if (ev.ctrlKey) append = true;
 
-            await actor.rollDice(title, diceOptions, append);
-          }
-          new WeaponDialog(actor, confirm).render(true);
-
+    if (rollType !== "-") {
+      if (item.system.getTarget) {
+        if (targets.length > 0) {
+          // 대상이 있을 때
+          targeting(); // 대상 챗 메시지 생성 로직 호출
+          await actor._onSpellRoll(diceOptions); // 주사위 굴림 로직 호출
         } else {
-          const weaponItems = Object.values(item.system.weaponItems);
-          let attack = await weaponItems.reduce((acc, v) => acc + v.system.attack, 0);
-
-          diceOptions["attack"] = {
-            "value": attack,
-            "type": attackRoll
-          };
-
-          await actor.rollDice(title, diceOptions, append);
+          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
         }
-
+      } else {
+        // 대상이 없을 때
+        await actor._onSpellRoll(diceOptions);
       }
-
-    } else
-      Hooks.call("updateActorEncroach", actor, item.id, "roll");
-
+    } else {
+      if (item.system.getTarget) {
+        if (targets.length > 0) {
+          // 대상이 있을 때
+          targeting(); // 대상 챗 메시지 생성 로직 호출
+          runningMacro(); // 매크로 사용 로직 호출
+          Hooks.call("updateActorEncroach", actor, item.id, "target"); // 침식률 업데이트
+        } else {
+          ui.notifications.info(`${game.i18n.localize("DX3rd.SelectTarget")}`);
+        }
+      } else {
+        // 대상이 없을 때
+        runningMacro(); // 매크로 사용 로직 호출
+        Hooks.call("updateActorEncroach", actor, item.id, "target"); // 침식률 업데이트
+      }
+    }
   });
 
-  html.on('click', '.roll-attack', async ev => {
+  html.on("click", ".roll-attack", async (ev) => {
     ev.preventDefault();
     const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
     let append = false;
-    if (event.ctrlKey)
-      append = true;
+    if (event.ctrlKey) append = true;
 
     const id = item.system.skill;
     const skill = actor.system.attributes.skills[id];
-    const title = (skill.name.indexOf('DX3rd.') != -1) ? game.i18n.localize(skill.name) : skill.name;
-    const type = (item.type == "vehicle") ? "melee" : item.system.type;
+    const title =
+      skill.name.indexOf("DX3rd.") != -1
+        ? game.i18n.localize(skill.name)
+        : skill.name;
+    const type = item.type == "vehicle" ? "melee" : item.system.type;
 
     const diceOptions = {
-      "rollType": "major",
-      "attack": {
-        "value": item.system.attack,
-        "type": type
+      rollType: "major",
+      attack: {
+        value: item.system.attack,
+        type: type,
       },
-      "base": skill.base,
-      "skill": id
+      base: skill.base,
+      skill: id,
     };
 
     await actor.rollDice(title, diceOptions, append);
   });
 
+  html.on("click", ".calc-damage", async (ev) => {
+    ev.preventDefault();
+    const data = ev.currentTarget.dataset;
+    const attack = Number(data.attack);
+    const rollResult = Number(
+      $(ev.currentTarget).parent().find(".dice-total").first().text()
+    );
 
-  html.on('click', '.calc-damage', async ev => {
-      ev.preventDefault();
-      const data = ev.currentTarget.dataset;
-      const attack = Number(data.attack);
-      const rollResult = Number($(ev.currentTarget).parent().find(".dice-total").first().text());
-
-
-      new Dialog({
-        title: game.i18n.localize("DX3rd.CalcDamage"),
-        content: `
+    new Dialog({
+      title: game.i18n.localize("DX3rd.CalcDamage"),
+      content: `
             <h2 style="text-align: center;">[${rollResult} / 10 + 1]D10 + ${attack}</h2>
 
             <table class="calc-dialog">
@@ -605,133 +795,142 @@ async function chatListeners(html) {
 
             </table>
         `,
-        buttons: {
-          confirm: {
-            icon: '<i class="fas fa-check"></i>',
-            label: "Confirm",
-            callback: async () => {
-              let ignoreArmor = $("#ignore-armor").is(":checked");
-              let addResult = ($("#add-result").val() != "") ? Number($("#add-result").val()) : 0;
-              let addDamage = ($("#add-damage").val() != "") ? Number($("#add-damage").val()) : 0;
-              let addDice = ($("#add-dice").val() != "") ? Number($("#add-dice").val()) : 0;
-              let formula = `${parseInt((rollResult + addResult) / 10) + 1 + addDice}d10 + ${attack + addDamage}`;
+      buttons: {
+        confirm: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "Confirm",
+          callback: async () => {
+            let ignoreArmor = $("#ignore-armor").is(":checked");
+            let addResult =
+              $("#add-result").val() != "" ? Number($("#add-result").val()) : 0;
+            let addDamage =
+              $("#add-damage").val() != "" ? Number($("#add-damage").val()) : 0;
+            let addDice =
+              $("#add-dice").val() != "" ? Number($("#add-dice").val()) : 0;
+            let formula = `${
+              parseInt((rollResult + addResult) / 10) + 1 + addDice
+            }d10 + ${attack + addDamage}`;
 
-              let roll = new Roll(formula);
-              await roll.roll({async: true})
+            let roll = new Roll(formula);
+            await roll.roll({ async: true });
 
-              let rollMode = game.settings.get("core", "rollMode");
-              let rollData = await roll.render();
-              let content = `
+            let rollMode = game.settings.get("core", "rollMode");
+            let rollData = await roll.render();
+            let content = `
                 <div class="dx3rd-roll">
-                  <h2 class="header"><div class="title">${game.i18n.localize("DX3rd.CalcDamage")}</div></h2>
+                  <h2 class="header"><div class="title">${game.i18n.localize(
+                    "DX3rd.CalcDamage"
+                  )}</div></h2>
                   ${rollData}
-                  <button class="chat-btn apply-damage" data-damage="${roll.total}" data-ignore-armor="${ignoreArmor}">${game.i18n.localize("DX3rd.ApplyDamage")}</button>
+                  <button class="chat-btn apply-damage" data-damage="${
+                    roll.total
+                  }" data-ignore-armor="${ignoreArmor}">${game.i18n.localize(
+              "DX3rd.ApplyDamage"
+            )}</button>
                 </div>
               `;
 
-              ChatMessage.create({
+            ChatMessage.create(
+              {
                 content: content,
                 type: CONST.CHAT_MESSAGE_TYPES.ROLL,
                 sound: CONFIG.sounds.dice,
                 roll: roll,
-              }, {rollMode});
-
-            }
-          }
+              },
+              { rollMode }
+            );
+          },
         },
-        default: "confirm"
-      }).render(true);
-
-
-
-
+      },
+      default: "confirm",
+    }).render(true);
   });
 
-  html.on('click', '.apply-damage', async ev => {
-      event.preventDefault();
-      const dataset = ev.currentTarget.dataset;
-      const damage = Number(dataset.damage);
-      const ignoreArmor = dataset.ignoreArmor == 'true';
-      const data = { ignoreArmor: ignoreArmor };
+  html.on("click", ".apply-damage", async (ev) => {
+    event.preventDefault();
+    const dataset = ev.currentTarget.dataset;
+    const damage = Number(dataset.damage);
+    const ignoreArmor = dataset.ignoreArmor == "true";
+    const data = { ignoreArmor: ignoreArmor };
 
-      const targets = game.users.get(game.user.id).targets;
-      for (var target of targets) {
-        let actor = target.actor;
-        let actorData = actor.system;
-        let realDamage = damage;
+    const targets = game.users.get(game.user.id).targets;
+    for (var target of targets) {
+      let actor = target.actor;
+      let actorData = actor.system;
+      let realDamage = damage;
 
-        let share = game.user.id;
-        for (let user of game.users)
-            if (user.active && user.character != null && user.character.id === actor.id) {
-                share = user.id;
-                break;
-            }
-            
-        if (share == game.user.id)
-            Hooks.call("applyDamage", { actor, data: { data, realDamage } });
-        else {
-            game.socket.emit("system.dx3rd", { id: "applyDamage", sender: game.user.id, receiver: share, data: {
-               actorId: actor.id,
-               data,
-               realDamage
-            } });
+      let share = game.user.id;
+      for (let user of game.users)
+        if (
+          user.active &&
+          user.character != null &&
+          user.character.id === actor.id
+        ) {
+          share = user.id;
+          break;
         }
 
+      if (share == game.user.id)
+        Hooks.call("applyDamage", { actor, data: { data, realDamage } });
+      else {
+        game.socket.emit("system.dx3rd", {
+          id: "applyDamage",
+          sender: game.user.id,
+          receiver: share,
+          data: {
+            actorId: actor.id,
+            data,
+            realDamage,
+          },
+        });
       }
-
-
+    }
   });
 
-
-
-  html.on('click', '.toggle-btn', async ev => {
+  html.on("click", ".toggle-btn", async (ev) => {
     ev.preventDefault();
     const toggler = $(ev.currentTarget);
     const style = ev.currentTarget.dataset.style;
     const item = toggler.parent();
-    const description = item.find('.' + style);
+    const description = item.find("." + style);
 
-    toggler.toggleClass('open');
+    toggler.toggleClass("open");
     description.slideToggle();
   });
 
-  html.on('click', '.titus', async ev => {
+  html.on("click", ".titus", async (ev) => {
     ev.preventDefault();
     const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
     await item.setTitus();
-
   });
 
-  html.on('click', '.sublimation', async ev => {
+  html.on("click", ".sublimation", async (ev) => {
     ev.preventDefault();
     const itemInfo = ev.currentTarget.closest(".dx3rd-item-info");
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
     await item.setSublimation();
-
   });
 
-    html.on('click', '.use-item', async event => {
-        event.preventDefault();
-        const itemInfo = event.currentTarget.closest(".dx3rd-item-info");
-        const actor = game.actors.get(itemInfo.dataset.actorId);
-        const item = actor.items.get(itemInfo.dataset.itemId);
+  html.on("click", ".use-item", async (event) => {
+    event.preventDefault();
+    const itemInfo = event.currentTarget.closest(".dx3rd-item-info");
+    const actor = game.actors.get(itemInfo.dataset.actorId);
+    const item = actor.items.get(itemInfo.dataset.itemId);
 
-        if (item.system.quantity.value < 1)
-            return;
-        
-        await item.use(actor);
-    });
+    if (item.system.quantity.value < 1) return;
 
+    await item.use(actor);
+  });
 }
 
-Hooks.on("applyDamage", ({actor, data}) => {
+Hooks.on("applyDamage", ({ actor, data }) => {
   new DefenseDialog(actor, data).render(true);
-})
+});
 
 Hooks.on("enterScene", (actor) => {
   let enterDialog = new Dialog({
@@ -744,38 +943,45 @@ Hooks.on("enterScene", (actor) => {
         icon: '<i class="fas fa-check"></i>',
         label: game.i18n.localize("DX3rd.EnterScene"),
         callback: async () => {
-          let formula =`1D10`;
+          let formula = `1D10`;
 
           let roll = new Roll(formula);
-          await roll.roll({async: true})
+          await roll.roll({ async: true });
 
           let before = actor.system.attributes.encroachment.value;
           let after = Number(before) + Number(roll.total);
 
-          await actor.update({"system.attributes.encroachment.value": after});
+          await actor.update({ "system.attributes.encroachment.value": after });
 
           let rollMode = game.settings.get("core", "rollMode");
           let rollData = await roll.render();
           let content = `
             <div class="dx3rd-roll">
-              <h2 class="header"><div class="title">${actor.name} ${game.i18n.localize("DX3rd.EnterScene")}</div></h2>
+              <h2 class="header"><div class="title">${
+                actor.name
+              } ${game.i18n.localize("DX3rd.EnterScene")}</div></h2>
               <div class="context-box">
-                ${game.i18n.localize("DX3rd.Encroachment")}: ${before} -> ${after} (+${roll.total})
+                ${game.i18n.localize(
+                  "DX3rd.Encroachment"
+                )}: ${before} -> ${after} (+${roll.total})
               </div>
               ${rollData}
           `;
 
-          ChatMessage.create({
-            speaker: ChatMessage.getSpeaker({actor: actor}),
-            content: content + `</div>`,
-            type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-            sound: CONFIG.sounds.dice,
-            roll: roll,
-          }, {rollMode});
-        }
-      }
-    }
+          ChatMessage.create(
+            {
+              speaker: ChatMessage.getSpeaker({ actor: actor }),
+              content: content + `</div>`,
+              type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+              sound: CONFIG.sounds.dice,
+              roll: roll,
+            },
+            { rollMode }
+          );
+        },
+      },
+    },
   });
 
   enterDialog.render(true);
-})
+});

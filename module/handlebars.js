@@ -37,6 +37,20 @@ export class DX3rdRegisterHelpers {
       return retList.join(" / ");
     });
 
+    Handlebars.registerHelper('spelltype', function(arg) {
+      if (arg == "" || arg == "-") return;
+
+      let split = arg.split("-");
+      let retList = [];
+
+      for (let s of split) {
+        let ss = s[0].toUpperCase() + s.slice(1);
+        retList.push(game.i18n.localize(`DX3rd.${ss}`));
+      }
+
+      return retList.join(" / ");
+    });
+
     Handlebars.registerHelper('attrSkill', function(actor, item, key, idx) {
       if (key == '-')
         return;

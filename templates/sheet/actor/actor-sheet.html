@@ -214,6 +214,7 @@
           <a class="item" data-tab="description">{{localize "DX3rd.Description"}}</a>
           <a class="item" data-tab="combo">{{localize "DX3rd.Combo"}}</a>
           <a class="item" data-tab="effect">{{localize "DX3rd.Effect"}}</a>
+          <a class="item" data-tab="special">{{localize "DX3rd.Special"}}</a>
           <a class="item" data-tab="rois">{{localize "DX3rd.Rois"}}</a>
           <a class="item" data-tab="equipment">{{localize "DX3rd.Equipment"}}</a>
           <a class="item" data-tab="record">{{localize "DX3rd.Record"}}</a>
@@ -494,11 +495,104 @@
               </ol>
             </div>
 
+            <div class="cell grid-full">
+              <div class="cell--title">
+                <label>{{localize "DX3rd.ExtraData"}}</label>
 
+                <div class="item-controls plus-addon">
+                  <button type="button" class="item-control item-create white-btn" data-type="effect" data-effect-type="extra" data-img="card-hand">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <ol class="items-list margin-top-10">
+                {{#each actor.extraEffectList as |item id|}}
+                  <li class="item flexrow {{#usedFull item.system.used item.system.level.value}} titus {{/usedFull}}" data-item-id="{{item.id}}" draggable="true">
+                    <h4 class="item-name">
+                      <span class="echo-item" style="float:left;">
+                          <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
+                      </span> 
+                      <span class="item-label">[{{item.system.level.value}}] {{item.name}}<br>
+                        <span style="color : gray; font-size : smaller;">
+                          {{localize "DX3rd.Timing"}} : {{timing item.system.timing}} / 
+                          {{localize "DX3rd.Skill"}} : {{skillByKey ../actor item.system.skill}} / 
+                          {{localize "DX3rd.Target"}} : {{item.system.target}} / 
+                          {{localize "DX3rd.Range"}} : {{item.system.range}} /
+                          {{localize "DX3rd.Encroach"}} : {{item.system.encroach.value}} /
+                          {{localize "DX3rd.Limit"}} : {{item.system.limit}}
+                          <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
+                        </span>
+                      </span>
+                    </h4>
+
+                    <h4 class="item-addon">
+                      <input type="checkbox" class="active-check" {{#if item.system.active.state}} checked {{/if}}>
+                      <input type="number" class="checkbox-input used-input" value="{{item.system.used.state}}" {{#ifEquals item.system.used.disable "notCheck"}} disabled {{/ifEquals}}> /
+                      <input type="number" class="checkbox-input used-input" value="{{usedMax item.system.used item.system.level.value}}" disabled>
+                    </h4>
+                    <div class="item-controls">
+                      <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                    <div class="item-description">{{{item.system.description}}}
+                    </div>
+                  </li>
+                {{/each}}
+
+              </ol>
+            </div>
 
           </section>
         </div>
 
+        {{!-- special Tab --}}
+        <div class="tab" data-group="primary" data-tab="special">
+          <section class="sheet-attributes">
+
+            <div class="cell grid-full">
+              <div class="cell--title">
+                <label>{{localize "DX3rd.Spell"}}</label>
+
+                <div class="item-controls plus-addon">
+                  <button type="button" class="item-control item-create white-btn" data-type="spell" data-img="explosion">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <ol class="items-list margin-top-10">
+                {{#each actor.spellList as |item id|}}
+                  <li class="item flexrow" data-item-id="{{item.id}}" draggable="true">
+                    <h4 class="item-name">
+                      <span class="echo-item" style="float:left;">
+                          <img src="{{item.img}}" title="{{item.name}}" width="37" height="37" style="vertical-align : middle;margin-right:10px;">
+                      </span> 
+                      <span class="item-label">{{item.name}}<br>
+                        <span style="color : gray; font-size : smaller;">
+                          {{localize "DX3rd.SpellType"}} : {{spelltype item.system.spelltype}} / 
+                          {{localize "DX3rd.Invoke"}} : {{item.system.invoke.value}} / 
+                          {{localize "DX3rd.Encroach"}} : {{item.system.encroach.value}}
+
+                          <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
+                        </span>
+                      </span>
+                    </h4>
+
+                    <div class="item-controls">
+                      <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                    <div class="item-description">{{{item.system.description}}}
+                    </div>
+                  </li>
+                {{/each}}
+
+              </ol>
+            </div>
+
+          </section>
+        </div>
 
         {{!-- Rois Tab --}}
         <div class="tab" data-group="primary" data-tab="rois">
@@ -766,14 +860,12 @@
                       </span> 
                       <span class="item-label">{{item.name}}<br>
                         <span style="color : gray; font-size : smaller;">
-                          {{localize "DX3rd.Type"}} : {{timing item.system.type}} /
-                          {{localize "DX3rd.Quantity"}} : {{item.system.quantity.value}} | {{item.system.quantity.max}}
+                          {{localize "DX3rd.Type"}} : {{timing item.system.type}}
                           <span class="item-details-toggle"><i class="fas fa-chevron-down"></i></span>
                         </span>
                       </span>
                     </h4>
                     <h4 class="item-addon">
-                      <button class="use-item">{{localize "DX3rd.Use"}}</button>
                       <input type="checkbox" class="active-equipment" {{#if item.system.equipment}} checked {{/if}}>
                     </h4>
                     <div class="item-controls">

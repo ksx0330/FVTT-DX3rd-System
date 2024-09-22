@@ -98,8 +98,8 @@ export class DX3rdCombat extends Combat {
     }
 
     _sortCombatants(a, b) {
-      const ia = Number.isNumeric(a.initiative) ? a.initiative : -9999;
-      const ib = Number.isNumeric(b.initiative) ? b.initiative : -9999;
+      const ia = Number.isNumeric(a.initiative) ? a.initiative : -99999;
+      const ib = Number.isNumeric(b.initiative) ? b.initiative : -99999;
       let ci = ib - ia;
       if ( ci !== 0 ) return ci;
 

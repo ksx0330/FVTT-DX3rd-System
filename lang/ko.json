@@ -22,6 +22,7 @@
   "DX3rd.art": "예술",
   "DX3rd.rc": "RC",
   "DX3rd.will": "의지",
+  "DX3rd.cthulhu": "지식: 크툴루",
   "DX3rd.knowledge": "지식",
   "DX3rd.negotiation": "교섭",
   "DX3rd.procure": "조달",
@@ -34,6 +35,7 @@
   "DX3rd.Init": "행동치",
   "DX3rd.Move": "이동",
   "DX3rd.BattleMove": "전투이동",
+  "DX3rd.FullMove": "전력이동",
   "DX3rd.Saving": "상비화P",
   "DX3rd.EXP": "경험점",
   "DX3rd.EXPInit": "초기 경험점",
@@ -84,6 +86,7 @@
   "DX3rd.Initiative": "이니셔티브",
   "DX3rd.Always": "상시",
   "DX3rd.Easy": "이지",
+  "DX3rd.ExtraData": "기타",
 
   "DX3rd.Attributes": "효과",
   "DX3rd.Critical": "크리티컬",
@@ -94,8 +97,8 @@
   "DX3rd.ReactionDice": "리액션 다이스",
   "DX3rd.ReactionAdd": "리액션 수정치",
   "DX3rd.ReactionCritical": "리액션 크리티컬",
-  "DX3rd.Dodge": "돗지",
-  "DX3rd.DodgeCritical": "돗지 크리티컬",
+  "DX3rd.Dodge": "닷지",
+  "DX3rd.DodgeCritical": "닷지 크리티컬",
   "DX3rd.BodyValue": "육체 수정치",
   "DX3rd.BodyAdd": "육체 달성치",
   "DX3rd.BodyDice": "육체 다이스",
@@ -126,7 +129,41 @@
   "DX3rd.AfterScene": "씬 종료 이후",
   "DX3rd.AfterSession": "세션 종료 이후",
 
-  "DX3rd.Target": "대상",
+  "DX3rd.Special": "특수",
+
+  "DX3rd.Psionics": "사이오닉",
+
+  "DX3rd.Spell": "술식",
+  "DX3rd.SpellType": "종별",
+  "DX3rd.Invoke": "발동치",
+  "DX3rd.EvocationInvoke": "환기 발동치",
+  "DX3rd.NormalSpell": "통상",
+  "DX3rd.NormalKeep": "통상/유지",
+  "DX3rd.SignSpell": "수인",
+  "DX3rd.Ritual": "의식",
+  "DX3rd.RitualKeep": "의식/유지",
+  "DX3rd.RitualCurse": "의식/저주",
+  "DX3rd.Summon": "소환",
+  "DX3rd.SummonRitual": "소환/의식",
+  "DX3rd.Evocation": "환기",
+  "DX3rd.EvocationRitual": "환기/의식",
+  "DX3rd.Contact": "접촉",
+  "DX3rd.CastingRoll": "마술 굴림",
+  "DX3rd.CastingDice": "마술 주사위",
+  "DX3rd.CastingAdd": "마술 수정",
+  "DX3rd.Eibon": "에이본의 금주법",
+  "DX3rd.Angel": "수호천사의 소환",
+
+  "DX3rd.SpellResult": "마술 굴림 결과",
+  "DX3rd.OverflowDice": "폭주 주사위",
+
+  "DX3rd.SpellDisaster": "마술 폭주 발생",
+  "DX3rd.SpellCalamity": "마술 대폭주 발생",
+  "DX3rd.SpellCatastrophe": "마술 재액 발생",
+
+  "DX3rd.Success": "성공",
+  "DX3rd.Failure": "실패",
+
   "DX3rd.EquipType": "종별",
   "DX3rd.SellSaving": "매입/상비화",
 
@@ -137,6 +174,7 @@
   "DX3rd.Item": "아이템",
   "DX3rd.Etc": "기타",
   "DX3rd.Once": "일회용",
+  "DX3rd.Book": "마도서",
   "DX3rd.Quantity": "개수",
 
   "DX3rd.Type": "종류",
@@ -154,9 +192,9 @@
 
   "DX3rd.RollType": "판정 타입",
   "DX3rd.AttackRoll": "공격",
-  "DX3rd.DodgeRoll": "돗지",
-  "DX3rd.DodgeDice": "돗지 다이스",
-  "DX3rd.DodgeAdd": "돗지 수정치",
+  "DX3rd.DodgeRoll": "닷지",
+  "DX3rd.DodgeDice": "닷지 다이스",
+  "DX3rd.DodgeAdd": "닷지 수정치",
 
   "DX3rd.Melee": "백병",
   "DX3rd.Ranged": "사격",
@@ -189,9 +227,14 @@
   "DX3rd.EnterScene": "등장",
   "DX3rd.Stock": "재산점",
 
-  "DX3rd.SubAction1": "판정에 10개의 다이스를 추가",
+  "DX3rd.SubAction1": "판정에 10개의 주사위 추가",
   "DX3rd.SubAction2": "판정의 달성치에 +1D10 추가",
   "DX3rd.SubAction3": "판정의 크리티컬 수치에 -1의 수정",
   "DX3rd.SubAction4": "전투불능에서 회복",
-  "DX3rd.SubAction5": "불리한 효과를 소거"
+  "DX3rd.SubAction5": "불리한 효과를 소거",
+  "DX3rd.SubAction6": "마술 굴림에 2개의 마술 주사위 추가",
+  "DX3rd.SubAction7": "기타 효과",
+  "DX3rd.SubAction8": "데미지 롤에 5개의 주사위 추가",
+  "DX3rd.SubAction9": "전투불능에서 완전회복",
+  "DX3rd.SubAction0": "이펙트 사용 횟수 회복"
 }

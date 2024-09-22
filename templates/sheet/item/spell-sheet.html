@@ -1,0 +1,113 @@
+<form class="{{cssClass}} item" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="header-fields flexrow">
+      <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "DX3rd.Description" }}</a>
+    <a class="item" data-tab="attributes">{{localize "DX3rd.Attributes" }}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      <div class="sheet-wrapper margin-top-10">
+        <section class="sheet-attributes">
+
+          <div class="cell grid-4">
+            <label class="cell--title">
+              {{localize "DX3rd.SpellType"}}
+            </label>
+            <select name="system.spelltype">
+              {{#select system.spelltype}}
+              <option value="-">-</option>
+              <option value="NormalSpell">{{localize "DX3rd.NormalSpell"}}</option>
+              <option value="NormalKeep">{{localize "DX3rd.NormalKeep"}}</option>
+              <option value="SignSpell">{{localize "DX3rd.SignSpell"}}</option>
+              <option value="Ritual">{{localize "DX3rd.Ritual"}}</option>
+              <option value="RitualKeep">{{localize "DX3rd.RitualKeep"}}</option>
+              <option value="RitualCurse">{{localize "DX3rd.RitualCurse"}}</option>
+              <option value="Summon">{{localize "DX3rd.Summon"}}</option>
+              <option value="Ritual">{{localize "DX3rd.Ritual"}}</option>
+              <option value="SummonRitual">{{localize "DX3rd.SummonRitual"}}</option>
+              <option value="Evocation">{{localize "DX3rd.Evocation"}}</option>
+              <option value="EvocationRitual">{{localize "DX3rd.EvocationRitual"}}</option>
+              {{/select}}
+            </select>
+          </div>
+
+          <div class="cell grid-4">
+            <label class="cell--title">
+              {{localize "DX3rd.EXP"}}
+            </label>
+            <input type="text" name="system.exp" value="{{system.exp}}" data-dtype="Number" />
+          </div>
+
+          <div class="cell grid-4">
+            <label class="cell--title">
+                {{localize "DX3rd.Invoke"}}
+            </label>
+            <div class="flex">
+                <input type="number" name="system.invoke.value" value="{{system.invoke.value}}" data-dtype="Number" />
+                <span class="slash"> / </span>
+                <input type="number" name="system.evocation.value" value="{{system.evocation.value}}" data-dtype="Number"
+                    {{#unless (or (eq system.spelltype "Evocation") (eq system.spelltype "EvocationRitual"))}} disabled {{/unless}} />
+            </div>
+        </div>
+
+        <div class="cell grid-4">
+          <label class="cell--title">
+            {{localize "DX3rd.Encroach"}}
+          </label>
+          <div class="flex">
+            <input type="text" name="system.encroach.value" value="{{system.encroach.value}}" data-dtype="String"/>
+          </div>
+        </div>
+
+        </section>
+
+        <div class="cell cell--bio">
+          <label class="cell--title">
+            {{localize "DX3rd.Description"}}
+
+            <div class="checkbox-addon flexrow">
+              <span>{{localize "DX3rd.Target"}} </span>
+              <td><input type="checkbox" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}></td>
+            </div>
+          </label>
+          {{!-- We're avoiding WYSIWYGs... for now... --}}
+          {{editor enrichedBiography target="system.description" button=true editable=editable }}
+        </div>
+      </div>
+    </div>
+
+    {{!-- Attributes Tab --}}
+    <div class="tab" data-group="primary" data-tab="attributes">
+      <div class="sheet-wrapper">
+        <table>
+          <tr>
+            <th><span>{{localize "DX3rd.RollType"}}</span></th>
+            <td>
+              <select name="system.roll" data-dtype="String">
+                {{#select system.roll}}
+                <option value="-">-</option>
+                <option value="CastingRoll">{{localize "DX3rd.CastingRoll"}}</option>
+                {{/select}}
+              </select>
+            </td>
+            <th><label for="system.macro">{{localize "DX3rd.Macro"}}</label></th>
+            <td colspan="5"><input type="text" name="system.macro" data-dtype="String" value="{{system.macro}}"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+
+</form>

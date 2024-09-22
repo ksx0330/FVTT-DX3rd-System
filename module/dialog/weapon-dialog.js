@@ -64,6 +64,7 @@ export class WeaponDialog extends Dialog {
   async _onSubmit() {
     let attack = 0;
     let guard = 0;
+
     let list = [];
 
     await $(".check-equipment").each((i, val) => {
@@ -80,7 +81,7 @@ export class WeaponDialog extends Dialog {
       "speaker": ChatMessage.getSpeaker({actor: this.actor})
     });
 
-    this.callback({attack, guard});
+    this.callback({ attack, guard });
   }
 
 

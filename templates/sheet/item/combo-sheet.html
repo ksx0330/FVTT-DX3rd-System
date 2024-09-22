@@ -12,7 +12,6 @@
     <a class="item" data-tab="effect">{{localize "DX3rd.Effect" }}</a>
     <a class="item" data-tab="weapon">{{localize "DX3rd.Weapon" }}</a>
     <a class="item" data-tab="attributes">{{localize "DX3rd.Attributes" }}</a>
-    <a class="item" data-tab="skills">{{localize "DX3rd.Skills"}}</a>
   </nav>
 
   {{!-- Sheet Body --}}
@@ -102,12 +101,13 @@
 
           <div class="cell grid-4 space-between">
             <label class="cell--title">
-              {{localize "DX3rd.Target"}}
+              <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Target"}}</span>
               <input type="checkbox" class="cell--crit" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}>
             </label>
             <input type="text" name="system.target" value="{{system.target}}" data-dtype="String"/>
           </div>
-
+          
+          
           <div class="cell grid-4">
             <label class="cell--title">
               {{localize "DX3rd.Limit"}}
@@ -354,6 +354,7 @@
                 <option value="armor">{{localize "DX3rd.Armor"}}</option>
                 <option value="guard">{{localize "DX3rd.Guard"}}</option>
                 <option value="saving">{{localize "DX3rd.Saving"}}</option>
+                <option value="battleMove">{{localize "DX3rd.BattleMove"}}</option>
 
                 <option value="major_dice">{{localize "DX3rd.MajorDice"}}</option>
                 <option value="major">{{localize "DX3rd.MajorAdd"}}</option>
@@ -373,6 +374,9 @@
                 <option value="mind_dice">{{localize "DX3rd.MindDice"}}</option>
                 <option value="social_add">{{localize "DX3rd.SocialAdd"}}</option>
                 <option value="social_dice">{{localize "DX3rd.SocialDice"}}</option>
+
+                <option value="casting_dice">{{localize "DX3rd.CastingDice"}}</option>
+                <option value="casting_add">{{localize "DX3rd.CastingAdd"}}</option>
                 {{/select}}
               </select>
 
@@ -386,58 +390,6 @@
       </div>
     </div>
 
-    
-    {{!-- Skill Tab --}}
-    <div class="tab" data-group="primary" data-tab="skills">
-      <div class="sheet-wrapper margin-top-10">
-        <div class="add-skills">
-          <select name="system.skillTmp" id="actor-skill">
-            {{#select system.skillTmp}}
-            {{#each system.actorSkills as |value key|}}
-            <option value="{{key}}">{{skill value.name}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
-          <button class="skill-create"><i class="fas fa-arrow-down"></i></button>
-        </div>
-
-        <div class="skills">
-          <header class="attributes-header flexrow width-100 margin-top-10">
-            <span class="attribute-key">{{localize "DX3rd.Key"}}</span>
-            <span class="attribute-key">{{localize "DX3rd.Name"}}</span>
-            <span class="attribute-key">{{localize "DX3rd.Base"}}</span>
-            <span class="attribute-key">{{localize "DX3rd.Dice"}}</span>
-            <span class="attribute-value">{{localize "DX3rd.Value"}}</span>
-            <span class="attribute-control"><i class="fas fa-check"></i></span>
-            <a class="attribute-control" data-pos="main" data-action="create" data-type="skills"><i class="fas fa-plus"></i></a>
-          </header>
-
-          <ol class="attributes-list">
-          {{#each system.skills as |attr key|}}
-            <li class="attribute flexrow" data-attribute="{{key}}">
-              <input class="attribute-key" type="text" name="system.skills.{{key}}.key" value="{{key}}" data-dtype="String">
-              <input class="attribute-key" type="text" name="system.skills.{{key}}.name" value="{{attrSkill ../system.actorSkills ../system.skills key 'name'}}" data-dtype="String">
-              <select class="attribute-key" name="system.skills.{{key}}.base" data-dtype="String">
-                {{#select (attrSkill ../system.actorSkills ../system.skills key 'base')}}
-                <option value="-">-</option>
-                <option value="body">{{localize "DX3rd.Body"}}</option>
-                <option value="sense">{{localize "DX3rd.Sense"}}</option>
-                <option value="mind">{{localize "DX3rd.Mind"}}</option>
-                <option value="social">{{localize "DX3rd.Social"}}</option>
-                {{/select}}
-              </select>
-
-              <input class="attribute-value" type="text" name="system.skills.{{key}}.dice" value="{{attr.dice}}" data-dtype="Number"/>
-              <input class="attribute-value" type="text" name="system.skills.{{key}}.add" value="{{attr.add}}" data-dtype="Number"/>
-              <input class="attribute-control" type="checkbox" name="system.skills.{{key}}.apply" {{#if attr.apply}} checked {{/if}}  data-dtype="Boolean"/>
-              <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-            </li>
-          {{/each}}
-          </ol>
-        </div>
-
-      </div>
-    </div>
 
   </section>
 

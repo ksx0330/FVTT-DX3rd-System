@@ -65,6 +65,8 @@ export class DX3rdActorSheet extends ActorSheet {
     actorData.comboList = [];
     actorData.effectList = [];
     actorData.easyEffectList = [];
+    actorData.extraEffectList = [];
+    actorData.spellList = []; // 술식 리스트를 만듬
     actorData.roisList = [];
     actorData.memoryList = [];
 
@@ -86,8 +88,12 @@ export class DX3rdActorSheet extends ActorSheet {
       else if (i.type == 'effect') {
         if (i.system.type == 'normal')
           actorData.effectList.push(i);
-        else
+        else if (i.system.type == 'easy')
           actorData.easyEffectList.push(i);
+        else
+          actorData.extraEffectList.push(i);
+      } else if (i.type == 'spell') {
+        actorData.spellList.push(i); // 액터 시트의 술식 탭에 술식이 리스트 되도록 함
       } else if (i.type == 'rois') {
         if (i.system.type == "M")
           actorData.memoryList.push(i);
@@ -223,7 +229,7 @@ export class DX3rdActorSheet extends ActorSheet {
       const list = {attack: "DX3rd.Attack", dice: "DX3rd.Dice", add: "DX3rd.Add", critical: "DX3rd.Critical", critical_min: "DX3rd.CriticalMin", 
 hp: "DX3rd.HP", init: "DX3rd.Init", armor: "DX3rd.Armor", guard: "DX3rd.Guard", saving: "DX3rd.Saving", 
 major_dice: "DX3rd.MajorDice", major: "DX3rd.MajorAdd", major_critical: "DX3rd.MajorCritical", reaction_dice: "DX3rd.ReactionDice", reaction: "DX3rd.ReactionAdd", reaction_critical: "DX3rd.ReactionCritical", dodge_dice: "DX3rd.DodgeDice", dodge: "DX3rd.DodgeAdd", dodge_critical: "DX3rd.DodgeCritical", 
-body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseAdd", sense_dice: "DX3rd.SenseDice", mind_add: "DX3rd.MindAdd", mind_dice: "DX3rd.MindDice", social_add: "DX3rd.SocialAdd", social_dice: "DX3rd.SocialDice"};
+body_add: "DX3rd.BodyAdd", body_dice: "DX3rd.BodyDice", sense_add: "DX3rd.SenseAdd", sense_dice: "DX3rd.SenseDice", mind_add: "DX3rd.MindAdd", mind_dice: "DX3rd.MindDice", social_add: "DX3rd.SocialAdd", social_dice: "DX3rd.SocialDice", casting_dice: "DX3rd.CastingDice", casting_add: "DX3rd.CastingAdd"};
 
       const li = event.currentTarget.closest(".item");
       let attr = this.actor.system.attributes.applied[li.dataset.itemId].attributes;

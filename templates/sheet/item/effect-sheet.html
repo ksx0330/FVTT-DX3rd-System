@@ -14,7 +14,7 @@
   <nav class="sheet-navigation sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="description">{{localize "DX3rd.Description" }}</a>
     <a class="item" data-tab="attributes">{{localize "DX3rd.Attributes" }}</a>
-    <a class="item" data-tab="skills">{{localize "DX3rd.Attributes"}} - {{localize "DX3rd.Skills"}}</a>
+    <a class="item" data-tab="skills">{{localize "DX3rd.Skills"}}</a>
     <a class="item" data-tab="target">{{localize "DX3rd.Target" }}</a>
   </nav>
 
@@ -61,7 +61,7 @@
 
           <div class="cell grid-4 space-between">
             <label class="cell--title">
-              {{localize "DX3rd.Level"}}
+              <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Level"}}</span>
               <input type="checkbox" class="cell--crit" name="system.level.upgrade" {{#if system.level.upgrade}} checked {{/if}}>
             </label>
             <div class="flex">
@@ -98,9 +98,10 @@
             <input type="text" name="system.range" value="{{system.range}}" data-dtype="String"/>
           </div>
 
-          <div class="cell grid-4">
+          <div class="cell grid-4 space-between">
             <label class="cell--title">
-              {{localize "DX3rd.Target"}}
+              <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Target"}}</span>
+              <input type="checkbox" class="cell--crit" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}>
             </label>
             <input type="text" name="system.target" value="{{system.target}}" data-dtype="String"/>
           </div>
@@ -124,6 +125,7 @@
               {{#select system.type}}
               <option value="normal">{{localize "DX3rd.Effect"}}</option>
               <option value="easy">{{localize "DX3rd.Easy"}}</option>
+              <option value="extra">{{localize "DX3rd.ExtraData"}}</option>
               {{/select}}
             </select>
 
@@ -264,6 +266,9 @@
                 <option value="social_value">{{localize "DX3rd.SocialValue"}}</option>
                 <option value="social_add">{{localize "DX3rd.SocialAdd"}}</option>
                 <option value="social_dice">{{localize "DX3rd.SocialDice"}}</option>
+
+                <option value="casting_dice">{{localize "DX3rd.CastingDice"}}</option>
+                <option value="casting_add">{{localize "DX3rd.CastingAdd"}}</option>
                 {{/select}}
               </select>
 
@@ -336,9 +341,7 @@
         <table>
           <tr>
             <th><span>{{localize "DX3rd.Target"}}</span> </th>
-            <td><input type="checkbox" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}></td>
-            
-            <th><span>{{localize "DX3rd.DisableTiming"}}</span></th>
+            <td><input type="checkbox" class="target-checkbox" {{#if system.getTarget}} checked {{/if}} disabled></td>            <th><span>{{localize "DX3rd.DisableTiming"}}</span></th>
             <td>
               <select name="system.effect.disable" data-dtype="String">
                 {{#select system.effect.disable}}
@@ -381,6 +384,7 @@
                 <option value="armor">{{localize "DX3rd.Armor"}}</option>
                 <option value="guard">{{localize "DX3rd.Guard"}}</option>
                 <option value="saving">{{localize "DX3rd.Saving"}}</option>
+                <option value="battleMove">{{localize "DX3rd.BattleMove"}}</option>
 
                 <option value="major_dice">{{localize "DX3rd.MajorDice"}}</option>
                 <option value="major">{{localize "DX3rd.MajorAdd"}}</option>
@@ -400,6 +404,9 @@
                 <option value="mind_dice">{{localize "DX3rd.MindDice"}}</option>
                 <option value="social_add">{{localize "DX3rd.SocialAdd"}}</option>
                 <option value="social_dice">{{localize "DX3rd.SocialDice"}}</option>
+
+                <option value="casting_dice">{{localize "DX3rd.CastingDice"}}</option>
+                <option value="casting_add">{{localize "DX3rd.CastingAdd"}}</option>
                 {{/select}}
               </select>
 
