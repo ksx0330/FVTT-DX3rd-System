@@ -462,7 +462,6 @@ async function chatListeners(html) {
     const appliedList = [];
     const macroList = [];
 
-    let targetCheck = false;
     let usedCheck = true;
 
     // 모든 효과 항목 확인
@@ -479,15 +478,12 @@ async function chatListeners(html) {
           usedCheck = false;
         }
       }
-
-      if (effect.system.getTarget)
-        targetCheck = true;
     }
 
     if (!usedCheck) return;
 
     let targets = Array.from(game.user.targets || []);
-    if (targetCheck) {
+    if (item.system.getTarget) {
       if (targets.length > 0)
         targeting(targets, actor);
       else {
