@@ -573,9 +573,39 @@ async function chatListeners(html) {
     let base = "";
     const rollType = item.system.roll;
     const attackRoll = item.system.attackRoll;
-    const hp = Number.isNaN(Number(item.system.hp.value))
-      ? item.system.hp.value
-      : Number(item.system.hp.value);
+
+    let hp = item.system.hp.value;
+    if (Number.isNumeric(hp))
+      hp = Number(hp);
+    else {
+      let roll = new Roll(hp);
+      await roll.roll({ async: true });
+
+      let rollData = await roll.render();
+      let chatData = {
+        speaker: ChatMessage.getSpeaker({ actor: actor }),
+      }
+
+      chatData.content = `
+        <div class="dx3rd-roll" data-actor-id=${actor.id}>
+          <h2 class="header"><div class="title">${item.name}: HP -${roll.total}</div></h2>
+          ${rollData}
+        </div>
+      `;
+      chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;
+      chatData.sound = CONFIG.sounds.dice;
+      chatData.roll = roll;
+      
+      let rollMode = game.settings.get("core", "rollMode");
+      ChatMessage.create(chatData, { rollMode });
+
+      hp = roll.total;
+      console.log(actor.system.attributes.hp.value - hp < 0);
+      if (actor.system.attributes.hp.value - hp < 0) {
+        ui.notifications.info(`Do not use this psionic: ${item.name}`);
+        return;
+      }
+    }
 
     let mainStat = ["body", "sense", "mind", "social"];
     if (mainStat.includes(skill)) {
@@ -594,11 +624,6 @@ async function chatListeners(html) {
         ui.notifications.info(`Do not use this psionic: ${item.name}`);
         return;
       }
-    }
-
-    if (actor.system.attributes.hp.value - hp <= 0) {
-      ui.notifications.info(`Do not use this psionic: ${item.name}`);
-      return;
     }
 
     let targets = Array.from(game.user.targets || []);
