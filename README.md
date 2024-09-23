@@ -17,7 +17,6 @@ Supported Langages
 Features
 -------------
 * Automatically calculates the character's ability value.
-* By pressing Ctrl and clicking on the Skill, you can add additional values when rolling the dice.
 * You can refer to the level of Effect by entering @level in the Attributes of Effect. ex) Concentrate -> -@level
 * You can create a Rois by dragging another actor.
 
