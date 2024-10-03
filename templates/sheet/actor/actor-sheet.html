@@ -95,13 +95,6 @@
         </div>
 
         <div class="stat-box no-flex">
-          <label class="title">{{localize "DX3rd.Armor"}}</label>
-          <div class="stat-list flexrow">
-            <input class="stat" type="text" name="system.attributes.armor.value" value="{{system.attributes.armor.value}}" disabled>
-          </div>
-        </div>
-
-        <div class="stat-box no-flex">
           <label class="title">{{localize "DX3rd.Init"}}</label>
           <div class="stat-list flexrow">
             <input class="stat" type="text" name="system.attributes.init.value" value="{{system.attributes.init.value}}" disabled>
@@ -114,6 +107,15 @@
             <input class="stat" type="text" name="system.attributes.move.battle" value="{{system.attributes.move.battle}}" disabled>
             <span class="divider">/</span>
             <input class="stat" type="text" name="system.attributes.move.full" value="{{system.attributes.move.full}}" disabled>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <label class="title">{{localize "DX3rd.Stock"}}</label>
+          <div class="stat-list flexrow">
+            <input class="stat" type="text" value="{{system.attributes.stock.max}}" data-dtype="Number" disabled/>
+            <span class="divider">/</span>
+            <input class="stat" type="text" name="system.attributes.stock.value" value="{{system.attributes.stock.value}}" data-dtype="Number"/>
           </div>
         </div>
 
@@ -984,38 +986,27 @@
         <div class="tab" data-group="primary" data-tab="record">
           <section class="sheet-attributes">
 
-            <div class="cell grid-3">
+            <div class="cell grid-4">
               <div class="cell--title">
                 <label>{{localize "DX3rd.EXPInit"}}</label>
               </div>
             </div>
 
-            <div class="cell grid-3">
+            <div class="cell grid-4">
               <input type="text" class="horizon-input" name="system.attributes.exp.init" value="{{system.attributes.exp.init}}">
             </div>
 
 
-            <div class="cell grid-3">
+            <div class="cell grid-4">
               <div class="cell--title">
                 <label>{{localize "DX3rd.EXPAppend"}}</label>
               </div>
             </div>
 
-            <div class="cell grid-3">
+            <div class="cell grid-4">
               <input type="text" class="horizon-input" name="system.attributes.exp.append" value="{{system.attributes.exp.append}}" readonly>
             </div>
-
-            <div class="cell grid-2">
-              <div class="cell--title">
-                <label>{{localize "DX3rd.Stock"}}</label>
-              </div>
-            </div>
-
-            <div class="cell grid-2">
-              <input class="horizon-input" type="text" name="system.attributes.stock.value" value="{{system.attributes.stock.value}}">
-            </div>
-
-
+            
             <div class="cell grid-full">
               <div class="cell--title">
                 <label>{{localize "DX3rd.Record"}}</label>
@@ -1097,6 +1088,138 @@
                 {{/each}}
 
               </ol>
+            </div>
+
+            <div class="cell grid-full">
+              <div class="cell--title">
+                <label>{{localize "DX3rd.Condition"}}</label>
+              </div>
+            </div>
+            
+            <div class="cell grid-4">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Tainted"}}</span>
+                <input type="checkbox" class="cell--crit" id="tainted-checkbox" name="system.conditions.tainted.active" {{#if system.conditions.tainted.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+              <input type="text" name="system.conditions.tainted.value" value="{{system.conditions.tainted.value}}"
+              {{#unless system.conditions.tainted.active}} disabled {{/unless}}>
+            </div>
+            
+            <div class="cell grid-4">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Hatred"}}</span>
+                <input type="checkbox" class="cell--crit" id="hatred-checkbox" name="system.conditions.hatred.active" {{#if system.conditions.hatred.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+              <input type="text" name="system.conditions.hatred.target" value="{{system.conditions.hatred.target}}"
+              {{#unless system.conditions.hatred.active}} disabled {{/unless}}>
+            </div>
+            
+            <div class="cell grid-4">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Fear"}}</span>
+                <input type="checkbox" class="cell--crit" id="fear-checkbox" name="system.conditions.fear.active" {{#if system.conditions.fear.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+              <input type="text" name="system.conditions.fear.target" value="{{system.conditions.fear.target}}"
+              {{#unless system.conditions.fear.active}} disabled {{/unless}}>
+            </div>
+            
+            <div class="cell grid-4">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Berserk"}}</span>
+                <input type="checkbox" class="cell--crit" id="berserk-checkbox" name="system.conditions.berserk.active" {{#if system.conditions.berserk.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+              <select name="system.conditions.berserk.type" data-dtype="String"
+              {{#unless system.conditions.berserk.active}} disabled {{/unless}}>
+                {{#select system.conditions.berserk.type}}
+                  <option value="-">-</option>
+                  <option value="normal">{{localize "DX3rd.Normal"}}</option>
+                  <option value="release">{{localize "DX3rd.UrgeRelease"}}</option>
+                  <option value="hunger">{{localize "DX3rd.UrgeHunger"}}</option>
+                  <option value="bloodsucking">{{localize "DX3rd.UrgeBloodsucking"}}</option>
+                  <option value="slaughter">{{localize "DX3rd.UrgeSlaughter"}}</option>
+                  <option value="destruction">{{localize "DX3rd.UrgeDestruction"}}</option>
+                  <option value="tourture">{{localize "DX3rd.UrgeTourture"}}</option>
+                  <option value="distaste">{{localize "DX3rd.UrgeDistaste"}}</option>
+                  <option value="battlelust">{{localize "DX3rd.UrgeBattlelust"}}</option>
+                  <option value="delusion">{{localize "DX3rd.UrgeDelusion"}}</option>
+                  <option value="selfmutilation">{{localize "DX3rd.UrgeSelfmutilation"}}</option>
+                  <option value="fear">{{localize "DX3rd.UrgeFear"}}</option>
+                  <option value="hatred">{{localize "DX3rd.UrgeHatred"}}</option>
+                {{/select}}
+              </select>
+            </div>
+
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Riger"}}</span>
+                <input type="checkbox" class="cell--crit" id="riger-checkbox" name="system.conditions.riger.active" {{#if system.conditions.riger.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Pressure"}}</span>
+                <input type="checkbox" class="cell--crit" id="pressure-checkbox" name="system.conditions.pressure.active" {{#if system.conditions.pressure.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Dazed"}}</span>
+                <input type="checkbox" class="cell--crit" id="dazed-checkbox" name="system.conditions.dazed.active" {{#if system.conditions.dazed.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+
+            <div class="cell grid-full">
+              <div class="cell--title">
+                <label>{{localize "DX3rd.Etc"}}</label>
+              </div>
+            </div>
+
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Defeated"}}</span>
+                <input type="checkbox" class="cell--crit" id="defeated-checkbox" name="system.conditions.defeated.active" {{#if system.conditions.defeated.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+            
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.ActionEnd"}}</span>
+                <input type="checkbox" class="cell--crit" id="action-end-checkbox" name="system.conditions.action_end.active" {{#if system.conditions.action_end.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+            
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.ActionDelay"}}</span>
+                <input type="checkbox" class="cell--crit" id="action-delay-checkbox" name="system.conditions.action_delay.active" {{#if system.conditions.action_delay.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+
+            <div class="cell grid-4 space-between">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Stealth"}}</span>
+                <input type="checkbox" class="cell--crit" id="stealth-checkbox" name="system.conditions.stealth.active" {{#if system.conditions.stealth.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+            </div>
+
+            <div class="cell grid-4">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.LostHP"}}</span>
+                <input type="checkbox" class="cell--crit" id="lostHP-checkbox" name="system.conditions.lostHP.active" {{#if system.conditions.lostHP.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+              <input type="text" id="lostHP-value" name="system.conditions.lostHP.value" value="{{system.conditions.lostHP.value}}"
+                  {{#unless system.conditions.lostHP.active}} disabled {{/unless}}>
+            </div>
+
+            <div class="cell grid-4">
+              <label class="cell--title">
+                <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Healing"}}</span>
+                <input type="checkbox" class="cell--crit" id="healing-checkbox" name="system.conditions.healing.active" {{#if system.conditions.healing.active}} checked {{/if}} data-dtype="Boolean"/>
+              </label>
+              <input type="text" id="healing-value" name="system.conditions.healing.value" value="{{system.conditions.healing.value}}"
+                  {{#unless system.conditions.healing.active}} disabled {{/unless}}>
             </div>
 
           </section>

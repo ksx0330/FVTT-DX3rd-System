@@ -486,6 +486,12 @@ export class DX3rdItem extends Item {
   }
 
   async setTitus() {
+    let type = this.system.type;
+    if (type === "D" || type === "E" || type === "M") {
+      ui.notifications.info("this item cannot be titus")
+      return;
+    }
+
     await this.update({ "system.titus": true });
 
     let chatData = {
@@ -498,36 +504,201 @@ export class DX3rdItem extends Item {
   }
 
   async setSublimation() {
-    await this.update({ "system.sublimation": true });
+    let type = this.system.type;
+    if (type === "D" || type === "E" || type === "M") {
+      ui.notifications.info("this item cannot be titus")
+      return;
+    }
 
-    let dialog = new Dialog({
-      title: game.i18n.localize("DX3rd.Sublimation"),
-      content: `
-        <h2>${game.i18n.localize("DX3rd.Sublimation")}: ${this.name}</h2>
-        <style>
-        .sublimation .dialog-buttons {
-          flex-direction: column;
+    let buttons = {};
+
+    if (type === "S") {
+      buttons.action1 = {
+        label: `${game.i18n.localize("DX3rd.Superier")}: ${game.i18n.localize("DX3rd.SubAction8")}`,
+        callback: async () => {
+          let sublimation_damage_roll = Number(this.actor.system.attributes.sublimation_damage_roll.value)
+          let dice = sublimation_damage_roll + 5;
+          await this.actor.update({ "system.attributes.sublimation_damage_roll.value": dice });
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction8")} )`
+          };
+          ChatMessage.create(chatData);
         }
-        </style>
-      `,
-      buttons: {
-        action1: {
-          icon: '<i class="fas fa-check"></i>',
-          label: `${game.i18n.localize("DX3rd.SubAction1")}`,
-          callback: async () => {
-            let dice = this.actor.system.attributes.sublimation.dice + 10;
-            await this.actor.update({ "system.attributes.sublimation.dice": dice });
+      },
+      buttons.action2 = {
+        label: `${game.i18n.localize("DX3rd.Superier")}: ${game.i18n.localize("DX3rd.SubAction9")}`,
+        callback: async () => {
+          let max = this.actor.system.attributes.hp.max;
+          await this.actor.update({ "system.attributes.hp.value": max });
 
-            let chatData = {
-              user: game.user.id,
-              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction1")} )`
-            };
-            ChatMessage.create(chatData);
-          }
-        },
-        action2: {
-          icon: '<i class="fas fa-check"></i>',
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction9")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      },
+      buttons.action3 = {
+        label: `${game.i18n.localize("DX3rd.Superier")}: ${game.i18n.localize("DX3rd.SubAction0")}`,
+        callback: async () => {
+          const actor = this.actor;
+          const effects = actor.items.filter(item => item.data.type === "effect");
+          const usedEffects = effects.filter(effect => effect.system.used.state > 0);
+      
+          if (usedEffects.length === 0) {
+            ui.notifications.info("There are no effects with spent usage.");
+            return;
+          };
+      
+          let usedEffectContent = "";
+          usedEffects.forEach(item => {
+            let effectName = item.name;
+            let effectId = item.id;
+            usedEffectContent += `<button class="macro-button" data-effectid="${effectId}">${effectName}</button>`;
+          });
+      
+          let callDialog = new Dialog({
+            title: `${game.i18n.localize("DX3rd.Superier")}: ${game.i18n.localize("DX3rd.SubAction0")}`,
+            content: usedEffectContent,
+            buttons: {},
+            close: () => { },
+            render: html => {
+              html.find(".macro-button").click(async ev => {
+                const effectId = ev.currentTarget.dataset.effectid;
+                const effect = actor.items.get(effectId);
+      
+                const used = effect.system.used.state;
+                const newUsed = used - 1;
+      
+                await effect.update({"system.used.state": newUsed});
+      
+                const chatData = {
+                  user: game.user.id,
+                  speaker: ChatMessage.getSpeaker({ actor: actor }),
+                  content: `${game.i18n.localize("DX3rd.SubAction0")}: ${effect.name}`
+                };
+                ChatMessage.create(chatData);
+                callDialog.close();
+              });
+            }
+          });
+      
+          callDialog.render(true);
+      
+          const chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction0")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      },
+      buttons.action4 = {
+        label: `${game.i18n.localize("DX3rd.SubAction1")}`,
+        callback: async () => {
+          let dice = this.actor.system.attributes.sublimation.dice + 10;
+          await this.actor.update({ "system.attributes.sublimation.dice": dice });
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction1")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      }
+      buttons.action5 = {
+        label: `${game.i18n.localize("DX3rd.SubAction2")}`,
+        callback: async () => {
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction2")} )`
+          };
+          ChatMessage.create(chatData);
+
+          let roll = new Roll("1d10");
+          await roll.roll({ async: true });
+
+          roll.toMessage();
+        }
+      },
+      buttons.action6 = {
+        label: `${game.i18n.localize("DX3rd.SubAction3")}`,
+        callback: async () => {
+
+          let critical = this.actor.system.attributes.sublimation.critical - 1;
+          await this.actor.update({ "system.attributes.sublimation.critical": critical });
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction3")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      },
+      buttons.action7 = {
+        label: `${game.i18n.localize("DX3rd.SubAction4")}`,
+        callback: async () => {
+          let sublimation_casting_dice = Number(this.actor.system.attributes.sublimation_casting_dice.value)
+          let dice = sublimation_casting_dice + 2;
+          await this.actor.update({ "system.attributes.sublimation_casting_dice.value": dice });
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction4")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      },
+      buttons.action8 = {
+        label: `${game.i18n.localize("DX3rd.SubAction6")}`,
+        callback: async () => {
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction6")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      },
+      buttons.action9 = {
+        label: `${game.i18n.localize("DX3rd.SubAction7")}`,
+        callback: async () => {
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction7")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      }
+    }
+
+    else if (type === "-") {
+      buttons.action1 = {
+        label: `${game.i18n.localize("DX3rd.SubAction1")}`,
+        callback: async () => {
+          let dice = this.actor.system.attributes.sublimation.dice + 10;
+          await this.actor.update({ "system.attributes.sublimation.dice": dice });
+
+          let chatData = {
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction1")} )`
+          };
+          ChatMessage.create(chatData);
+        }
+      },
+        buttons.action2 = {
           label: `${game.i18n.localize("DX3rd.SubAction2")}`,
           callback: async () => {
             let chatData = {
@@ -543,8 +714,7 @@ export class DX3rdItem extends Item {
             roll.toMessage();
           }
         },
-        action3: {
-          icon: '<i class="fas fa-check"></i>',
+        buttons.action3 = {
           label: `${game.i18n.localize("DX3rd.SubAction3")}`,
           callback: async () => {
 
@@ -559,13 +729,12 @@ export class DX3rdItem extends Item {
             ChatMessage.create(chatData);
           }
         },
-        action4: {
-          icon: '<i class="fas fa-check"></i>',
+        buttons.action4 = {
           label: `${game.i18n.localize("DX3rd.SubAction4")}`,
           callback: async () => {
-
-            let body = this.actor.system.attributes.body.value + 10;
-            await this.actor.update({ "system.attributes.hp.value": body });
+            let sublimation_casting_dice = Number(this.actor.system.attributes.sublimation_casting_dice.value)
+            let dice = sublimation_casting_dice + 2;
+            await this.actor.update({ "system.attributes.sublimation_casting_dice.value": dice });
 
             let chatData = {
               user: game.user.id,
@@ -575,10 +744,12 @@ export class DX3rdItem extends Item {
             ChatMessage.create(chatData);
           }
         },
-        action5: {
-          icon: '<i class="fas fa-check"></i>',
+        buttons.action5 = {
           label: `${game.i18n.localize("DX3rd.SubAction5")}`,
           callback: async () => {
+
+            let body = this.actor.system.attributes.body.value + 10;
+            await this.actor.update({ "system.attributes.hp.value": body });
 
             let chatData = {
               user: game.user.id,
@@ -588,9 +759,45 @@ export class DX3rdItem extends Item {
             ChatMessage.create(chatData);
           }
         },
+        buttons.action6 = {
+          label: `${game.i18n.localize("DX3rd.SubAction6")}`,
+          callback: async () => {
 
+            let chatData = {
+              user: game.user.id,
+              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction6")} )`
+            };
+            ChatMessage.create(chatData);
+          }
+        },
+        buttons.action7 = {
+          label: `${game.i18n.localize("DX3rd.SubAction7")}`,
+          callback: async () => {
 
-      }
+            let chatData = {
+              user: game.user.id,
+              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+              content: `${this.name}: ${game.i18n.localize("DX3rd.Sublimation")}<br> ( ${game.i18n.localize("DX3rd.SubAction7")} )`
+            };
+            ChatMessage.create(chatData);
+          }
+        }
+    } 
+
+    await this.update({ "system.sublimation": true });
+
+    let dialog = new Dialog({
+      title: game.i18n.localize("DX3rd.Sublimation"),
+      content: `
+        <h2>${game.i18n.localize("DX3rd.Sublimation")}: ${this.name}</h2>
+        <style>
+        .sublimation .dialog-buttons {
+          flex-direction: column;
+        }
+        </style>
+      `,
+      buttons: buttons
     }, { classes: ["dx3rd", "dialog", "sublimation"], top: 300, left: 20 }).render(true);
 
   }

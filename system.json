@@ -35,8 +35,8 @@
         {"lang": "ja", "name": "日本語", "path": "lang/ja.json"},
         {"lang": "en", "name": "English", "path": "lang/en.json"}
   ],
-  "gridDistance": 5,
-  "gridUnits": "ft",
+  "gridDistance": 1,
+  "gridUnits": "m",
   "socket": true,
   "primaryTokenAttribute": "attributes.hp",
   "secondaryTokenAttribute": "attributes.encroachment",

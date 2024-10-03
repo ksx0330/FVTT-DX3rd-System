@@ -61,7 +61,7 @@
 
           <div class="cell grid-4 space-between">
             <label class="cell--title">
-              <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Level"}}</span>
+              {{localize "DX3rd.Level"}}
               <input type="checkbox" class="cell--crit" name="system.level.upgrade" {{#if system.level.upgrade}} checked {{/if}}>
             </label>
             <div class="flex">
@@ -98,10 +98,9 @@
             <input type="text" name="system.range" value="{{system.range}}" data-dtype="String"/>
           </div>
 
-          <div class="cell grid-4 space-between">
+          <div class="cell grid-4">
             <label class="cell--title">
-              <span style="flex-grow: 1; text-align: center;">{{localize "DX3rd.Target"}}</span>
-              <input type="checkbox" class="cell--crit" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}>
+              {{localize "DX3rd.Target"}}
             </label>
             <input type="text" name="system.target" value="{{system.target}}" data-dtype="String"/>
           </div>
@@ -232,7 +231,6 @@
                 {{#select key}}
                 <option value="-">-</option>
                 <option value="attack">{{localize "DX3rd.Attack"}}</option>
-                <option value="damage_roll">{{localize "DX3rd.DamageRoll"}}</option>
                 <option value="dice">{{localize "DX3rd.Dice"}}</option>
                 <option value="add">{{localize "DX3rd.Add"}}</option>
                 <option value="critical">{{localize "DX3rd.Critical"}}</option>
@@ -242,12 +240,8 @@
                 <option value="init">{{localize "DX3rd.Init"}}</option>
                 <option value="armor">{{localize "DX3rd.Armor"}}</option>
                 <option value="guard">{{localize "DX3rd.Guard"}}</option>
-
-                <option value="saving_max">{{localize "DX3rd.Saving"}}</option>
-                <option value="stock_point">{{localize "DX3rd.Stock"}}</option>
-
+                <option value="saving">{{localize "DX3rd.Saving"}}</option>
                 <option value="battleMove">{{localize "DX3rd.BattleMove"}}</option>
-                <option value="fullMove">{{localize "DX3rd.FullMove"}}</option>
 
                 <option value="major_dice">{{localize "DX3rd.MajorDice"}}</option>
                 <option value="major">{{localize "DX3rd.MajorAdd"}}</option>
@@ -345,6 +339,9 @@
       <div class="sheet-wrapper margin-top-10">
         <table>
           <tr>
+            <th><span>{{localize "DX3rd.Target"}}</span> </th>
+            <td><input type="checkbox" name="system.getTarget" {{#if system.getTarget}} checked {{/if}}></td>
+            
             <th><span>{{localize "DX3rd.DisableTiming"}}</span></th>
             <td>
               <select name="system.effect.disable" data-dtype="String">
@@ -378,7 +375,6 @@
                 {{#select key}}
                 <option value="-">-</option>
                 <option value="attack">{{localize "DX3rd.Attack"}}</option>
-                <option value="damage_roll">{{localize "DX3rd.DamageRoll"}}</option>
                 <option value="dice">{{localize "DX3rd.Dice"}}</option>
                 <option value="add">{{localize "DX3rd.Add"}}</option>
                 <option value="critical">{{localize "DX3rd.Critical"}}</option>
@@ -388,12 +384,8 @@
                 <option value="init">{{localize "DX3rd.Init"}}</option>
                 <option value="armor">{{localize "DX3rd.Armor"}}</option>
                 <option value="guard">{{localize "DX3rd.Guard"}}</option>
-
-                <option value="saving_max">{{localize "DX3rd.Saving"}}</option>
-                <option value="stock_point">{{localize "DX3rd.Stock"}}</option>
-
+                <option value="saving">{{localize "DX3rd.Saving"}}</option>
                 <option value="battleMove">{{localize "DX3rd.BattleMove"}}</option>
-                <option value="fullMove">{{localize "DX3rd.FullMove"}}</option>
 
                 <option value="major_dice">{{localize "DX3rd.MajorDice"}}</option>
                 <option value="major">{{localize "DX3rd.MajorAdd"}}</option>
