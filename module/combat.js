@@ -111,7 +111,7 @@ export class DX3rdCombat extends Combat {
     this.countRounds();
   }
 
-  /* -------------------------------------------- */	
+  /* -------------------------------------------- */
 
    /** @Override */
   async nextTurn() {
@@ -121,7 +121,7 @@ export class DX3rdCombat extends Combat {
     let startActor = await fromUuid(startActorUUID);
     let endActor = await fromUuid(endActorUUID);
 
-    const combatant = this.turns[this.turn];
+    let combatant = this.turns[this.turn];
     if (combatant.actorId == startActor.id || combatant.actorId == endActor.id) {
       await super.nextTurn();
       await this.initiative();
@@ -137,8 +137,8 @@ export class DX3rdCombat extends Combat {
 
       await actor.update({"system.conditions.action_end.active": true});
       
-      await super.nextTurn();
       await this.main_close_trigger();
+      await this.resetTurn();
       await this.initiative();
     } else {
       // 다이얼로그 생성
@@ -166,8 +166,8 @@ export class DX3rdCombat extends Combat {
                 "system.conditions.action_end.active": true
               });
 
-              await super.nextTurn();
               await this.main_close_trigger();
+              await this.resetTurn();
               await this.initiative();
             },
           },
@@ -190,9 +190,6 @@ export class DX3rdCombat extends Combat {
                 "system.conditions.action_delay.active": true
               });
 
-              await super.nextTurn();
-              await this.initiative();
-          
               // 전투에 참여 중인 모든 액터들 중에서 액션 딜레이가 활성화된 액터 수 확인
               let delayCount = this.combatants.filter(c => {
                 let actor = c.actor;
@@ -207,6 +204,9 @@ export class DX3rdCombat extends Combat {
               await thisCombatant.update({
                 initiative: -delayCount
               });
+
+              await this.resetTurn();
+              await this.initiative();
             },
           }
         },
@@ -214,7 +214,112 @@ export class DX3rdCombat extends Combat {
       }).render(true);
     }
 
+
   }
+
+
+  //  /** @Override */
+  // async nextTurn() {
+  //   let startActorUUID = this.flags["dx3rd"].startActor;
+  //   let endActorUUID = this.flags["dx3rd"].endActor;
+
+  //   let startActor = await fromUuid(startActorUUID);
+  //   let endActor = await fromUuid(endActorUUID);
+
+  //   const combatant = this.turns[this.turn];
+  //   if (combatant.actorId == startActor.id || combatant.actorId == endActor.id) {
+  //     await super.nextTurn();
+  //     await this.initiative();
+  //   } else if (combatant.actor.system.conditions.action_delay?.active) {
+  //     let actor = combatant.actor;
+
+  //     let chatData = {
+  //       user: game.user.id,
+  //       speaker: ChatMessage.getSpeaker({ actor: actor }),
+  //       content: `${game.i18n.localize("DX3rd.ActionEnd")}: ${actor.name}`
+  //     };
+  //     ChatMessage.create(chatData);
+
+  //     await actor.update({"system.conditions.action_end.active": true});
+      
+  //     await super.nextTurn();
+  //     await this.main_close_trigger();
+  //     await this.initiative();
+  //   } else {
+  //     // 다이얼로그 생성
+  //     new Dialog({
+  //       title: "Turn End",
+  //       content: `
+  //       <p>${combatant.name}</p>
+  //     `,
+  //       buttons: {
+  //         endAction: {
+  //           label: game.i18n.localize("DX3rd.ActionEnd"),
+  //           callback: async () => {
+  //             let thisCombatant = combatant;
+  //             let actor = thisCombatant.actor
+
+  //             let chatData = {
+  //               user: game.user.id,
+  //               speaker: ChatMessage.getSpeaker({ actor: actor }),
+  //               content: `${game.i18n.localize("DX3rd.ActionEnd")}: ${actor.name}`
+  //             };
+  //             ChatMessage.create(chatData);
+
+  //             // 행동 종료 상태 업데이트
+  //             await actor.update({
+  //               "system.conditions.action_end.active": true
+  //             });
+
+  //             await super.nextTurn();
+  //             await this.main_close_trigger();
+  //             await this.initiative();
+  //           },
+  //         },
+  //         delayAction: {
+  //           label: game.i18n.localize("DX3rd.ActionDelay"),
+  //           callback: async () => {
+
+  //             let thisCombatant = combatant;
+  //             let actor = thisCombatant.actor;
+
+  //             let chatData = {
+  //               user: game.user.id,
+  //               speaker: ChatMessage.getSpeaker({ actor: actor }),
+  //               content: `${game.i18n.localize("DX3rd.ActionDelay")}: ${actor.name}`
+  //             };
+  //             ChatMessage.create(chatData);
+
+  //             // 행동 대기 상태 업데이트
+  //             await actor.update({
+  //               "system.conditions.action_delay.active": true
+  //             });
+
+  //             await super.nextTurn();
+  //             await this.initiative();
+          
+  //             // 전투에 참여 중인 모든 액터들 중에서 액션 딜레이가 활성화된 액터 수 확인
+  //             let delayCount = this.combatants.filter(c => {
+  //               let actor = c.actor;
+  //               // 액터와 액터의 상태 확인
+  //               if (!actor || !actor.system || !actor.system.conditions) {
+  //                 return false;
+  //               }
+  //               return actor.system.conditions.action_delay?.active;
+  //             }).length;
+
+  //             // 현재 전투원의 이니셔티브를 -N으로 업데이트
+  //             await thisCombatant.update({
+  //               initiative: -delayCount
+  //             });
+  //           },
+  //         }
+  //       },
+  //       default: "endAction"
+  //     }).render(true);
+  //   }
+
+  // }
 
   /* -------------------------------------------- */	
 
@@ -223,6 +328,7 @@ export class DX3rdCombat extends Combat {
     super.previousTurn();
 
     await this.resetTurn();
+    await this.initiative();
   }
 
   /* -------------------------------------------- */	
@@ -357,17 +463,17 @@ export class DX3rdCombat extends Combat {
     let startActor = await fromUuid(startActorUUID);
 
     await this.rollAllNotDelayed();
-    let nextTurn = this.turn;
+    let nextTurn = 0;
     for (let [idx, turn] of this.turns.entries()) {
       if (turn.actorId === startActor.id)
         continue;
-      if (!turn.defeated && !turn.actor.system.conditions.action_end?.active && idx < nextTurn) {
+      if (!turn.defeated && !turn.actor.system.conditions.action_end?.active) {
         nextTurn = idx;
         break;
       }
     }
     await this.update({turn: nextTurn - 1});
-    await this.nextTurn();
+    await super.nextTurn();
   }
 
   /* -------------------------------------------- */	
@@ -408,6 +514,7 @@ export class DX3rdCombat extends Combat {
               break;
             case 2:
               await this.resetTurn();
+              await this.initiative();
               break;
             default:
               break;
@@ -452,6 +559,7 @@ export class DX3rdCombat extends Combat {
               break;
             case 2:
               await this.resetTurn();
+              await this.initiative();
               break;
             default:
               break;
@@ -470,7 +578,7 @@ export class DX3rdCombat extends Combat {
       if ( c.isOwner && ((c.initiative === null) || (!c.actor.system.conditions.action_delay?.active) ) ) ids.push(c.id);
       return ids;
     }, []);
-    return this.rollInitiative(ids, options);
+    return (await this.rollInitiative(ids, options));
   }
 
   /* -------------------------------------------- */	
