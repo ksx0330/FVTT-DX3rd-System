@@ -222,7 +222,7 @@ export class DX3rdCombat extends Combat {
   async previousTurn() {
     super.previousTurn();
 
-    await this.rollAllNotDelayed();
+    await this.resetTurn();
   }
 
   /* -------------------------------------------- */	
@@ -278,7 +278,6 @@ export class DX3rdCombat extends Combat {
   async countRounds() {
     let currentRound = this.round;  // 현재 라운드를 가져옴
 
-
     let startContent = ``;
     if (currentRound === 1) {
       startContent = `
@@ -321,8 +320,6 @@ export class DX3rdCombat extends Combat {
     const combatant = this.turns[this.turn];
     let initCharacter = combatant.actorId === endActor.id ? game.i18n.localize("DX3rd.Null") : combatant.name;
 
-    console.log(combatant);
-
     let content = `
       <div class="dx3rd-roll">
         <h2 class="header"><div class="title width-100">
@@ -343,14 +340,34 @@ export class DX3rdCombat extends Combat {
     }
 
     setTimeout(() => {
-      if (combatant.actorId === endActor.id) {
+      if (combatant.actorId === startActor.id) {
+        return;
+      } else if (combatant.actorId === endActor.id) {
         this.startCleanupDialog();  // 클린업 프로세스 실행
-      } else if (combatant.actorId === startActor.id) {
-        ui.notifications.info(`setup process`)
       } else {
         this.startMainDialog();  // 메인 프로세스 실행
       }
     }, 2000); // 2초 정도의 텀을 두고 다이얼로그 호출
+  }
+  
+  /* -------------------------------------------- */	
+
+  async resetTurn() {
+    let startActorUUID = this.flags["dx3rd"].startActor;
+    let startActor = await fromUuid(startActorUUID);
+
+    await this.rollAllNotDelayed();
+    let nextTurn = this.turn;
+    for (let [idx, turn] of this.turns.entries()) {
+      if (turn.actorId === startActor.id)
+        continue;
+      if (!turn.defeated && !turn.actor.system.conditions.action_end?.active && idx < nextTurn) {
+        nextTurn = idx;
+        break;
+      }
+    }
+    await this.update({turn: nextTurn - 1});
+    await this.nextTurn();
   }
 
   /* -------------------------------------------- */	
@@ -390,8 +407,7 @@ export class DX3rdCombat extends Combat {
               });
               break;
             case 2:
-              await this.rollAllNotDelayed();
-              await this.nextTurn();
+              await this.resetTurn();
               break;
             default:
               break;
@@ -435,8 +451,7 @@ export class DX3rdCombat extends Combat {
               this.cleanup_trigger();
               break;
             case 2:
-              await this.rollAllNotDelayed();
-              await this.nextTurn();
+              await this.resetTurn();
               break;
             default:
               break;
@@ -457,14 +472,6 @@ export class DX3rdCombat extends Combat {
     }, []);
     return this.rollInitiative(ids, options);
   }
-
-  /* -------------------------------------------- */	
-
-
-
-
-
-
 
   /* -------------------------------------------- */	
 
