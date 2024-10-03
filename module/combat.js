@@ -138,8 +138,8 @@ export class DX3rdCombat extends Combat {
       await actor.update({"system.conditions.action_end.active": true});
       
       await super.nextTurn();
-      await this.initiative();
       await this.main_close_trigger();
+      await this.initiative();
     } else {
       // 다이얼로그 생성
       new Dialog({
@@ -167,8 +167,8 @@ export class DX3rdCombat extends Combat {
               });
 
               await super.nextTurn();
-              await this.initiative();
               await this.main_close_trigger();
+              await this.initiative();
             },
           },
           delayAction: {
@@ -223,7 +223,6 @@ export class DX3rdCombat extends Combat {
     super.previousTurn();
 
     await this.rollAllNotDelayed();
-    await this.nextTurn();
   }
 
   /* -------------------------------------------- */	
@@ -336,7 +335,7 @@ export class DX3rdCombat extends Combat {
     `
 
     if (combatant.actorId !== startActor.id) {
-      ChatMessage.create({
+      await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ alias: "GM" }),
         content: content,
         type: CONST.CHAT_MESSAGE_TYPES.IC,
@@ -521,10 +520,10 @@ export class DX3rdCombat extends Combat {
 
         // HP를 잃었다는 메시지를 messages 배열에 저장
         messages.push(`
-        <div>
-          <strong>${game.i18n.localize("DX3rd.LostHP")}</strong>: ${actor.name} (-${lostHP} HP)
-        </div>
-      `);
+          <div>
+            <strong>${game.i18n.localize("DX3rd.LostHP")}</strong>: ${actor.name} (-${lostHP} HP)
+          </div>
+        `);
 
         // lostHP 상태를 해제 (일회성으로 처리할 경우)
         await actor.update({
@@ -537,12 +536,12 @@ export class DX3rdCombat extends Combat {
     // 메시지 통합 후 한번에 출력
     if (messages.length > 0) {
       let messageContent = `
-      <div>
-        ${messages.join("<hr>")}  <!-- 각 컴배턴트의 메시지들을 구분선으로 묶어서 출력 -->
-      </div>
-    `;
+        <div>
+          ${messages.join("<hr>")}  <!-- 각 컴배턴트의 메시지들을 구분선으로 묶어서 출력 -->
+        </div>
+      `;
 
-      ChatMessage.create({
+      await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ alias: "GM" }), // GM으로 설정
         content: messageContent,
         type: CONST.CHAT_MESSAGE_TYPES.IC,
