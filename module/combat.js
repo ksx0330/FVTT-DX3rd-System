@@ -25,36 +25,24 @@ export class DX3rdCombat extends Combat {
     if (endActor == null)
       endActor = await Actor.create({name: endLabel, type: "character", img: "icons/svg/clockwork.svg"});
 
+    await this.setFlag("dx3rd", "startActor", startActor.uuid);
+    await this.setFlag("dx3rd", "endActor", endActor.uuid);
 
-    for (let a of this.scene.tokens) {
-      if (a.name == startLabel)
-        startToken = a;
-      else if (a.name == endLabel)
-        endToken = a;
-    }
-    
-    if (startToken == null)
-      startToken = (await this.scene.createEmbeddedDocuments("Token", [{alpha: 0, actorId: startActor.id}], {}))[0];
-    if (endToken == null)
-      endToken = (await this.scene.createEmbeddedDocuments("Token", [{alpha: 0, actorId: endActor.id}], {}))[0];
-
-
-    await this.setFlag("dx3rd", "startToken", startToken.uuid);
-    await this.setFlag("dx3rd", "endToken", endToken.uuid);
-
-    await this.createEmbeddedDocuments("Combatant", [{actorId: startActor.id, tokenId: startToken.id, name: startLabel, img: startActor.img, initiative: 999}, {actorId: endActor.id, tokenId: endToken.id, name: endLabel, img: startActor.img, initiative: -999}], {});
+    await this.createEmbeddedDocuments("Combatant", [
+      {actorId: startActor.id, name: startLabel, img: startActor.img, initiative: 999}, 
+      {actorId: endActor.id, name: endLabel, img: startActor.img, initiative: -999}
+    ], {});
     
     if ( !this.collection.viewed ) ui.combat.initialize({combat: this});
   }
     
   /** @Override */
   async rollInitiative(ids, {formula=null, updateTurn=true, messageOptions={}}={}) {
-    let startTokenUUID = this.flags["dx3rd"].startToken;
-    let endTokenUUID = this.flags["dx3rd"].endToken;
+    let startActorUUID = this.flags["dx3rd"].startActor;
+    let endActorUUID = this.flags["dx3rd"].endActor;
 
-    let startToken = await fromUuid(startTokenUUID);
-    let endToken = await fromUuid(endTokenUUID);
-
+    let startActor = await fromUuid(startActorUUID);
+    let endActor = await fromUuid(endActorUUID);
 
     // Structure input data
     ids = typeof ids === "string" ? [ids] : ids;
@@ -64,8 +52,8 @@ export class DX3rdCombat extends Combat {
     // Iterate over Combatants, performing an initiative roll for each
     const updates = [];
     const messages = [];
-    for ( let [i, id] of ids.entries() ) {
 
+    for ( let [i, id] of ids.entries() ) {
       // Get Combatant data (non-strictly)
       const combatant = this.combatants.get(id);
       if ( !combatant?.isOwner ) return results;
@@ -75,10 +63,12 @@ export class DX3rdCombat extends Combat {
       await roll.evaluate({async: true});
 
       let init = roll.total;
-      if (combatant.tokenId == startToken.id)
-        init = 999
-      else if (combatant.tokenId == endToken.id)
-        init = -999
+      if (combatant.actorId == startActor.id)
+        init = 999;
+      else if (combatant.actorId == endActor.id)
+        init = -999;
+      else if (combatant.actor.system.conditions.action_delay?.active)
+        init = combatant.initiative ?? 0;
 
       updates.push({_id: id, initiative: init});
     }
@@ -116,128 +106,30 @@ export class DX3rdCombat extends Combat {
   }
 
   /* -------------------------------------------- */	
-  
+
    /** @Override */
-  async _onDelete(options, userId) {
-    let startTokenUUID = this.flags["dx3rd"].startToken;
-    let endTokenUUID = this.flags["dx3rd"].endToken;
-
-    super._onDelete(options, userId);
-    
-    if (game.user.isGM) {
-      let startToken = await fromUuid(startTokenUUID);
-      let endToken = await fromUuid(endTokenUUID);
-
-      await startToken.delete();
-      await endToken.delete();
-    }
+  async startCombat() {
+    this.rollAll();
+    super.startCombat();
+    this.countRounds();
   }
 
   /* -------------------------------------------- */	
 
-  // 이니셔티브 재굴림
-  async _dx3rdInitRoll() {
-    for (let combatant of this.combatants) {
-      if (combatant.name === "[ Setup ]") {
-        await combatant.update({ initiative: 999 });
-      } 
-      else if (combatant.name === "[ Cleanup ]") {
-        await combatant.update({ initiative: -999 });
-      } 
-      else if (combatant.actor.system.conditions.action_delay?.active) {
-        // 행동 대기 상태일 때, 기존 이니셔티브를 유지
-        const currentInitiative = combatant.initiative ?? 0;  // 현재 이니셔티브 값이 없을 경우 0으로 설정
-        await combatant.update({ initiative: currentInitiative });
-      } 
-      else {
-        // 이니셔티브 재굴림
-        await combatant.rollInitiative();
-      }
-    }
-  
-    // 전투 데이터 업데이트
-    await this.update({ round: this.round });
-  }
-  
-  // 다음 턴으로 이동
-  async _turnOrder() {
-    let sortedTurns = this.turns.filter(turn => {
-      let actor = turn.actor;
-      if (!actor || !actor.system || !actor.system.conditions) {
-        return false;
-      }
-    
-      let defeated = actor.system.conditions.defeated?.active;
-      let end = actor.system.conditions.action_end?.active;
-      let isExceptional = actor.name === "[ Setup ]" || actor.name === "[ Cleanup ]";
-    
-      return !defeated && !end && !isExceptional;  // 행동 종료되지 않고, [ Setup ], [ Cleanup ]이 아닌 캐릭터만 필터링
-    });
-
-    // sortedTurns가 비어 있을 경우, 기본 턴 이동 처리
-    if (sortedTurns.length === 0) {
-      let cleanupTurn = this.turns.find(turn => turn.actor.name === "[ Cleanup ]");
-      if (cleanupTurn) {
-        let targetIndex = this.turns.findIndex((turn) => turn.id === cleanupTurn.id);
-        await this.update({ turn: targetIndex, turnOrder: this.turns });
-      }
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      this.initiative()
-    }
-
-    // 가장 빠른 이니셔티브를 가진 캐릭터 찾기
-    let targetInitiative = sortedTurns[0]?.initiative;
-
-    if (targetInitiative !== undefined) {
-      // 가장 높은 이니셔티브를 가진 캐릭터들
-      let highestInitiativeTurns = sortedTurns.filter(
-        (turn) => turn.initiative === targetInitiative
-      );
-
-      // 현재 턴이 아닌 캐릭터 선택 (this.combatant 대신 this.turn 사용)
-      let targetTurn = highestInitiativeTurns.find(
-        (turn) => turn.id !== this.turn.id
-      );
-
-      if (!targetTurn) {
-        // 만약 선택된 캐릭터가 없을 경우 가장 첫번째 캐릭터 선택
-        targetTurn = highestInitiativeTurns[0];
-      }
-
-      // 선택된 캐릭터의 턴으로 이동
-      let targetIndex = this.turns.findIndex((turn) => turn.id === targetTurn.id);
-      await this.update({ turn: targetIndex, turnOrder: this.turns });
-
-      console.log(`${game.i18n.localize("DX3rd.InitiativeCharacter")}: ${targetTurn.actor.name}`);
-
-      this.initiative()
-    }
-  }  
-
-  async startCombat() {
-    // 먼저 모든 컴배턴트의 이니셔티브를 굴림
-    await this._dx3rdInitRoll();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    // 이후 전투 시작을 진행
-    super.startCombat();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    await this.countRounds()
-  }
-
+   /** @Override */
   async nextTurn() {
-    const combatant = this.turns[this.turn];
+    let startActorUUID = this.flags["dx3rd"].startActor;
+    let endActorUUID = this.flags["dx3rd"].endActor;
 
-    if (combatant.name === "[ Setup ]" || combatant.name === "[ Cleanup ]") {
-      // [setup] 또는 [cleanup]일 경우 바로 다음 턴으로 이동
-      super.nextTurn();
-      if (combatant.name === "[ Setup ]") {
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        this.initiative()
-      }
+    let startActor = await fromUuid(startActorUUID);
+    let endActor = await fromUuid(endActorUUID);
+
+    const combatant = this.turns[this.turn];
+    if (combatant.actorId == startActor.id || combatant.actorId == endActor.id) {
+      await super.nextTurn();
+      await this.initiative();
     } else if (combatant.actor.system.conditions.action_delay?.active) {
-      let thisCombatant = combatant;
-      let actor = thisCombatant.actor
+      let actor = combatant.actor;
 
       let chatData = {
         user: game.user.id,
@@ -246,14 +138,11 @@ export class DX3rdCombat extends Combat {
       };
       ChatMessage.create(chatData);
 
-      // 행동 종료 상태 업데이트
-      await actor.update({
-        "system.conditions.action_end.active": true
-      });
-      await this.main_close_trigger()
-      await this._dx3rdInitRoll(); // 이니셔티브 재굴림
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      this._turnOrder(); // 다음 턴으로 이동
+      await actor.update({"system.conditions.action_end.active": true});
+      
+      await super.nextTurn();
+      await this.initiative();
+      await this.main_close_trigger();
     } else {
       // 다이얼로그 생성
       new Dialog({
@@ -279,10 +168,10 @@ export class DX3rdCombat extends Combat {
               await actor.update({
                 "system.conditions.action_end.active": true
               });
-              await this.main_close_trigger()
-              await this._dx3rdInitRoll(); // 이니셔티브 재굴림
-              await new Promise((resolve) => setTimeout(resolve, 50));
-              this._turnOrder(); // 다음 턴으로 이동
+
+              await super.nextTurn();
+              await this.initiative();
+              await this.main_close_trigger();
             },
           },
           delayAction: {
@@ -303,6 +192,9 @@ export class DX3rdCombat extends Combat {
               await actor.update({
                 "system.conditions.action_delay.active": true
               });
+
+              await super.nextTurn();
+              await this.initiative();
           
               // 전투에 참여 중인 모든 액터들 중에서 액션 딜레이가 활성화된 액터 수 확인
               let delayCount = this.combatants.filter(c => {
@@ -313,26 +205,124 @@ export class DX3rdCombat extends Combat {
                 }
                 return actor.system.conditions.action_delay?.active;
               }).length;
-          
+
               // 현재 전투원의 이니셔티브를 -N으로 업데이트
               await thisCombatant.update({
                 initiative: -delayCount
               });
-              await this.main_close_trigger()
-              // 이니셔티브 재굴림 및 턴 순서 정렬
-              await this._dx3rdInitRoll();
-              await new Promise((resolve) => setTimeout(resolve, 50));
-              this._turnOrder(); // 다음 턴으로 이동
             },
           }
         },
         default: "endAction"
       }).render(true);
     }
+
   }
 
+  /* -------------------------------------------- */	
+
+   /** @Override */
+  async previousTurn() {
+    super.previousTurn();
+
+    await this.rollAllNotDelayed();
+    await this.nextTurn();
+  }
+
+  /* -------------------------------------------- */	
+
+   /** @Override */
+  async nextRound() {
+    // 모든 컴배턴트의 액션 종료와 대기 상태를 초기화
+    for (let combatant of this.combatants) {
+      await combatant.actor.update({
+        "system.conditions.action_end.active": false,
+        "system.conditions.action_delay.active": false
+      });
+    }
+
+    // 기본 라운드 이동 처리 호출
+    super.nextRound();
+    await this.countRounds();
+    await this.rollAllNotDelayed();
+  }
+
+  /* -------------------------------------------- */	
+
+   /** @Override */
+  async endCombat() {
+    // 모든 컴배턴트를 반복하면서 행동 종료와 대기 상태를 초기화
+    for (let combatant of this.combatants) {
+      await combatant.actor.update({
+        "system.conditions.action_end.active": false,
+        "system.conditions.action_delay.active": false
+      });
+    }
+
+    let content = `
+      <div class="dx3rd-roll">
+        <h2 class="header"><div class="title width-100">
+          ${game.i18n.localize("DX3rd.CombatEnd")}
+        </div></h2><hr>
+      </div>
+    `
+
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ alias: "GM" }),  // 여기서 GM으로 설정
+      content: content,
+      type: CONST.CHAT_MESSAGE_TYPES.IC,
+    });
+
+    // 기본 전투 종료 처리 호출
+    super.endCombat();
+  }
+
+  /* -------------------------------------------- */	
+
+  async countRounds() {
+    let currentRound = this.round;  // 현재 라운드를 가져옴
+
+    let startContent = ``;
+    if (currentRound === 1) {
+      startContent = `
+        <h2 class="header"><div class="title width-100">
+          ${game.i18n.localize("DX3rd.CombatStart")}
+        </div></h2><hr>
+      `;
+    }
+
+    let content = `
+      <div class="dx3rd-roll">
+        ${startContent}
+        <h2 class="header"><div class="title width-100">
+          ${game.i18n.localize("DX3rd.Round")} ${currentRound}
+        </div></h2><hr>
+        <h2 class="header"><div class="title width-100">
+          ${game.i18n.localize("DX3rd.Setup")} ${game.i18n.localize("DX3rd.Process")}
+        </div></h2><hr>
+      </div>
+    `
+
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ alias: "GM" }),  // 여기서 GM으로 설정
+      content: content,
+      type: CONST.CHAT_MESSAGE_TYPES.IC,
+    });
+
+    await this.setup_trigger();
+  }
+
+  /* -------------------------------------------- */	
+
   async initiative() {
-    let initCharacter = this.combatant.name === "[ Cleanup ]" ? game.i18n.localize("DX3rd.Null") : this.combatant.name;
+    let startActorUUID = this.flags["dx3rd"].startActor;
+    let endActorUUID = this.flags["dx3rd"].endActor;
+
+    let startActor = await fromUuid(startActorUUID);
+    let endActor = await fromUuid(endActorUUID);
+
+    const combatant = this.turns[this.turn];
+    let initCharacter = combatant.id === endActor.id ? game.i18n.localize("DX3rd.Null") : combatant.name;
 
     let content = `
     <div class="dx3rd-roll">
@@ -352,44 +342,46 @@ export class DX3rdCombat extends Combat {
     });
 
     setTimeout(() => {
-      if (this.combatant.name === "[ Cleanup ]") {
+      if (combatant.id === endActor.id) {
         this.startCleanupDialog();  // 클린업 프로세스 실행
-      } else if (this.combatant.name === "[ Setup ]") {
+      } else if (combatant.id === startActor.id) {
         ui.notificationsinfo(`setup process`)
       } else {
-        this.startMainDialog();  // 메일 프로세스 실행
+        this.startMainDialog();  // 메인 프로세스 실행
       }
     }, 2000); // 2초 정도의 텀을 두고 다이얼로그 호출
   }
 
+  /* -------------------------------------------- */	
+
   async startMainDialog() {
     let content = `
-    <div>${game.i18n.localize("DX3rd.InitiativeCharacter")}: ${this.combatant.name}</div><hr>
-    <div style="display: flex; flex-direction: column;">
-      <button class="macro-button" data-action="1">${game.i18n.localize("DX3rd.MainStart")}</button>
-      <button class="macro-button" data-action="2">${game.i18n.localize("DX3rd.ReCheck")}</button>
-    </div>
-  `;
+      <div>${game.i18n.localize("DX3rd.InitiativeCharacter")}: ${this.combatant.name}</div><hr>
+      <div style="display: flex; flex-direction: column;">
+        <button class="macro-button" data-action="1">${game.i18n.localize("DX3rd.MainStart")}</button>
+        <button class="macro-button" data-action="2">${game.i18n.localize("DX3rd.ReCheck")}</button>
+      </div>
+    `;
     let startMainDialog = new Dialog({
       title: `${game.i18n.localize("DX3rd.Main")} ${game.i18n.localize("DX3rd.Process")}`,
       content: content,
       buttons: {},
       close: () => { },
       render: html => {
-        html.find(".macro-button").click(ev => {
+        html.find(".macro-button").click(async ev => {
           let action = parseInt(ev.currentTarget.dataset.action);
           switch (action) {
             case 1:
               let message = `
-              <div class="dx3rd-roll">
-                <h2 class="header"><div class="title width-100">
-                  ${game.i18n.localize("DX3rd.Main")} ${game.i18n.localize("DX3rd.Process")}
-                </div></h2><hr>
-                <div class="context-box">
-                  ${game.i18n.localize("DX3rd.MainCharacter")}: ${this.combatant.name}
+                <div class="dx3rd-roll">
+                  <h2 class="header"><div class="title width-100">
+                    ${game.i18n.localize("DX3rd.Main")} ${game.i18n.localize("DX3rd.Process")}
+                  </div></h2><hr>
+                  <div class="context-box">
+                    ${game.i18n.localize("DX3rd.MainCharacter")}: ${this.combatant.name}
+                  </div>
                 </div>
-              </div>
-            `
+              `
               ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ alias: "GM" }),
                 content: message,
@@ -397,9 +389,8 @@ export class DX3rdCombat extends Combat {
               });
               break;
             case 2:
-              this._dx3rdInitRoll(); // 이니셔티브 재굴림
-              new Promise((resolve) => setTimeout(resolve, 50));
-              this._turnOrder(); // 다음 턴으로 이동
+              await this.rollAllNotDelayed();
+              await this.nextTurn();
               break;
             default:
               break;
@@ -413,28 +404,28 @@ export class DX3rdCombat extends Combat {
 
   async startCleanupDialog() {
     let content = `
-    <div style="display: flex; flex-direction: column;">
-      <button class="macro-button" data-action="1">${game.i18n.localize("DX3rd.CleanupStart")}</button>
-      <button class="macro-button" data-action="2">${game.i18n.localize("DX3rd.ReCheck")}</button>
-    </div>
-  `;
+      <div style="display: flex; flex-direction: column;">
+        <button class="macro-button" data-action="1">${game.i18n.localize("DX3rd.CleanupStart")}</button>
+        <button class="macro-button" data-action="2">${game.i18n.localize("DX3rd.ReCheck")}</button>
+      </div>
+    `;
     let startCleanupDialog = new Dialog({
       title: `${game.i18n.localize("DX3rd.Cleanup")} ${game.i18n.localize("DX3rd.Process")}`,
       content: content,
       buttons: {},
       close: () => { },
       render: html => {
-        html.find(".macro-button").click(ev => {
+        html.find(".macro-button").click(async ev => {
           let action = parseInt(ev.currentTarget.dataset.action);
           switch (action) {
             case 1:
               let message = `
-              <div class="dx3rd-roll">
-                <h2 class="header"><div class="title width-100">
-                  ${game.i18n.localize("DX3rd.Cleanup")} ${game.i18n.localize("DX3rd.Process")}
-                </div></h2><hr>
-              </div>
-            `
+                <div class="dx3rd-roll">
+                  <h2 class="header"><div class="title width-100">
+                    ${game.i18n.localize("DX3rd.Cleanup")} ${game.i18n.localize("DX3rd.Process")}
+                  </div></h2><hr>
+                </div>
+              `
               ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ alias: "GM" }),
                 content: message,
@@ -443,9 +434,8 @@ export class DX3rdCombat extends Combat {
               this.cleanup_trigger();
               break;
             case 2:
-              this._dx3rdInitRoll(); // 이니셔티브 재굴림
-              new Promise((resolve) => setTimeout(resolve, 50));
-              this._turnOrder(); // 다음 턴으로 이동
+              await this.rollAllNotDelayed();
+              await this.nextTurn();
               break;
             default:
               break;
@@ -457,132 +447,55 @@ export class DX3rdCombat extends Combat {
     startCleanupDialog.render(true);
   }
 
-  async previousTurn() {
-    super.previousTurn();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    await this._dx3rdInitRoll(); // 이니셔티브 재굴림
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    this._turnOrder(); // 다음 턴으로 이동
-  }
+  /* -------------------------------------------- */	
 
-  async countRounds() {
-    let currentRound = this.round;  // 현재 라운드를 가져옴
-
-    let startContent = ``;
-    if (currentRound === 1) {
-      startContent = `
-      <h2 class="header"><div class="title width-100">
-        ${game.i18n.localize("DX3rd.CombatStart")}
-      </div></h2><hr>
-    `;
-    }
-
-    let content = `
-    <div class="dx3rd-roll">
-      ${startContent}
-      <h2 class="header"><div class="title width-100">
-        ${game.i18n.localize("DX3rd.Round")} ${currentRound}
-      </div></h2><hr>
-      <h2 class="header"><div class="title width-100">
-        ${game.i18n.localize("DX3rd.Setup")} ${game.i18n.localize("DX3rd.Process")}
-      </div></h2><hr>
-    </div>
-  `
-
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ alias: "GM" }),  // 여기서 GM으로 설정
-      content: content,
-      type: CONST.CHAT_MESSAGE_TYPES.IC,
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    await this.setup_trigger();
-  }
-
-  //라운드 종료 시 기능//
-  async nextRound() {
-    // 모든 컴배턴트의 액션 종료와 대기 상태를 초기화
-    for (let combatant of this.combatants) {
-      await combatant.actor.update({
-        "system.conditions.action_end.active": false,
-        "system.conditions.action_delay.active": false
-      });
-    }
-
-    // 기본 라운드 이동 처리 호출
-    super.nextRound();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    await this.countRounds();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    await this._dx3rdInitRoll();
-  }
-
-  //전투 종료 시 기능//
-  async endCombat() {
-    // 모든 컴배턴트를 반복하면서 행동 종료와 대기 상태를 초기화
-    for (let combatant of this.combatants) {
-      await combatant.actor.update({
-        "system.conditions.action_end.active": false,
-        "system.conditions.action_delay.active": false
-      });
-    }
-
-    let content = `
-    <div class="dx3rd-roll">
-      <h2 class="header"><div class="title width-100">
-        ${game.i18n.localize("DX3rd.CombatEnd")}
-      </div></h2><hr>
-    </div>
-  `
-
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ alias: "GM" }),  // 여기서 GM으로 설정
-      content: content,
-      type: CONST.CHAT_MESSAGE_TYPES.IC,
-    });
-
-    // 기본 전투 종료 처리 호출
-    super.endCombat();
+  async rollAllNotDelayed(options) {
+    const ids = this.combatants.reduce((ids, c) => {
+      if ( c.isOwner && ((c.initiative === null) || (!c.actor.system.conditions.action_delay?.active) ) ) ids.push(c.id);
+      return ids;
+    }, []);
+    return this.rollInitiative(ids, options);
   }
 
   /* -------------------------------------------- */	
 
-  // 셋업 프로세스 시 동작하는 효과들을 일괄적으로 처리하기 위한 기능 //
+
+
+
+
+
+
+  /* -------------------------------------------- */	
+
   async setup_trigger() {
-    await this._trigger_macros_setup();
+    const prefix_macro = "trigger_setup_";
+    this.run_prefix_macros(prefix_macro);
   }
 
-  // 메인 프로세스 종료 시 동작하는 효과들을 일괄적으로 처리하기 위한 기능 //
   async main_close_trigger() {
     await this._lostHP();
   }
 
-  // 클린업 프로세스 시 동작하는 효과들을 일괄적으로 처리하기 위한 기능 //
   async cleanup_trigger() {
     await this._dazed_off();
-    await new Promise((resolve) => setTimeout(resolve, 50));
     await this._taintedDamage();
-    await new Promise((resolve) => setTimeout(resolve, 50));
     await this._healingHP();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    await this._trigger_macros_cleanup()
+
+    const prefix_macro = "trigger_cleanup_";
+    this.run_prefix_macros(prefix_macro);
   }
 
   /* -------------------------------------------- */	
 
-  // 셋업 시 "trigger_setup_"으로 시작하는 매크로를 호출 //
-  async _trigger_macros_setup() {
-    // 모든 매크로를 가져옴
-    const macros = game.macros;
+  async run_prefix_macros(prefix_macro) {
+    const cleanupMacros = game.macros.filter(macro => macro.name.startsWith(prefix_macro));
 
-    // "trigger_setup_"으로 시작하는 매크로 필터링
-    const cleanupMacros = macros.filter(macro => macro.name.startsWith("trigger_setup_"));
-
-    // 매크로 실행
     for (let macro of cleanupMacros) {
       await macro.execute();
     }
   }
+
+  /* -------------------------------------------- */	
 
   // 메인 프로세스 종료 시 HP 상실 효과 자동화 //
   async _lostHP() {
@@ -737,19 +650,6 @@ export class DX3rdCombat extends Combat {
     }
   }
 
-  // 클린업 시 "trigger_cleanup_"으로 시작하는 매크로를 호출 //
-  async _trigger_macros_cleanup() {
-    // 모든 매크로를 가져옴
-    const macros = game.macros;
-
-    // "trigger_cleanup_"으로 시작하는 매크로 필터링
-    const cleanupMacros = macros.filter(macro => macro.name.startsWith("trigger_cleanup_"));
-
-    // 매크로 실행
-    for (let macro of cleanupMacros) {
-      await macro.execute();
-    }
-  }
+  /* -------------------------------------------- */	
+  
 }
-
-
