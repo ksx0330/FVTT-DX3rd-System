@@ -10,9 +10,6 @@ export class DX3rdCombat extends Combat {
     let startActor = null, startLabel = "[ Setup ]";
     let endActor = null, endLabel = "[ Cleanup ]"
     
-    let startToken = null
-    let endToken = null
-    
     for (let a of game.actors) {
       if (a.name == startLabel)
         startActor = a;
@@ -110,7 +107,7 @@ export class DX3rdCombat extends Combat {
    /** @Override */
   async startCombat() {
     this.rollAll();
-    super.startCombat();
+    await super.startCombat();
     this.countRounds();
   }
 
@@ -242,7 +239,7 @@ export class DX3rdCombat extends Combat {
     }
 
     // 기본 라운드 이동 처리 호출
-    super.nextRound();
+    await super.nextRound();
     await this.countRounds();
     await this.rollAllNotDelayed();
   }
@@ -281,6 +278,7 @@ export class DX3rdCombat extends Combat {
 
   async countRounds() {
     let currentRound = this.round;  // 현재 라운드를 가져옴
+
 
     let startContent = ``;
     if (currentRound === 1) {
@@ -322,30 +320,34 @@ export class DX3rdCombat extends Combat {
     let endActor = await fromUuid(endActorUUID);
 
     const combatant = this.turns[this.turn];
-    let initCharacter = combatant.id === endActor.id ? game.i18n.localize("DX3rd.Null") : combatant.name;
+    let initCharacter = combatant.actorId === endActor.id ? game.i18n.localize("DX3rd.Null") : combatant.name;
+
+    console.log(combatant);
 
     let content = `
-    <div class="dx3rd-roll">
-      <h2 class="header"><div class="title width-100">
-        ${game.i18n.localize("DX3rd.Initiative")} ${game.i18n.localize("DX3rd.Process")}
-      </div></h2><hr>
-      <div class="context-box">
-        ${game.i18n.localize("DX3rd.InitiativeCharacter")}: ${initCharacter}
+      <div class="dx3rd-roll">
+        <h2 class="header"><div class="title width-100">
+          ${game.i18n.localize("DX3rd.Initiative")} ${game.i18n.localize("DX3rd.Process")}
+        </div></h2><hr>
+        <div class="context-box">
+          ${game.i18n.localize("DX3rd.InitiativeCharacter")}: ${initCharacter}
+        </div>
       </div>
-    </div>
-  `
+    `
 
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ alias: "GM" }),
-      content: content,
-      type: CONST.CHAT_MESSAGE_TYPES.IC,
-    });
+    if (combatant.actorId !== startActor.id) {
+      ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ alias: "GM" }),
+        content: content,
+        type: CONST.CHAT_MESSAGE_TYPES.IC,
+      });
+    }
 
     setTimeout(() => {
-      if (combatant.id === endActor.id) {
+      if (combatant.actorId === endActor.id) {
         this.startCleanupDialog();  // 클린업 프로세스 실행
-      } else if (combatant.id === startActor.id) {
-        ui.notificationsinfo(`setup process`)
+      } else if (combatant.actorId === startActor.id) {
+        ui.notifications.info(`setup process`)
       } else {
         this.startMainDialog();  // 메인 프로세스 실행
       }
