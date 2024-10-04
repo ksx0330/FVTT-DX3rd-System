@@ -120,6 +120,7 @@
   "DX3rd.DisableTiming": "非有効化",
   "DX3rd.UsedCount": "使用回数",
   "DX3rd.UsedLevel": "レベル修正",
+  "DX3rd.UsedQuantiy": "個数修正",
   "DX3rd.ResetTiming": "回数リセット",
   "DX3rd.NotCheck": "集計しない",
   "DX3rd.AfterRoll": "判定後",

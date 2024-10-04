@@ -9,8 +9,6 @@ export class DX3rdItem extends Item {
 
   async toMessage() {
     let name = this.name;
-    if (this.type == "item")
-      name += ` (${this.system.quantity.value} / ${this.system.quantity.max})`;
     let title = `<div class="title">${name}</div>`;
     title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`;
 
@@ -810,7 +808,7 @@ export class DX3rdItem extends Item {
     };
     await ChatMessage.create(chatData);
 
-    await this.update({ "system.quantity.value": this.system.quantity.value - 1 });
+    await this.update({ "system.used.state": this.system.used.state + 1 });
     const macro = game.macros.contents.find(m => (m.name === this.system.macro));
     if (macro != undefined) {
       let scope = {};

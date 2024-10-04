@@ -228,8 +228,8 @@ export class DX3rdActor extends Actor {
       if (i.type == "vehicle" && iData.move != "") fullMove = iData.move;
 
       if (i.type == "item") {
-        values["saving"].value += iData.saving.value * iData.quantity.max;
-        values["exp"].value += iData.exp * iData.quantity.max;
+        values["saving"].value += iData.saving.value * iData.quantity;
+        values["exp"].value += iData.exp * iData.quantity;
       } else {
         values["saving"].value += iData.saving.value;
         values["exp"].value += iData.exp;

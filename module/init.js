@@ -1233,7 +1233,13 @@ async function chatListeners(html) {
     const actor = game.actors.get(itemInfo.dataset.actorId);
     const item = actor.items.get(itemInfo.dataset.itemId);
 
-    if (item.system.quantity.value < 1) return;
+    if (item.system.used.disable != "notCheck") {
+      let max = item.system.used.max + (used.level ? item.system.quantity : 0);
+      if (item.system.used.state >= max) {
+        ui.notifications.info(`Do not use this item: ${item.name}`);
+        return;
+      }
+    }
 
     await item.use(actor);
   });

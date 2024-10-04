@@ -38,9 +38,7 @@
               {{localize "DX3rd.Quantity"}}
             </label>
             <div class="flex">
-              <input type="text" name="system.quantity.value" value="{{system.quantity.value}}" data-dtype="String"/>
-              <span class="slash"> / </span>
-              <input type="text" name="system.quantity.max" value="{{system.quantity.max}}" data-dtype="Number"/>
+              <input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number"/>
             </div>
           </div>
 
@@ -85,7 +83,29 @@
         <table>
           <tr>
             <th><label for="system.macro">{{localize "DX3rd.Macro"}}</label></th>
-            <td colspan="3"><input type="text" name="system.macro" data-dtype="String" value="{{system.macro}}"></td>
+            <td colspan="7"><input type="text" name="system.macro" data-dtype="String" value="{{system.macro}}"></td>
+          </tr>
+          <tr></tr>
+            <th><span>{{localize "DX3rd.UsedCount"}}</span></th>
+            <td>
+              <input type="number" class="checkbox-input" name="system.used.state" value="{{system.used.state}}" {{#ifEquals system.used.disable "notCheck"}} disabled {{/ifEquals}}>/
+              <input type="number" class="checkbox-input" name="system.used.max" value="{{system.used.max}}" {{#ifEquals system.used.disable "notCheck"}} disabled {{/ifEquals}}>
+            </td>
+            <th><span>+ {{localize "DX3rd.UsedQuantiy"}}</span></th>
+            <td><input type="checkbox" name="system.used.level" {{#if system.used.level}} checked {{/if}}></td>
+            <th><span>{{localize "DX3rd.ResetTiming"}}</span></th>
+            <td>
+              <select name="system.used.disable" data-dtype="String">
+                {{#select system.used.disable}}
+                <option value="-">-</option>
+                <option value="notCheck">{{localize "DX3rd.NotCheck"}}</option>
+                <option value="round">{{localize "DX3rd.AfterRound"}}</option>
+                <option value="battle">{{localize "DX3rd.AfterScene"}}</option>
+                <option value="session">{{localize "DX3rd.AfterSession"}}</option>
+                {{/select}}
+              </select>
+            </td>
+            
           </tr>
         </table>
 

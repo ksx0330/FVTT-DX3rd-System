@@ -354,11 +354,14 @@
       "templates": ["base", "item"],
 
       "type": "-",
-      "quantity": {
-        "value": 1,
-        "max": 1
-      },
-      "macro": ""
+      "quantity": 1,
+      "macro": "",
+      "used": {
+        "state": 0,
+        "max": 0,
+        "level": true,
+        "disable": "notCheck"
+      }
     },
     "works": {
       "templates": ["base"],
