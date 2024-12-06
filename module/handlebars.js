@@ -102,8 +102,10 @@ export class DX3rdRegisterHelpers {
           continue;
   
         let effect = actor.items.find(element => element._id == e);
+        if (effect == undefined)
+          continue;
+
         let used = effect.system.used;
-  
         if (used.disable != 'notCheck') {
           let max = used.max + (used.level ? effect.system.level.value : 0);
           if (used.state >= max) {

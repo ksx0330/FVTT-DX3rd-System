@@ -9,6 +9,12 @@ export class DX3rdItem extends Item {
 
   async toMessage() {
     let name = this.name;
+    if (name.includes("|")) {
+      const [rb, rt] = name.split("|");
+      const sanitizedRt = rt.replace(/ /g, "&ensp;");
+      name = `<ruby><rb>${rb}</rb><rt>${sanitizedRt}</rt></ruby>`;
+    }
+    
     let title = `<div class="title">${name}</div>`;
     title = `<img src="${this.img}" width="30" height="30">&nbsp&nbsp${title}`;
 

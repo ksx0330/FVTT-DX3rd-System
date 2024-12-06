@@ -187,7 +187,7 @@ export class DX3rdActor extends Actor {
       else if (i.type == "combo" && i.system.active.state) combo.push(i);
       else if (i.type == "spell") spell.push(i);
       else if (i.type == "psionic") psionic.push(i);
-      else if (itemType.includes(i.type) && i.system.equipment) item.push(i);
+      else if (itemType.includes(i.type)) item.push(i);
       else if (i.type == "record") record.push(i);
     }
 
@@ -1123,7 +1123,7 @@ export class DX3rdActor extends Actor {
                 : 0;
             let addResult =
               $("#append-add").val() != "" ? Number($("#append-add").val()) : 0;
-            let eibonDice = Math.floor(cthulhu / 4);
+            let eibonDice = Math.max(1, Math.ceil(cthulhu / 4));
 
             // eibon 및 angel 체크박스 상태 확인
             let isEibonChecked = $("#eibon").is(":checked");
@@ -1244,9 +1244,9 @@ export class DX3rdActor extends Actor {
                 let selected = $(".eibon-die:checked")
                   .map((_, el) => $(el).data("index"))
                   .get();
-                if (selected.length > eibonDice) {
+                if (selected.length !== eibonDice) {
                   ui.notifications.info(
-                    `You can only up to ${eibonDice}  die.`
+                    `You must remove ${eibonDice} dice.`
                   );
                   handleEibon(
                     allDiceResults,

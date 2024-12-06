@@ -1673,6 +1673,18 @@ Hooks.on("deleteActiveEffect", async (effect) => {
     if (effect) {
       await effect.delete();
     }
+
+    let content = `
+    <div>
+      <strong>${game.i18n.localize("DX3rd.Tainted")} ${game.i18n.localize("DX3rd.Clear")}</strong>: ${actor.name}
+    </div>
+    `
+
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ alias: "GM" }), // GM으로 설정
+      content: content,
+      type: CONST.CHAT_MESSAGE_TYPES.IC,
+    });
   }
 
   // 상태이상의 label이 "DX3rd.Hatred"인 경우에만 처리
