@@ -1446,7 +1446,7 @@ export class DX3rdActor extends Actor {
         }
         
         let targets = Array.from(game.user.targets || []);
-        if (diceOptions.item.system.effect.disable != "-") {
+        if (diceOptions.item.system.effect.disable != "notCheck") {
           for (let target of targets.map((t) => t.actor))
             diceOptions.item.applyTarget(target);
         }

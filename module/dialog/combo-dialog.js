@@ -180,7 +180,7 @@ export class ComboDialog extends Dialog {
     let getTarget = false;
     let appliedList = [];
     for (let e of effectList) {
-      if (e.system.effect.disable != "-")
+      if (e.system.effect.disable != "notCheck")
         appliedList.push(e);
       if (e.system.getTarget)
         getTarget = true;

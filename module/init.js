@@ -483,7 +483,7 @@ async function chatListeners(html) {
 
       usingEffect(item);
       runningMacro(item.system.macro, actor, item);
-      if (item.system.effect.disable != "-") {
+      if (item.system.effect.disable != "notCheck") {
         for (let target of targets.map((t) => t.actor))
           await item.applyTarget(target);
       }
@@ -621,7 +621,7 @@ async function chatListeners(html) {
         if (e === "-") continue;
 
         let effect = actor.items.get(e);
-        if (effect.system.effect.disable != "-") {
+        if (effect.system.effect.disable != "notCheck") {
           for (let target of targets.map((t) => t.actor))
             await effect.applyTarget(target);
         }
@@ -899,7 +899,7 @@ async function chatListeners(html) {
 
       usingEffect(item);
       runningMacro(item.system.macro, actor, item);
-      if (item.system.effect.disable != "-") {
+      if (item.system.effect.disable != "notCheck") {
         for (let target of targets.map((t) => t.actor))
           await item.applyTarget(target);
       }
